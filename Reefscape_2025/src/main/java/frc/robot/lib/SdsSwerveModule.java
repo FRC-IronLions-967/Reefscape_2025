@@ -6,7 +6,8 @@ package frc.robot.lib;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -18,7 +19,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Utils.Constants;
-import frc.robot.Utils.Values;
 
 public class SdsSwerveModule {
 
@@ -28,18 +28,11 @@ public class SdsSwerveModule {
   private SparkMax turningMotor;
   private SparkMaxConfig turningConfig;
   private SparkClosedLoopController turningPIDController;
+  private FeedbackSensor turningFeedbackSensor;
 
   private int driveID;
   private int turnID;
 
-  private int i;
-  // Gains are for example purposes only - must be determined for your own robot!
-
-
-  // Gains are for example purposes only - must be determined for your own robot!
-  //private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(1, 3);
-  //private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(1, 0.5);
-  
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
    *
@@ -52,44 +45,46 @@ public class SdsSwerveModule {
       int turningMotorCANId) {
 
     driveMotor = new SparkMax(driveMotorCANId, MotorType.kBrushless);
-    turningMotor = new SparkMax(turningMotorCANId, MotorType.kBrushless);
     driveConfig = new SparkMaxConfig();
-    turningConfig = new SparkMaxConfig();
-    driveConfig.idleMode(IdleMode.kCoast);
-    turningConfig.idleMode(IdleMode.kBrake);
-    driveConfig.smartCurrentLimit(40);
-    driveConfig.secondaryCurrentLimit(80);
+    driveMotorController = driveMotor.getClosedLoopController();
 
-    driveID = driveMotorCANId;
-    turnID = turningMotorCANId;
+    turningMotor = new SparkMax(turningMotorCANId, MotorType.kBrushless);
+    turningConfig = new SparkMaxConfig();
+    turningPIDController = turningMotor.getClosedLoopController();
+
+    
+    
+    
+
+
+    //Drive Motor Config
+    driveConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).secondaryCurrentLimit(80).inverted(true);
+
+    driveConfig.encoder.velocityConversionFactor((2.0 * Math.PI * Constants.kWheelRadius) / 
+    (Constants.kSecondsPerMinute * Constants.kGearRatio)).positionConversionFactor((2.0 * Math.PI * Constants.kWheelRadius) / Constants.kGearRatio);
 
     driveConfig.closedLoop.pidf(Constants.swerveDriveMotorP, Constants.swerveDriveMotorI, Constants.swerveDriveMotorD, Constants.swerveDriveMotorFF);
-    turningConfig.closedLoop.pid(Constants.swerveTurningP, Constants.swerveTurningI, Constants.swerveTurningD);
 
-    turningPIDController = turningMotor.getClosedLoopController();
-    turningPIDController.setFeedbackDevice(turningMotor.getAbsoluteEncoder(Type.kDutyCycle));
 
-    
-    //REVPhysicsSim.getInstance().addSparkMax(driveMotor, DCMotor.getNEO(1));
-    //REVPhysicsSim.getInstance().addSparkMax(turningMotor, DCMotor.getVex775Pro(1));
 
-    /*
-     * native units of rpm to m/s
-     */
-    driveConfig.encoder.velocityConversionFactor((2.0 * Math.PI * Constants.kWheelRadius) / (Constants.kSecondsPerMinute * Constants.kGearRatio));
-    // native units of revolutions to meters
-    //driveMotor.getEncoder().setVelocityConversionFactor(Constants.kMaxSpeed/5700);
-    driveConfig.encoder.positionConversionFactor((2.0 * Math.PI * Constants.kWheelRadius) / Constants.kGearRatio);
-    driveMotorController = driveMotor.getClosedLoopController();
-    
 
-    turningPIDController.setPositionPIDWrappingEnabled(true);
-    turningMotor.getAbsoluteEncoder(Type.kDutyCycle).setPositionConversionFactor(2*Math.PI);
-    turningMotor.getAbsoluteEncoder(Type.kDutyCycle).setInverted(true);
-    turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
-    turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20);
+    //Turning Motor Config
+    turningConfig.idleMode(IdleMode.kBrake);
+    turningConfig.encoder.positionConversionFactor(2*Math.PI).inverted(true);
 
-    driveConfig.inverted(true);
+    turningConfig.closedLoop.pid(Constants.swerveTurningP, Constants.swerveTurningI, Constants.swerveTurningD)
+    .positionWrappingEnabled(true).feedbackSensor(turningFeedbackSensor.kPrimaryEncoder);//KIRA CHECK THIS! Old code: turningPIDController.setFeedbackDevice(turningMotor.getAbsoluteEncoder()); 
+
+    turningConfig.signals.primaryEncoderPositionPeriodMs(20);
+    // turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
+    // turningMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 20); //THIS IS THE OLD CODE SOMEONE(KIRA) SHOULD DOUBLE CHECK THIS.
+
+    turningMotor.configure(turningConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    //This is needed to acsess outside the constructor.
+    driveID = driveMotorCANId;
+    turnID = turningMotorCANId;
   }
 
 
@@ -156,7 +151,7 @@ public class SdsSwerveModule {
   }
 
   private double ConvertedTurningPosition() {
-    return turningMotor.getAbsoluteEncoder(ControlType.kDutyCycle).getPosition() - Math.PI;
+    return turningMotor.getAbsoluteEncoder().getPosition();
   }
 
 }
