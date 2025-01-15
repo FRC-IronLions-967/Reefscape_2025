@@ -96,5 +96,10 @@ public final class Constants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
+    public static final double elevatorGearRatio =  1.0; // needs tuning
+    public static final double armGearRadius = 1.0; //needs tuning
+    public static final double coralWheelRadius = 1.0; //needs tunig
+    public static final double algaeWheelRadius = 1.0; //needs tuning
+
 
 }
