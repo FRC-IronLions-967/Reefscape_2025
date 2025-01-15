@@ -99,7 +99,18 @@ public final class Constants {
     public static final double elevatorGearRatio =  1.0; // needs tuning
     public static final double armGearRadius = 1.0; //needs tuning
     public static final double coralWheelRadius = 1.0; //needs tunig
-    public static final double algaeWheelRadius = 1.0; //needs tuning
+    public static final double algaeWheelRadius = 1.0; //needs tuning\
+
+    public static final double[] L4Position = {1, 1}; //needs tuning
+    public static final double[] L3Position = {1, 1}; //needs tuning
+    public static final double[] L2Position = {1, 1}; //needs tuning
+    public static final double[] coralStationPosition = {1, 1}; //needs tuning
+    public static final double[] L2AlgaePosition = {1, 1}; //needs tuning
+    public static final double[] L3AlgaePosition = {1, 1}; //needs tuning
+    public static final double[] processorPosition = {1, 1}; //needs tuning
+    public static final double[] bargePosition = {1, 1}; //needs tuning
+    public static final double[] defaultPosition = {1, 1}; //needs tuning
+    
 
 
 }
