@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.Constants;
 
@@ -24,9 +25,9 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController elevatorVortexController;
   private SparkFlexConfig elevatorVortexConfig;
 
-  private SparkMax rotationMax;
-  private SparkClosedLoopController rotationMaxController;
-  private SparkMaxConfig rotationMaxConfig;
+  private SparkMax armMax;
+  private SparkClosedLoopController armMaxController;
+  private SparkMaxConfig armMaxConfig;
 
   private SparkFlex coralManipulatorVortex;
   private SparkClosedLoopController coralManipulatorVortexController;
@@ -36,6 +37,9 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController algaeManipulatorVortexController;
   private SparkFlexConfig algaeManipulatorVortexConfig;
 
+  private DigitalInput coralLimitSwitch;
+  private DigitalInput algaeLimitSwitch;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
@@ -43,9 +47,9 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexController = elevatorVortex.getClosedLoopController();
     elevatorVortexConfig = new SparkFlexConfig();
 
-    rotationMax = new SparkMax(10, MotorType.kBrushless);
-    rotationMaxController = rotationMax.getClosedLoopController();
-    rotationMaxConfig = new SparkMaxConfig();
+    armMax = new SparkMax(10, MotorType.kBrushless);
+    armMaxController = armMax.getClosedLoopController();
+    armMaxConfig = new SparkMaxConfig();
 
     coralManipulatorVortex = new SparkFlex(11, MotorType.kBrushless);
     coralManipulatorVortexController = coralManipulatorVortex.getClosedLoopController();
@@ -66,15 +70,15 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
-    rotationMaxConfig
+    armMaxConfig
       .idleMode(IdleMode.kBrake);
-    rotationMaxConfig.encoder
+    armMaxConfig.encoder
       .positionConversionFactor(Constants.armGearRadius * Math.PI * 2);
-    rotationMaxConfig.closedLoop
+    armMaxConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
 
-    rotationMax.configure(rotationMaxConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    armMax.configure(armMaxConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
     coralManipulatorVortexConfig
@@ -97,11 +101,47 @@ public class ArmSubsystem extends SubsystemBase {
       .pid(1, 0, 0);
 
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+
+    coralLimitSwitch = new DigitalInput(0);
+    algaeLimitSwitch = new DigitalInput(1);
     
+  }
+
+  public void moveElevator(double position) {
+    elevatorVortexController.setReference(position, ControlType.kPosition);
+  }
+
+  public double getElevatorPosition() {
+    return elevatorVortex.getEncoder().getPosition();
+  }
+
+  public void moveArm(double Angle) {
+    armMaxController.setReference(Angle, ControlType.kPosition);
+  }
+
+  public double getArmAngle() {
+    return armMax.getEncoder().getPosition();
+  }
+
+  public void runCoralManipulator(double speed) {
+    coralManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+  }
+
+  public boolean hasCoral() {
+    return coralLimitSwitch.get();
+  }
+
+  public void runAlgaeManipulator(double speed) {
+    algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+  }
+
+  public boolean hasAlgae() {
+    return algaeLimitSwitch.get();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This method will be called once per scheduler run  
   }
 }
