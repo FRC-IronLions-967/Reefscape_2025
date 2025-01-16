@@ -1,7 +1,11 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
+import frc.robot.commands.RunAlgaeManipulatorCommand;
+import frc.robot.commands.RunCoralManipulatorCommand;
 import frc.robot.lib.controls.XBoxController;
 
 
@@ -22,16 +26,33 @@ public static IO getInstance() {
 }
 
 public void teleopInit(){
+    //Put Commands Here
+    Command intakeCoral = new ParallelCommandGroup(
+        new MoveWholeArmToPositionCommand(Constants.coralStationPosition),
+        new RunCoralManipulatorCommand(Constants.coralIntakeSpeed)
+    );
+
+    Command intakeAlgaeL3 = new ParallelCommandGroup(
+        new MoveWholeArmToPositionCommand(Constants.L3AlgaePosition),
+        new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
+    );
+
+    Command intakeAlgaeL2 = new ParallelCommandGroup(
+        new MoveWholeArmToPositionCommand(Constants.L2AlgaePosition),
+        new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
+    );
 
     manipulatorController.whenButtonPressed("Y", new MoveWholeArmToPositionCommand(Constants.L4Position));
     manipulatorController.whenButtonPressed("X", new MoveWholeArmToPositionCommand(Constants.L3Position));
     manipulatorController.whenButtonPressed("RBUMP", new MoveWholeArmToPositionCommand(Constants.L2Position));
-    manipulatorController.whenButtonPressed("B", new MoveWholeArmToPositionCommand(Constants.coralStationPosition));
-    manipulatorController.whenPOVButtonPressed("W", new MoveWholeArmToPositionCommand(Constants.L2AlgaePosition));
-    manipulatorController.whenPOVButtonPressed("E", new MoveWholeArmToPositionCommand(Constants.L3AlgaePosition));
+    manipulatorController.whenButtonPressed("B", intakeCoral);
+    manipulatorController.whenPOVButtonPressed("W", intakeAlgaeL2);
+    manipulatorController.whenPOVButtonPressed("E", intakeAlgaeL3);
     manipulatorController.whenPOVButtonPressed("N", new MoveWholeArmToPositionCommand(Constants.bargePosition));
     manipulatorController.whenButtonPressed("LBUMP", new MoveWholeArmToPositionCommand(Constants.processorPosition));
     manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.defaultPosition));
+    manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
+    manipulatorController.whenPOVButtonPressed("S", new RunAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
     
 }
 public XBoxController getDriverController(){

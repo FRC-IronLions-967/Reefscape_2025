@@ -110,6 +110,11 @@ public final class Constants {
     public static final double[] processorPosition = {1, 1}; //needs tuning
     public static final double[] bargePosition = {1, 1}; //needs tuning
     public static final double[] defaultPosition = {1, 1}; //needs tuning
+
+    public static final double coralIntakeSpeed = 5600; //needs tuning
+    public static final double coralScoringSpeed = 5600; //needs tuning
+    public static final double algaeIntakeSpeed = 5600; //needs tuning
+    public static final double algaeScoringSpeed = 5600; //needs tuning
     
 
 

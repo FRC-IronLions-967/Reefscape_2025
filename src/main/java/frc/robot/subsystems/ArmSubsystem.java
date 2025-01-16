@@ -25,9 +25,9 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController elevatorVortexController;
   private SparkFlexConfig elevatorVortexConfig;
 
-  private SparkMax armMax;
-  private SparkClosedLoopController armMaxController;
-  private SparkMaxConfig armMaxConfig;
+  private SparkFlex armVortex;
+  private SparkClosedLoopController armVortexController;
+  private SparkFlexConfig armVortexConfig;
 
   private SparkFlex coralManipulatorVortex;
   private SparkClosedLoopController coralManipulatorVortexController;
@@ -40,16 +40,20 @@ public class ArmSubsystem extends SubsystemBase {
   private DigitalInput coralLimitSwitch;
   private DigitalInput algaeLimitSwitch;
 
+  private ArmStates state;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
+
+    state = ArmStates.DEFAULT;
 
     elevatorVortex = new SparkFlex(9, MotorType.kBrushless);
     elevatorVortexController = elevatorVortex.getClosedLoopController();
     elevatorVortexConfig = new SparkFlexConfig();
 
-    armMax = new SparkMax(10, MotorType.kBrushless);
-    armMaxController = armMax.getClosedLoopController();
-    armMaxConfig = new SparkMaxConfig();
+    armVortex = new SparkFlex(10, MotorType.kBrushless);
+    armVortexController = armVortex.getClosedLoopController();
+    armVortexConfig = new SparkFlexConfig();
 
     coralManipulatorVortex = new SparkFlex(11, MotorType.kBrushless);
     coralManipulatorVortexController = coralManipulatorVortex.getClosedLoopController();
@@ -70,15 +74,16 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
-    armMaxConfig
+    armVortexConfig
       .idleMode(IdleMode.kBrake);
-    armMaxConfig.encoder
+    armVortexConfig.encoder
       .positionConversionFactor(Constants.armGearRadius * Math.PI * 2);
-    armMaxConfig.closedLoop
+    armVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0);
+      .pid(1, 0, 0).positionWrappingInputRange(0, 2*Math.PI)
+      .positionWrappingEnabled(true);
 
-    armMax.configure(armMaxConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    armVortex.configure(armVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
     coralManipulatorVortexConfig
@@ -117,11 +122,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveArm(double Angle) {
-    armMaxController.setReference(Angle, ControlType.kPosition);
+    armVortexController.setReference(Angle, ControlType.kPosition);
   }
 
   public double getArmAngle() {
-    return armMax.getEncoder().getPosition();
+    return armVortex.getEncoder().getPosition();
   }
 
   public void runCoralManipulator(double speed) {
@@ -143,5 +148,56 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run  
+    switch (state) {
+      case DEFAULT:
+        if (hasAlgae()) {
+          if (hasCoral()) {
+            state = ArmStates.BOTH_IN;
+          } else {
+            state = ArmStates.ALGAE_IN;
+          }
+        } else if (hasCoral()) {
+          state = ArmStates.CORAL_IN;
+        }
+        break;
+
+      case ALGAE_IN:
+        if (!hasAlgae()) {
+          state = ArmStates.DEFAULT;
+        } else if (hasCoral()) {
+          state = ArmStates.BOTH_IN;
+        }
+        break;
+
+      case CORAL_IN:
+        if(!hasCoral()) {
+          state = ArmStates.DEFAULT;
+        } else if (hasAlgae()) {
+          state = ArmStates.BOTH_IN;
+        }
+        break;
+
+      case BOTH_IN:
+        if(!hasAlgae()) {
+          state = ArmStates.CORAL_IN;
+        } else if (!hasCoral()) {
+          state = ArmStates.ALGAE_IN;
+        }
+        break;
+    
+      default:
+        if (hasAlgae()) {
+          if (hasCoral()) {
+            state = ArmStates.BOTH_IN;
+          } else {
+            state = ArmStates.ALGAE_IN;
+          }
+        } else if (hasCoral()) {
+          state = ArmStates.CORAL_IN;
+        } else {
+          state = ArmStates.DEFAULT;
+        }
+        break;
+    }
   }
 }
