@@ -40,12 +40,17 @@ public class ArmSubsystem extends SubsystemBase {
   private DigitalInput coralLimitSwitch;
   private DigitalInput algaeLimitSwitch;
 
+  private double elevatorHeightEndGoal;
+  private double elevatorHeightCurrentTarget;
+  private double rotaryArmEndGoal;
+  private double rotaryArmCurrentTarget;
+
   private ArmStates state;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
-    state = ArmStates.DEFAULT;
+    state = ArmStates.EMPTY;
 
     elevatorVortex = new SparkFlex(9, MotorType.kBrushless);
     elevatorVortexController = elevatorVortex.getClosedLoopController();
@@ -77,10 +82,11 @@ public class ArmSubsystem extends SubsystemBase {
     armVortexConfig
       .idleMode(IdleMode.kBrake);
     armVortexConfig.encoder
-      .positionConversionFactor(Constants.armGearRadius * Math.PI * 2);
+      .positionConversionFactor(Math.PI * 2);
     armVortexConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0).positionWrappingInputRange(0, 2*Math.PI)
+      .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+      .pid(1, 0, 0)
+      .positionWrappingInputRange(0, 2*Math.PI)
       .positionWrappingEnabled(true);
 
     armVortex.configure(armVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
@@ -89,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase {
     coralManipulatorVortexConfig
       .idleMode(IdleMode.kCoast);
     coralManipulatorVortexConfig.encoder
-      .velocityConversionFactor(Constants.coralWheelRadius * Math.PI * 2);
+      .velocityConversionFactor(Constants.coralWheelRadius * Math.PI * 2); //Why do we care about the linear velocity of the edge of the coral intake wheels?
     coralManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
@@ -100,7 +106,7 @@ public class ArmSubsystem extends SubsystemBase {
     algaeManipulatorVortexConfig
       .idleMode(IdleMode.kCoast);
     algaeManipulatorVortexConfig.encoder
-      .velocityConversionFactor(Constants.algaeWheelRadius * Math.PI * 2);
+      .velocityConversionFactor(Constants.algaeWheelRadius * Math.PI * 2); //Why do we care about the linear velocity of the edge of the algae intake wheels?
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
@@ -114,15 +120,15 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void moveElevator(double position) {
-    elevatorVortexController.setReference(position, ControlType.kPosition);
+    elevatorHeightEndGoal = position;
   }
 
   public double getElevatorPosition() {
     return elevatorVortex.getEncoder().getPosition();
   }
 
-  public void moveArm(double Angle) {
-    armVortexController.setReference(Angle, ControlType.kPosition);
+  public void moveArm(double angle) {
+    rotaryArmEndGoal = angle;
   }
 
   public double getArmAngle() {
@@ -145,59 +151,55 @@ public class ArmSubsystem extends SubsystemBase {
     return algaeLimitSwitch.get();
   }
 
+  private void setArmLoadingState() {
+    if(hasAlgae() && hasCoral()) {
+      state = ArmStates.BOTH_IN;
+    } else if (hasAlgae()) {
+      state = ArmStates.ALGAE_IN;
+    } else if (hasCoral()) {
+      state = ArmStates.CORAL_IN;
+    } else {
+      state = ArmStates.EMPTY;
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run  
+
+    // transitions are less important than just knowing the current state
+    setArmLoadingState();
+
     switch (state) {
-      case DEFAULT:
-        if (hasAlgae()) {
-          if (hasCoral()) {
-            state = ArmStates.BOTH_IN;
-          } else {
-            state = ArmStates.ALGAE_IN;
-          }
-        } else if (hasCoral()) {
-          state = ArmStates.CORAL_IN;
-        }
+      case EMPTY:
+        // Determine elevator/arm movement restraints
+        // Set PID targets, may need to use intermediate values,
+        // then move to the final goal
         break;
 
       case ALGAE_IN:
-        if (!hasAlgae()) {
-          state = ArmStates.DEFAULT;
-        } else if (hasCoral()) {
-          state = ArmStates.BOTH_IN;
-        }
+        // Determine elevator/arm movement restraints
+        // Set PID targets, may need to use intermediate values,
+        // then move to the final goal
         break;
 
       case CORAL_IN:
-        if(!hasCoral()) {
-          state = ArmStates.DEFAULT;
-        } else if (hasAlgae()) {
-          state = ArmStates.BOTH_IN;
-        }
+        // Determine elevator/arm movement restraints
+        // Set PID targets, may need to use intermediate values,
+        // then move to the final goal
         break;
 
       case BOTH_IN:
-        if(!hasAlgae()) {
-          state = ArmStates.CORAL_IN;
-        } else if (!hasCoral()) {
-          state = ArmStates.ALGAE_IN;
-        }
+        // Determine elevator/arm movement restraints
+        // Set PID targets, may need to use intermediate values,
+        // then move to the final goal
         break;
     
       default:
-        if (hasAlgae()) {
-          if (hasCoral()) {
-            state = ArmStates.BOTH_IN;
-          } else {
-            state = ArmStates.ALGAE_IN;
-          }
-        } else if (hasCoral()) {
-          state = ArmStates.CORAL_IN;
-        } else {
-          state = ArmStates.DEFAULT;
-        }
+        
         break;
     }
+
+    
   }
 }

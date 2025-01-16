@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 public enum ArmStates {
-    DEFAULT,
+    EMPTY,
     ALGAE_IN,
     CORAL_IN,
     BOTH_IN

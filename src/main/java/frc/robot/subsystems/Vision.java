@@ -71,7 +71,7 @@ public class Vision extends SubsystemBase {
         visionSim.addAprilTags(Constants.kTagLayout);
         // Create simulated camera properties. These can be set to mimic your actual camera.
         var cameraProp = new SimCameraProperties();
-        cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+        cameraProp.setCalibration(480, 320, Rotation2d.fromDegrees(90));
         cameraProp.setCalibError(0.35, 0.10);
         cameraProp.setFPS(15);
         cameraProp.setAvgLatencyMs(50);
