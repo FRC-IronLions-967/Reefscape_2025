@@ -116,9 +116,10 @@ public final class Constants {
     public static final double algaeIntakeSpeed = 5600; //needs tuning
     public static final double algaeScoringSpeed = 5600; //needs tuning
 
-    // Case Empty y = 0.8072 - 0.46x where y is amount of angle constrained and x is amount of inches elevator is up
-    // Case ALGAE y = 0.104
-
+    //CASE EMPTY: vertical +- 0.105rad OR elevator +1.5in
+    //CASE CORAL vertical 0.192 - 1 to the right OR elevator +1.5in
+    //CASE ALGAE vertical +- 1.04rad botton and +- 1.12rad OR elevator +9.5in and +-1.04rad bottom
+    //Case BOTH +- 1.12 top and bottom vertical
     
 
 
