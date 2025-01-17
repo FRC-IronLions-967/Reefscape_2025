@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
+
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -18,6 +21,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.Constants;
+import frc.robot.lib.LimitSwitchManager;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -37,8 +41,8 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController algaeManipulatorVortexController;
   private SparkFlexConfig algaeManipulatorVortexConfig;
 
-  private DigitalInput coralLimitSwitch;
-  private DigitalInput algaeLimitSwitch;
+  private BooleanSupplier coralLimitSwitch;
+  private BooleanSupplier algaeLimitSwitch;
 
   private double elevatorHeightEndGoal;
   private double elevatorHeightCurrentTarget;
@@ -110,8 +114,8 @@ public class ArmSubsystem extends SubsystemBase {
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
-    coralLimitSwitch = new DigitalInput(0);
-    algaeLimitSwitch = new DigitalInput(1);
+    coralLimitSwitch = LimitSwitchManager.getSwitch(0);
+    algaeLimitSwitch = LimitSwitchManager.getSwitch(1);
     
   }
 
@@ -136,7 +140,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean hasCoral() {
-    return coralLimitSwitch.get();
+    return coralLimitSwitch.getAsBoolean();
   }
 
   public void runAlgaeManipulator(double speed) {
@@ -144,7 +148,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean hasAlgae() {
-    return algaeLimitSwitch.get();
+    return algaeLimitSwitch.getAsBoolean();
   }
 
   private void setArmLoadingState() {

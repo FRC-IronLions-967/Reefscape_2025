@@ -18,12 +18,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SubsystemsInst;
 import frc.robot.commands.*;
 import frc.robot.lib.LEDController;
+import frc.robot.lib.LimitSwitchManager;
 
 public class Robot extends TimedRobot {
   private SubsystemsInst subsystemsInst;
   private Command m_autonomousCommand;
   private SendableChooser<Command> autoChooser;
   private LEDController ledController;
+  private LimitSwitchManager switchBreakout;
   
 
   /**
@@ -39,7 +41,7 @@ public class Robot extends TimedRobot {
 
     // autoChooser = AutoBuilder.buildAutoChooser("Center Simple_Auto");
     // SmartDashboard.putData("Auto Chooser", autoChooser);
-
+    switchBreakout = new LimitSwitchManager();
     ledController = new LEDController(0, 36);
   }
 
@@ -52,6 +54,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    switchBreakout.periodic();
     CommandScheduler.getInstance().run();
     ledController.heartbeat();
   }
@@ -118,6 +121,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
+      switchBreakout.simulationPeriodic();
       // Update drivetrain simulation
       SubsystemsInst.getInst().drivetrain.simulationPeriodic();
 
