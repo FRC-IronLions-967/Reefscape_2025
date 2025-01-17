@@ -115,6 +115,10 @@ public final class Constants {
     public static final double coralScoringSpeed = 5600; //needs tuning
     public static final double algaeIntakeSpeed = 5600; //needs tuning
     public static final double algaeScoringSpeed = 5600; //needs tuning
+
+    // Case Empty y = 0.8072 - 0.46x where y is amount of angle constrained and x is amount of inches elevator is up
+    // Case ALGAE y = 0.104
+
     
 
 

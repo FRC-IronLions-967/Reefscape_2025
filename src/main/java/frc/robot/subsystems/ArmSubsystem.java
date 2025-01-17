@@ -94,8 +94,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     coralManipulatorVortexConfig
       .idleMode(IdleMode.kCoast);
-    coralManipulatorVortexConfig.encoder
-      .velocityConversionFactor(Constants.coralWheelRadius * Math.PI * 2); //Why do we care about the linear velocity of the edge of the coral intake wheels?
     coralManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
@@ -105,8 +103,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     algaeManipulatorVortexConfig
       .idleMode(IdleMode.kCoast);
-    algaeManipulatorVortexConfig.encoder
-      .velocityConversionFactor(Constants.algaeWheelRadius * Math.PI * 2); //Why do we care about the linear velocity of the edge of the algae intake wheels?
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
@@ -172,25 +168,25 @@ public class ArmSubsystem extends SubsystemBase {
 
     switch (state) {
       case EMPTY:
-        // Determine elevator/arm movement restraints
+        // Determine elevator/arm movement restraints : Cant Go 4PI/3-5PI/3
         // Set PID targets, may need to use intermediate values,
         // then move to the final goal
         break;
 
       case ALGAE_IN:
-        // Determine elevator/arm movement restraints
+        // Determine elevator/arm movement restraints : Can't Go 5PI/4-7PI/4
         // Set PID targets, may need to use intermediate values,
         // then move to the final goal
         break;
 
       case CORAL_IN:
-        // Determine elevator/arm movement restraints
+        // Determine elevator/arm movement restraints : Can't Go PI/4 - 3PI/4 and no 4PI/3-5PI/3
         // Set PID targets, may need to use intermediate values,
         // then move to the final goal
         break;
 
       case BOTH_IN:
-        // Determine elevator/arm movement restraints
+        // Determine elevator/arm movement restraints : ONLY can go 7PI/4 - PI/4 OR 3PI/4 - 5PI/4
         // Set PID targets, may need to use intermediate values,
         // then move to the final goal
         break;
