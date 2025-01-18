@@ -162,14 +162,42 @@ public class ArmSubsystem extends SubsystemBase {
       state = ArmStates.EMPTY;
     }
   }
+  
+  /**
+   * 
+   * @param variable The variable you are checking
+   * @return This returns true if the position the rotation arm is set to a safe location.
+   */
 
-  private boolean isEndTargetGood() {
-    if (4.607 < rotaryArmEndGoal && rotaryArmEndGoal < 6.178) {
-      return false;
+  private boolean isEndTargetGood(double variable) {
+    if (getElevatorPosition() < 1.5) {
+      if (4.607 < variable && variable < 6.178) {
+        return false;
+      }
+      if (state == ArmStates.ALGAE_IN && ((0.45 < variable && variable < 2.69)
+      || (3.67 < variable && variable < 5.752))) {
+        return false; 
+      } else if (state == ArmStates.CORAL_IN && (4.904 < variable && variable < 5.712)) {
+        return false;
+      } else if (state == ArmStates.BOTH_IN && ((0.451 < variable && variable < 2.69) 
+      || (3.59 < variable && variable < 5.83))) {
+        return false;
+      }
+    } else if (1.5 <= getElevatorPosition() && getElevatorPosition() < 9.5) {
+      if (state == ArmStates.ALGAE_IN && ((0.45 < variable && variable < 2.69)
+      || (3.67 < variable && variable < 5.752))) {
+        return false; 
+      } else if (state == ArmStates.BOTH_IN && ((0.451 < variable && variable < 2.69) 
+      || (3.59 < variable && variable < 5.83))) {
+        return false;
+      }
+    } else if (getElevatorPosition() >= 9.5) {
+      if ((state == ArmStates.ALGAE_IN || state == ArmStates.BOTH_IN) && 
+      (3.67 < variable && variable < 5.752)) {
+        return false; 
+      } 
     }
-    if (state == ArmStates.ALGAE_IN && ()) {
-      
-    }
+    return true;
   } 
 
   @Override
@@ -184,17 +212,29 @@ public class ArmSubsystem extends SubsystemBase {
         // Determine elevator/arm movement restraints : Cant Go 4PI/3-5PI/3
         // Set PID targets, may need to use intermediate values,
         // then move to the final goal
-        if((1.5*Math.PI < getArmAngle() || getArmAngle() < Math.PI/2) && (Math.PI/2 < rotaryArmEndGoal && rotaryArmEndGoal < 3*Math.PI/2)) {
-          //If on the right side of the robot and needs to go to the left, go to the top.
-          rotaryArmCurrentTarget = Math.PI/2;
-        } else if((0.5*Math.PI < getArmAngle() && getArmAngle() < 1.5*Math.PI) && (1.5 * Math.PI < rotaryArmEndGoal || rotaryArmEndGoal < 0.5*Math.PI)) {
-          //If on the left side of the robot and needs to go to the right, go to the top.
-          rotaryArmCurrentTarget = Math.PI/2;
-        } else if (Math.PI/3 < getArmAngle() && getArmAngle() < 2/3 * Math.PI) {
-          //If on the top go to the end position
-          rotaryArmCurrentTarget = rotaryArmEndGoal;
+        if (getElevatorPosition() <= 1.5) {
+          if (Math.PI/3 < getArmAngle() && getArmAngle() < 2/3 * Math.PI) {
+            //If on the top go to the end position
+            rotaryArmCurrentTarget = rotaryArmEndGoal;
+          } else if((1.5*Math.PI < getArmAngle() || getArmAngle() < Math.PI/2) && (Math.PI/2 < rotaryArmEndGoal && rotaryArmEndGoal < 3*Math.PI/2)) {
+            //If on the right side of the robot and needs to go to the left, go to the top.
+            rotaryArmCurrentTarget = Math.PI/2;
+          } else if((0.5*Math.PI < getArmAngle() && getArmAngle() < 1.5*Math.PI) && (1.5 * Math.PI < rotaryArmEndGoal || rotaryArmEndGoal < 0.5*Math.PI)) {
+            //If on the left side of the robot and needs to go to the right, go to the top.
+            rotaryArmCurrentTarget = Math.PI/2;
+          } else if ((0.5*Math.PI < getArmAngle() && getArmAngle() < 1.5*Math.PI) && (0.5 * Math.PI < rotaryArmEndGoal && rotaryArmEndGoal < 1.5 *Math.PI)) {
+            // If on the left side and needs to be on the left go the position
+            rotaryArmCurrentTarget = rotaryArmEndGoal;
+          } else if ((1.5 * Math.PI < getArmAngle() || getArmAngle() < 0.5*Math.PI) && (1.5 * Math.PI < rotaryArmEndGoal || rotaryArmEndGoal < 0.5*Math.PI)) {
+            // If on the right side and needs to be on the right go the position
+          }
+          if (isEndTargetGood(rotaryArmCurrentTarget)) {
+            armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
+            //sets the position
+          }
+        } else {
+          armVortexController.setReference(rotaryArmEndGoal, ControlType.kPosition);
         }
-        armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
         break;
 
       case ALGAE_IN:

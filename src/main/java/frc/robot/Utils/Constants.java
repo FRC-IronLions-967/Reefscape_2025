@@ -118,7 +118,7 @@ public final class Constants {
 
     //CASE EMPTY: vertical +- 0.105rad OR elevator +1.5in
     //CASE CORAL vertical 0.192 - 1 to the right OR elevator +1.5in
-    //CASE ALGAE vertical +- 1.04rad botton and +- 1.12rad OR elevator +9.5in and +-1.04rad bottom
+    //CASE ALGAE vertical +- 1.04rad bottom and +- 1.12rad OR elevator +9.5in and +-1.04rad bottom
     //Case BOTH +- 1.12 top and bottom vertical OR elevator +9.5in and +-1.04rad Algae side bottom
     
 
