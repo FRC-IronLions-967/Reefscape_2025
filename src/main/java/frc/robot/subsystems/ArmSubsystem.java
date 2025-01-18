@@ -163,6 +163,15 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
+  private boolean isEndTargetGood() {
+    if (4.607 < rotaryArmEndGoal && rotaryArmEndGoal < 6.178) {
+      return false;
+    }
+    if (state == ArmStates.ALGAE_IN && ()) {
+      
+    }
+  } 
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run  
@@ -175,6 +184,17 @@ public class ArmSubsystem extends SubsystemBase {
         // Determine elevator/arm movement restraints : Cant Go 4PI/3-5PI/3
         // Set PID targets, may need to use intermediate values,
         // then move to the final goal
+        if((1.5*Math.PI < getArmAngle() || getArmAngle() < Math.PI/2) && (Math.PI/2 < rotaryArmEndGoal && rotaryArmEndGoal < 3*Math.PI/2)) {
+          //If on the right side of the robot and needs to go to the left, go to the top.
+          rotaryArmCurrentTarget = Math.PI/2;
+        } else if((0.5*Math.PI < getArmAngle() && getArmAngle() < 1.5*Math.PI) && (1.5 * Math.PI < rotaryArmEndGoal || rotaryArmEndGoal < 0.5*Math.PI)) {
+          //If on the left side of the robot and needs to go to the right, go to the top.
+          rotaryArmCurrentTarget = Math.PI/2;
+        } else if (Math.PI/3 < getArmAngle() && getArmAngle() < 2/3 * Math.PI) {
+          //If on the top go to the end position
+          rotaryArmCurrentTarget = rotaryArmEndGoal;
+        }
+        armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
         break;
 
       case ALGAE_IN:
