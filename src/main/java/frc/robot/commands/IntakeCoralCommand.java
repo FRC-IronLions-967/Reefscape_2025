@@ -9,9 +9,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 //This command runs the coral manipulator
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class RunCoralManipulatorCommand extends Command {
+public class IntakeCoralCommand extends Command {
   /** Creates a new RunCoralManipulatorCommand. */
-  public RunCoralManipulatorCommand(double speed) {
+  public IntakeCoralCommand(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

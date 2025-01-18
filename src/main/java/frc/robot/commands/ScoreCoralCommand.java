@@ -6,12 +6,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-//THis command will run the Algae manipulator
+//This command runs the coral manipulator
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class RunAlgaeManipulatorCommand extends Command {
-  /** Creates a new RunAlgaeManipulatorCommand. */
-  public RunAlgaeManipulatorCommand(double speed) {
+public class ScoreCoralCommand extends Command {
+  /** Creates a new RunCoralManipulatorCommand. */
+  public ScoreCoralCommand(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
-import frc.robot.commands.RunAlgaeManipulatorCommand;
-import frc.robot.commands.RunCoralManipulatorCommand;
+import frc.robot.commands.IntakeAlgaeCommand;
+import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.lib.controls.XBoxController;
 
 
@@ -29,17 +29,17 @@ public void teleopInit(){
     //Put Commands Here
     Command intakeCoral = new ParallelCommandGroup(
         new MoveWholeArmToPositionCommand(Constants.coralStationPosition),
-        new RunCoralManipulatorCommand(Constants.coralIntakeSpeed)
+        new IntakeCoralCommand(Constants.coralIntakeSpeed)
     );
 
     Command intakeAlgaeL3 = new ParallelCommandGroup(
         new MoveWholeArmToPositionCommand(Constants.L3AlgaePosition),
-        new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
+        new IntakeAlgaeCommand(Constants.algaeIntakeSpeed)
     );
 
     Command intakeAlgaeL2 = new ParallelCommandGroup(
         new MoveWholeArmToPositionCommand(Constants.L2AlgaePosition),
-        new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
+        new IntakeAlgaeCommand(Constants.algaeIntakeSpeed)
     );
 
     manipulatorController.whenButtonPressed("Y", new MoveWholeArmToPositionCommand(Constants.L4Position));
@@ -51,8 +51,8 @@ public void teleopInit(){
     manipulatorController.whenPOVButtonPressed("N", new MoveWholeArmToPositionCommand(Constants.bargePosition));
     manipulatorController.whenButtonPressed("LBUMP", new MoveWholeArmToPositionCommand(Constants.processorPosition));
     manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.defaultPosition));
-    manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
-    manipulatorController.whenPOVButtonPressed("S", new RunAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
+    manipulatorController.whenButtonPressed("A", new IntakeCoralCommand(Constants.coralScoringSpeed));
+    manipulatorController.whenPOVButtonPressed("S", new IntakeAlgaeCommand(Constants.algaeScoringSpeed));
     
 }
 public XBoxController getDriverController(){
