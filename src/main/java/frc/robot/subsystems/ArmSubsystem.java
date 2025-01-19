@@ -200,7 +200,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return This returns true if the position the rotation arm is set to a safe location.
    */
 
-  private boolean isTargetGood() {
+  private boolean isArmTargetGood() {
     if (getElevatorPosition() < 1.5) {
       if (4.607 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 6.178) {
         return false;
@@ -208,7 +208,7 @@ public class ArmSubsystem extends SubsystemBase {
       if (state == ArmStates.ALGAE_IN && ((0.45 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 2.69)
       || (3.67 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 5.752))) {
         return false; 
-      } else if (state == ArmStates.CORAL_IN && (4.904 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 5.712)) {
+      } else if (state == ArmStates.CORAL_IN && (1.76 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 2.57)) {
         return false;
       } else if (state == ArmStates.BOTH_IN && ((0.451 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 2.69) 
       || (3.59 < rotaryArmCurrentTarget && rotaryArmCurrentTarget < 5.83))) {
@@ -230,6 +230,46 @@ public class ArmSubsystem extends SubsystemBase {
     }
     return true;
   } 
+
+
+  /**
+   * Makes the elevator a safe value based on the current position of the arm.
+   */
+  private void makeElevatorTargetGood() {
+    if (elevatorHeightCurrentTarget < 1.5) {
+      if (state == ArmStates.EMPTY) {
+        if (4.607 < getArmAngle() && getArmAngle() < 6.178) {
+          elevatorHeightCurrentTarget = ((getElevatorPosition() > 2) ? 2 : elevatorHeightCurrentTarget);
+        }
+      } else if (state == ArmStates.ALGAE_IN) {
+        if (((0.45 < getArmAngle() && getArmAngle() < 2.69)
+        || (3.67 < getArmAngle() && getArmAngle() < 5.752))) {
+          elevatorHeightCurrentTarget = ((getElevatorPosition() > 10) ? 10 : elevatorHeightCurrentTarget);
+        }
+      } else if (state == ArmStates.CORAL_IN) {
+        if (1.76 < getArmAngle() && getArmAngle() < 2.57) {
+          elevatorHeightCurrentTarget = ((getElevatorPosition() > 2) ? 2 : elevatorHeightCurrentTarget);
+        }
+      } else if (state == ArmStates.BOTH_IN) {
+        if ((0.451 < getArmAngle() && getArmAngle() < 2.69) 
+        || (3.59 < getArmAngle() && getArmAngle() < 5.83)) {
+          elevatorHeightCurrentTarget = ((getElevatorPosition() > 10) ? 10 : elevatorHeightCurrentTarget);
+        }
+      }
+    } else if (elevatorHeightCurrentTarget < 9.5) {
+      if (state == ArmStates.ALGAE_IN) {
+        if (((0.45 < getArmAngle() && getArmAngle() < 2.69)
+        || (3.67 < getArmAngle() && getArmAngle() < 5.752))) {
+          elevatorHeightCurrentTarget = ((getElevatorPosition() > 10) ? 10 : elevatorHeightCurrentTarget);
+        }
+      } else if (state == ArmStates.BOTH_IN) {
+        if ((0.451 < getArmAngle() && getArmAngle() < 2.69) 
+        || (3.59 < getArmAngle() && getArmAngle() < 5.83)) {
+          elevatorHeightCurrentTarget = ((getElevatorPosition() > 10) ? 10 : elevatorHeightCurrentTarget);
+        }
+      }
+    }
+  }
 
   @Override
   public void periodic() {
@@ -341,10 +381,11 @@ public class ArmSubsystem extends SubsystemBase {
         
         break;
     }
-    if (isTargetGood()) {
+    if (isArmTargetGood()) {
       armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
       // If the arm target is good move there.
     }
+    makeElevatorTargetGood();
     elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kVelocity);
   }
 }
