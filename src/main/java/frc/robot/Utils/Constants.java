@@ -116,6 +116,17 @@ public final class Constants {
     public static final double algaeIntakeSpeed = 5600; //needs tuning
     public static final double algaeScoringSpeed = 5600; //needs tuning
 
+    public static final double armFullRotationElevatorHeight = 1.5;
+    public static final double armWithAlgaeFullRotationElevatorHeight = 9.5;
+    public static final double emptyArmMinConstraintForAlgaeManipulator = 4.607;
+    public static final double emptyArmMaxConstraintForAlgaeManipulator = 6.178;
+    public static final double armWithAlgaeMinTopConstraint = 0.45;
+    public static final double armWithAlgaeMaxTopConstraint = 2.69;
+    public static final double armWithAlgaeMinBottomConstraint = 3.67;
+    public static final double armWithAlgaeMaxBottomConstraint = 5.83;
+    public static final double armWithCoralMinConstraint = 1.76;
+    public static final double armWithCoralMaxConstraint = 2.57;
+
     //CASE EMPTY: vertical +- 0.105rad OR elevator +1.5in
     //CASE CORAL vertical 0.192 - 1 to the right OR elevator +1.5in
     //CASE ALGAE vertical +- 1.04rad bottom and +- 1.12rad OR elevator +9.5in and +-1.04rad bottom
