@@ -240,22 +240,30 @@ public class ArmSubsystem extends SubsystemBase {
       if (state == ArmStates.EMPTY) {
         if (Constants.emptyArmMinConstraintForAlgaeManipulator < getArmAngle() && getArmAngle() < Constants.emptyArmMaxConstraintForAlgaeManipulator) {
           elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armFullRotationElevatorHeight) ? Constants.armFullRotationElevatorHeight : elevatorHeightCurrentTarget);
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       } else if (state == ArmStates.ALGAE_IN) {
         if (((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint)
         || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint))) {
           elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
           ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       } else if (state == ArmStates.CORAL_IN) {
         if (Constants.armWithCoralMinConstraint < getArmAngle() && getArmAngle() < Constants.armWithCoralMaxConstraint) {
           elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armFullRotationElevatorHeight) ? Constants.armFullRotationElevatorHeight : elevatorHeightCurrentTarget);
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       } else if (state == ArmStates.BOTH_IN) {
         if ((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint) 
         || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint)) {
           elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
           ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       }
     } else if (elevatorHeightCurrentTarget < Constants.armWithAlgaeFullRotationElevatorHeight) {
@@ -264,12 +272,16 @@ public class ArmSubsystem extends SubsystemBase {
         || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint))) {
           elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
           ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       } else if (state == ArmStates.BOTH_IN) {
         if ((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint) 
         || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint)) {
           elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
           ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       }
     }
