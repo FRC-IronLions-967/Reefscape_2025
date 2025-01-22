@@ -101,16 +101,6 @@ public final class Constants {
     public static final double coralWheelRadius = 1.0; //needs tunig
     public static final double algaeWheelRadius = 1.0; //needs tuning\
 
-    public static final double[] L4Position = {1, 1}; //needs tuning
-    public static final double[] L3Position = {1, 1}; //needs tuning
-    public static final double[] L2Position = {1, 1}; //needs tuning
-    public static final double[] coralStationPosition = {1, 1}; //needs tuning
-    public static final double[] L2AlgaePosition = {1, 1}; //needs tuning
-    public static final double[] L3AlgaePosition = {1, 1}; //needs tuning
-    public static final double[] processorPosition = {1, 1}; //needs tuning
-    public static final double[] bargePosition = {1, 1}; //needs tuning
-    public static final double[] defaultPosition = {1, 1}; //needs tuning
-
     public static final double coralIntakeSpeed = 5600; //needs tuning
     public static final double coralScoringSpeed = 5600; //needs tuning
     public static final double algaeIntakeSpeed = 5600; //needs tuning
@@ -127,10 +117,24 @@ public final class Constants {
     public static final double armWithCoralMinConstraint = 1.76;
     public static final double armWithCoralMaxConstraint = 2.57;
 
-    //CASE EMPTY: vertical +- 0.105rad OR elevator +1.5in
-    //CASE CORAL vertical 0.192 - 1 to the right OR elevator +1.5in
-    //CASE ALGAE vertical +- 1.04rad bottom and +- 1.12rad OR elevator +9.5in and +-1.04rad bottom
-    //Case BOTH +- 1.12 top and bottom vertical OR elevator +9.5in and +-1.04rad Algae side bottom
+    public static final double L2L3ArmAngle = 5.4;
+    public static final double L4ArmAngle = 5.7;
+    public static final double defaultArmAngle = 0;
+    public static final double L2ElevatorPosition = 4;
+    public static final double L3ElevatorPosition = 18.5;
+    public static final double L4ElevatorPosition = 52;
+    public static final double defaultElevatorPosition = 0;
+
+    public static final double[] L4Position = {L4ElevatorPosition, L4ArmAngle};
+    public static final double[] L3Position = {L3ElevatorPosition, L2L3ArmAngle};
+    public static final double[] L2Position = {L2ElevatorPosition, L2L3ArmAngle};
+    public static final double[] coralStationPosition = {1, 1}; //needs tuning
+    public static final double[] L2AlgaePosition = {1, 1}; //needs tuning
+    public static final double[] L3AlgaePosition = {1, 1}; //needs tuning
+    public static final double[] processorPosition = {1, 1}; //needs tuning
+    public static final double[] bargePosition = {1, 1}; //needs tuning
+    public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle};
+
     
 
 
