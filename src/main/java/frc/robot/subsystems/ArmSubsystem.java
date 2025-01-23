@@ -80,7 +80,8 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexConfig
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
-      .positionConversionFactor(Constants.elevatorGearRatio);
+      .positionConversionFactor(1.0 / (Constants.elevatorGearRatio * 2.0 * Constants.elevatorSprocketRadius * Math.PI)) // to meters
+      .velocityConversionFactor(1.0 / (60.0 * Constants.elevatorGearRatio * 2.0 * Constants.elevatorSprocketRadius * Math.PI)); //to meters/sec
     elevatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
@@ -126,14 +127,14 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexSim = new SparkFlexSim(elevatorVortex, DCMotor.getNeoVortex(1));
     elevatorSim = new ElevatorSim(
       DCMotor.getNeoVortex(1), 
-      10.0, //guess and replace with constant
+      Constants.elevatorGearRatio,
       6.0, //guess and replace with constant 
-      0.009652, //correct, replace with constant
+      Constants.elevatorSprocketRadius, //correct, replace with constant
       0.568325, 
       2.054225, 
       true, 
       0.568325, 
-      0.01);
+       0.01, 0.0);
   }
 
   /**
@@ -406,12 +407,13 @@ public class ArmSubsystem extends SubsystemBase {
       // If the arm target is good move there.
     }
     makeElevatorTargetGood();
-    elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kVelocity);
+    elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition);
   }
 
   public void simulationPeriodic() {
     elevatorSim.setInput(elevatorVortex.getAppliedOutput() * 12.0);
     elevatorSim.update(Robot.kDefaultPeriod);
     elevatorVortexSim.iterate(elevatorSim.getVelocityMetersPerSecond(), 12.0, Robot.kDefaultPeriod);
+    elevatorVortexSim.setPosition(elevatorSim.getPositionMeters());
   }
 }

@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
@@ -21,7 +22,7 @@ public class IO {
         driverController = new XBoxController(0);
         manipulatorController = new XBoxController(1);
         
-        coralStationProximity = new Trigger(SubsystemsInst.getInst().drivetrain.nearRedCoral());
+        //coralStationProximity = new Trigger(SubsystemsInst.getInst().drivetrain.nearRedCoral());
     }
 public static IO getInstance() {
     if(instance == null) instance = new IO();
@@ -31,17 +32,17 @@ public static IO getInstance() {
 
 public void teleopInit(){
     //Put Commands Here
-    Command intakeCoral = new ParallelCommandGroup(
+    Command intakeCoral = new SequentialCommandGroup(
         new MoveWholeArmToPositionCommand(Constants.coralStationPosition),
         new IntakeCoralCommand(Constants.coralIntakeSpeed)
     );
 
-    Command intakeAlgaeL3 = new ParallelCommandGroup(
+    Command intakeAlgaeL3 = new SequentialCommandGroup(
         new MoveWholeArmToPositionCommand(Constants.L3AlgaePosition),
         new IntakeAlgaeCommand(Constants.algaeIntakeSpeed)
     );
 
-    Command intakeAlgaeL2 = new ParallelCommandGroup(
+    Command intakeAlgaeL2 = new SequentialCommandGroup(
         new MoveWholeArmToPositionCommand(Constants.L2AlgaePosition),
         new IntakeAlgaeCommand(Constants.algaeIntakeSpeed)
     );

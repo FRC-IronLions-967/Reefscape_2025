@@ -345,9 +345,9 @@ public class Drivetrain extends SubsystemBase {
 
   public BooleanSupplier nearRedCoral() {
     
-    Boolean oneMeterAway = 
-      m_odometry.getEstimatedPosition().minus(Constants.kLeftRedStation.toPose2d()) < 1.0;
-    return () -> oneMeterAway;
+    //Boolean oneMeterAway = 
+    //  m_odometry.getEstimatedPosition().minus(Constants.kLeftRedStation.toPose2d()) < 1.0;
+    return () -> true;
   }
 
 

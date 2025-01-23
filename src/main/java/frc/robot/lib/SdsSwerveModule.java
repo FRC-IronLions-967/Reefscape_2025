@@ -186,8 +186,8 @@ public class SdsSwerveModule {
             double steerRate,
             double steerCurrent) {
     double steerRateRot = Units.radiansPerSecondToRotationsPerMinute(steerRate);
-    driveMotorSim.setPosition(drivePos);
     driveMotorSim.iterate(driveRate, 12.0, Robot.kDefaultPeriod);
+    driveMotorSim.setPosition(drivePos);
     turningMotorSim.iterate(steerRateRot / Constants.kSteerGearRatio, 12.0, Robot.kDefaultPeriod);
     turningMotorSim.setPosition(MathUtil.angleModulus(steerPos) + Math.PI);
     turningMotorSim.getAbsoluteEncoderSim().setPosition(MathUtil.angleModulus(steerPos) + Math.PI);
