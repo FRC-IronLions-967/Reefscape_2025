@@ -5,11 +5,15 @@
 package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
+
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -336,6 +340,14 @@ public class Drivetrain extends SubsystemBase {
     m_backRight.changeDriveToCoast();
     m_frontLeft.changeDriveToCoast();
     m_frontRight.changeDriveToCoast();
+  }
+
+
+  public BooleanSupplier nearRedCoral() {
+    
+    Boolean oneMeterAway = 
+      m_odometry.getEstimatedPosition().minus(Constants.kLeftRedStation.toPose2d()) < 1.0;
+    return () -> oneMeterAway;
   }
 
 

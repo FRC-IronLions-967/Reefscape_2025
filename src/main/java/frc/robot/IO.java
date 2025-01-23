@@ -2,22 +2,26 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.IntakeAlgaeCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.lib.controls.XBoxController;
+import frc.robot.subsystems.SubsystemsInst;
 
 
 public class IO { 
     private static IO instance; 
     private XBoxController driverController;
     private XBoxController manipulatorController;
+    private Trigger coralStationProximity;
     
     private IO() {
         driverController = new XBoxController(0);
         manipulatorController = new XBoxController(1);
         
+        coralStationProximity = new Trigger(SubsystemsInst.getInst().drivetrain.nearRedCoral());
     }
 public static IO getInstance() {
     if(instance == null) instance = new IO();
