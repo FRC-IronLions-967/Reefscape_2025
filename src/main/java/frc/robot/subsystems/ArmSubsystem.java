@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkFlex;
 
 import java.util.function.BooleanSupplier;
 
+import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -16,7 +17,10 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.Utils.Constants;
 import frc.robot.lib.LimitSwitchManager;
 
@@ -48,6 +52,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   private ArmStates state;
 
+  // ----- Simulation -----
+  private ElevatorSim elevatorSim;
+  private SparkFlexSim elevatorVortexSim;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
@@ -72,7 +80,8 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexConfig
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
-      .positionConversionFactor(Constants.elevatorGearRatio);
+      .positionConversionFactor(1.0 / (Constants.elevatorGearRatio * 2.0 * Constants.elevatorSprocketRadius * Math.PI)) // to meters
+      .velocityConversionFactor(1.0 / (60.0 * Constants.elevatorGearRatio * 2.0 * Constants.elevatorSprocketRadius * Math.PI)); //to meters/sec
     elevatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
@@ -114,6 +123,18 @@ public class ArmSubsystem extends SubsystemBase {
     coralLimitSwitch = LimitSwitchManager.getSwitch(0);
     algaeLimitSwitch = LimitSwitchManager.getSwitch(1);
     
+    // ----- Simulation -----
+    elevatorVortexSim = new SparkFlexSim(elevatorVortex, DCMotor.getNeoVortex(1));
+    elevatorSim = new ElevatorSim(
+      DCMotor.getNeoVortex(1), 
+      Constants.elevatorGearRatio,
+      6.0, //guess and replace with constant 
+      Constants.elevatorSprocketRadius, //correct, replace with constant
+      0.568325, 
+      2.054225, 
+      true, 
+      0.568325, 
+       0.01, 0.0);
   }
 
   /**
@@ -403,5 +424,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
     makeElevatorTargetGood();
     elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition);
+
+  public void simulationPeriodic() {
+    elevatorSim.setInput(elevatorVortex.getAppliedOutput() * 12.0);
+    elevatorSim.update(Robot.kDefaultPeriod);
+    elevatorVortexSim.iterate(elevatorSim.getVelocityMetersPerSecond(), 12.0, Robot.kDefaultPeriod);
+    elevatorVortexSim.setPosition(elevatorSim.getPositionMeters());
   }
 }

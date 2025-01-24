@@ -8,6 +8,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -90,13 +91,18 @@ public final class Constants {
 
     // The layout of the AprilTags on the field
     public static final AprilTagFieldLayout kTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    public static final Pose3d kLeftRedStation = kTagLayout.getTagPose(1).get();
+    public static final Pose3d kRightRedStation = kTagLayout.getTagPose(2).get();
+    public static final Pose3d kLeftBlueStation = kTagLayout.getTagPose(13).get();
+    public static final Pose3d kRightBlueStation = kTagLayout.getTagPose(12).get();
 
     // The standard deviations of our vision estimated poses, which affect correction rate
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
-    public static final double elevatorGearRatio =  1.0; // needs tuning
+    public static final double elevatorGearRatio =  25.714; // taken from CAD 1/23
+    public static final double elevatorSprocketRadius = 0.0222377; // meters
     public static final double armGearRadius = 1.0; //needs tuning
     public static final double coralWheelRadius = 1.0; //needs tunig
     public static final double algaeWheelRadius = 1.0; //needs tuning\
