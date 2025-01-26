@@ -425,6 +425,8 @@ public class ArmSubsystem extends SubsystemBase {
     makeElevatorTargetGood();
     elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition);
 
+  }  
+  
   public void simulationPeriodic() {
     elevatorSim.setInput(elevatorVortex.getAppliedOutput() * 12.0);
     elevatorSim.update(Robot.kDefaultPeriod);
