@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -80,11 +81,11 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexConfig
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
-      .positionConversionFactor(1.0 / (Constants.elevatorGearRatio * 2.0 * Constants.elevatorSprocketRadius * Math.PI)) // to meters
-      .velocityConversionFactor(1.0 / (60.0 * Constants.elevatorGearRatio * 2.0 * Constants.elevatorSprocketRadius * Math.PI)); //to meters/sec
+      .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
+      .velocityConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
     elevatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0);
+      .pid(10.0, 0, 0);
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -97,7 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .pid(1, 0, 0)
       .positionWrappingInputRange(0, 2*Math.PI)
-      .positionWrappingEnabled(true);
+      .positionWrappingEnabled(false);
 
     armVortex.configure(armVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -129,11 +130,11 @@ public class ArmSubsystem extends SubsystemBase {
       DCMotor.getNeoVortex(1), 
       Constants.elevatorGearRatio,
       6.0, //guess and replace with constant 
-      Constants.elevatorSprocketRadius, //correct, replace with constant
-      0.568325, 
-      2.054225, 
+      Units.inchesToMeters(Constants.elevatorSprocketRadius), //correct, replace with constant
+      0.0, 
+      1.3716, 
       true, 
-      0.568325, 
+      0.0, 
        0.01, 0.0);
   }
 
@@ -305,6 +306,8 @@ public class ArmSubsystem extends SubsystemBase {
           elevatorHeightCurrentTarget = elevatorHeightEndGoal;
         }
       }
+    } else {
+      elevatorHeightCurrentTarget = elevatorHeightEndGoal;
     }
   }
 
@@ -430,7 +433,6 @@ public class ArmSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     elevatorSim.setInput(elevatorVortex.getAppliedOutput() * 12.0);
     elevatorSim.update(Robot.kDefaultPeriod);
-    elevatorVortexSim.iterate(elevatorSim.getVelocityMetersPerSecond(), 12.0, Robot.kDefaultPeriod);
-    elevatorVortexSim.setPosition(elevatorSim.getPositionMeters());
+    elevatorVortexSim.iterate(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond()), 12.0, Robot.kDefaultPeriod);
   }
 }
