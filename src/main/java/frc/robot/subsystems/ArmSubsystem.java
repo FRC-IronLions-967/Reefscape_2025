@@ -20,6 +20,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Utils.Constants;
@@ -57,6 +58,9 @@ public class ArmSubsystem extends SubsystemBase {
   private ElevatorSim elevatorSim;
   private SparkFlexSim elevatorVortexSim;
 
+  private SingleJointedArmSim armSim;
+  private SparkFlexSim armVortexSim;
+
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
@@ -92,7 +96,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     armVortexConfig
       .idleMode(IdleMode.kBrake);
-    armVortexConfig.encoder
+    armVortexConfig.absoluteEncoder
+      .velocityConversionFactor(60.0 * 2.0 * Math.PI)
       .positionConversionFactor(Math.PI * 2);
     armVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
@@ -135,7 +140,19 @@ public class ArmSubsystem extends SubsystemBase {
       1.3716, 
       true, 
       0.0, 
-       0.01, 0.0);
+      0.1, 0.0);
+
+    armVortexSim = new SparkFlexSim(armVortex, DCMotor.getNeoVortex(1));
+    armSim = new SingleJointedArmSim(
+      DCMotor.getNeoVortex(1), 
+      Constants.armGearRatio, 
+      0.4386668405, 
+      0.67, 
+      0.0, 
+      2.0, 
+      true, 
+      0.5, 
+      0.01, 0.0);
   }
 
   /**
@@ -434,5 +451,9 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorSim.setInput(elevatorVortex.getAppliedOutput() * 12.0);
     elevatorSim.update(Robot.kDefaultPeriod);
     elevatorVortexSim.iterate(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond()), 12.0, Robot.kDefaultPeriod);
+    
+    armSim.setInput(armVortex.getAppliedOutput() * 12.0);
+    armSim.update(Robot.kDefaultPeriod);
+    armVortexSim.iterate(armSim.getVelocityRadPerSec(), 12.0, Robot.kDefaultPeriod);
   }
 }
