@@ -21,6 +21,10 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Utils.Constants;
@@ -58,6 +62,15 @@ public class ArmSubsystem extends SubsystemBase {
   private ElevatorSim elevatorSim;
   private SparkFlexSim elevatorVortexSim;
 
+  // Create a Mechanism2d visualization of the elevator
+  private final Mechanism2d mech2d = new Mechanism2d(40, 90);
+  private final MechanismRoot2d elevator2dRoot = mech2d.getRoot("Elevator Root", 20, 1);
+  private final MechanismLigament2d elevatorMech2d =
+      elevator2dRoot.append(new MechanismLigament2d("Elevator", 21, 90));
+  private final MechanismRoot2d arm2dRoot = mech2d.getRoot("Arm Root", 20, 21);
+  private final MechanismLigament2d armMech2d =
+      arm2dRoot.append(new MechanismLigament2d("Arm", 18, 90));
+
   private SingleJointedArmSim armSim;
   private SparkFlexSim armVortexSim;
 
@@ -89,7 +102,7 @@ public class ArmSubsystem extends SubsystemBase {
       .velocityConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
     elevatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(10.0, 0, 0);
+      .pid(1.0, 0, 0);
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -97,7 +110,7 @@ public class ArmSubsystem extends SubsystemBase {
     armVortexConfig
       .idleMode(IdleMode.kBrake);
     armVortexConfig.absoluteEncoder
-      .velocityConversionFactor(60.0 * 2.0 * Math.PI)
+      .velocityConversionFactor(2.0 * Math.PI / 60.0)
       .positionConversionFactor(Math.PI * 2);
     armVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
@@ -140,7 +153,11 @@ public class ArmSubsystem extends SubsystemBase {
       1.3716, 
       true, 
       0.0, 
-      0.1, 0.0);
+      0.001, 0.0);
+
+    // Publish Mechanism2d to SmartDashboard
+    // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
+    SmartDashboard.putData("Elevator Sim", mech2d);
 
     armVortexSim = new SparkFlexSim(armVortex, DCMotor.getNeoVortex(1));
     armSim = new SingleJointedArmSim(
@@ -149,10 +166,10 @@ public class ArmSubsystem extends SubsystemBase {
       0.4386668405, 
       0.67, 
       0.0, 
-      2.0, 
+      6.2, 
       true, 
       0.5, 
-      0.01, 0.0);
+      0.001, 0.0);
   }
 
   /**
@@ -451,9 +468,12 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorSim.setInput(elevatorVortex.getAppliedOutput() * 12.0);
     elevatorSim.update(Robot.kDefaultPeriod);
     elevatorVortexSim.iterate(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond()), 12.0, Robot.kDefaultPeriod);
+    elevatorMech2d.setLength(21.0 +  2.0 * Units.metersToInches(elevatorSim.getPositionMeters()));
     
     armSim.setInput(armVortex.getAppliedOutput() * 12.0);
     armSim.update(Robot.kDefaultPeriod);
     armVortexSim.iterate(armSim.getVelocityRadPerSec(), 12.0, Robot.kDefaultPeriod);
+    arm2dRoot.setPosition(20, 21.0 +  2.0 * Units.metersToInches(elevatorSim.getPositionMeters()));
+    armMech2d.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
   }
 }

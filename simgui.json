@@ -1,0 +1,187 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK Flex [10]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK Flex [10] ABSOLUTE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK Flex [9] RELATIVE ENCODER": {
+        "header": {
+          "open": true
+        }
+      }
+    },
+    "RoboRIO": {
+      "window": {
+        "visible": true
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Alerts": "Alerts",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Elevator Sim": "Mechanism2d",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+    },
+    "windows": {
+      "/SmartDashboard/Elevator Sim": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "EstimatedRobot": {
+          "arrows": false,
+          "color": [
+            0.9851852059364319,
+            0.71152263879776,
+            0.71152263879776,
+            255.0
+          ],
+          "length": 0.6859999895095825
+        },
+        "EstimatedRobotModules": {
+          "arrowColor": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ],
+          "arrowSize": 15,
+          "style": "Hidden"
+        },
+        "Robot": {
+          "length": 0.6859999895095825
+        },
+        "VisionEstimation": {
+          "arrows": false,
+          "color": [
+            203.9999237060547,
+            0.0,
+            255.0,
+            255.0
+          ],
+          "length": 0.6859999895095825
+        },
+        "apriltag": {
+          "arrows": false,
+          "length": 0.10000000149011612,
+          "width": 0.4000000059604645
+        },
+        "bottom": 1638,
+        "builtin": "2025 Reefscape",
+        "cameras": {
+          "length": 0.10000000149011612,
+          "width": 0.10000000149011612
+        },
+        "height": 8.051901817321777,
+        "left": 534,
+        "right": 3466,
+        "top": 291,
+        "visibleTargetPoses": {
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ],
+          "length": 0.20000000298023224,
+          "width": 0.5
+        },
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 399,
+          "series": [
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "SPARK Flex [9]-Position"
+            },
+            {
+              "color": [
+                0.5058823823928833,
+                0.44705885648727417,
+                0.7019608020782471,
+                1.0
+              ],
+              "id": "SPARK Flex [9]-Setpoint"
+            }
+          ]
+        }
+      ]
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "axis": [
+            {
+              "autoFit": true
+            }
+          ],
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 386,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "SPARK Flex [10]-Setpoint"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "SPARK Flex [10]-Position"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

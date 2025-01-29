@@ -113,7 +113,7 @@ public final class Constants {
     public static final double algaeScoringSpeed = 5600; //needs tuning
 
     public static final double armFullRotationElevatorHeight = 1.5;
-    public static final double armWithAlgaeFullRotationElevatorHeight = 9.5;
+    public static final double armWithAlgaeFullRotationElevatorHeight = 4.75;
     public static final double emptyArmMinConstraintForAlgaeManipulator = 4.607;
     public static final double emptyArmMaxConstraintForAlgaeManipulator = 6.178;
     public static final double armWithAlgaeMinTopConstraint = 0.45;
@@ -127,8 +127,8 @@ public final class Constants {
     public static final double L4ArmAngle = 5.7;
     public static final double defaultArmAngle = 0;
     public static final double L2ElevatorPosition = 4;
-    public static final double L3ElevatorPosition = 18.5;
-    public static final double L4ElevatorPosition = 54;
+    public static final double L3ElevatorPosition = 9.25;
+    public static final double L4ElevatorPosition = 27;
     public static final double defaultElevatorPosition = 0;
 
     public static final double[] L4Position = {L4ElevatorPosition, L4ArmAngle};
