@@ -189,11 +189,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   /**
-   * Moves the rotary arm end goal.
+   * Moves the rotary arm to a safe end goal.
    * @param angle the value that the rotary arm goes to.
    */
   public void moveArm(double angle) {
-    rotaryArmEndGoal = angle;
+    if (Constants.armWiringMinConstraint <= angle) {
+      rotaryArmEndGoal = Constants.armWiringMinConstraint;
+    } else if (angle <= Constants.armWiringMaxConstraint) {
+      rotaryArmEndGoal = Constants.armWiringMaxConstraint;
+    } else {
+      rotaryArmEndGoal = angle;
+    }
   }
 
   /**
@@ -240,110 +246,13 @@ public class ArmSubsystem extends SubsystemBase {
    * Sets the Arm State based on what game pieces are in the manipuators.
    */
   private void setArmLoadingState() {
-    if(hasAlgae() && hasCoral()) {
-      state = ArmStates.BOTH_IN;
-    } else if (hasAlgae()) {
+    if (hasAlgae()) {
       state = ArmStates.ALGAE_IN;
-    } else if (hasCoral()) {
-      state = ArmStates.CORAL_IN;
     } else {
       state = ArmStates.EMPTY;
     }
   }
   
-  /**
-   * 
-   * @return This returns true if the position the rotation arm is set to a safe location.
-   */
-
-  private boolean isArmTargetGood() {
-    if (getElevatorPosition() < Constants.armFullRotationElevatorHeight) {
-      if (Constants.emptyArmMinConstraintForAlgaeManipulator < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.emptyArmMaxConstraintForAlgaeManipulator) {
-        return false;
-      }
-      if (state == ArmStates.ALGAE_IN && ((Constants.armWithAlgaeMinTopConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxTopConstraint)
-      || (Constants.armWithAlgaeMinBottomConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxBottomConstraint))) {
-        return false; 
-      } else if (state == ArmStates.CORAL_IN && (Constants.armWithCoralMinConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithCoralMaxConstraint)) {
-        return false;
-      } else if (state == ArmStates.BOTH_IN && ((Constants.armWithAlgaeMinTopConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxTopConstraint) 
-      || (Constants.armWithAlgaeMinBottomConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxBottomConstraint))) {
-        return false;
-      }
-    } else if (Constants.armFullRotationElevatorHeight <= getElevatorPosition() && getElevatorPosition() < Constants.armWithAlgaeFullRotationElevatorHeight) {
-      if (state == ArmStates.ALGAE_IN && ((Constants.armWithAlgaeMinTopConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxTopConstraint)
-      || (Constants.armWithAlgaeMinBottomConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxBottomConstraint))) {
-        return false; 
-      } else if (state == ArmStates.BOTH_IN && ((Constants.armWithAlgaeMinTopConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxTopConstraint) 
-      || (Constants.armWithAlgaeMinBottomConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxBottomConstraint))) {
-        return false;
-      }
-    } else if (getElevatorPosition() >= Constants.armWithAlgaeFullRotationElevatorHeight) {
-      if ((state == ArmStates.ALGAE_IN || state == ArmStates.BOTH_IN) && 
-      (Constants.armWithAlgaeMinBottomConstraint < rotaryArmCurrentTarget && rotaryArmCurrentTarget < Constants.armWithAlgaeMaxBottomConstraint)) {
-        return false; 
-      }
-    }
-    return true;
-  } 
-
-
-  /**
-   * Makes the elevator a safe value based on the current position of the arm.
-   */
-  private void makeElevatorTargetGood() {
-    if (elevatorHeightCurrentTarget < Constants.armFullRotationElevatorHeight) {
-      if (state == ArmStates.EMPTY) {
-        if (Constants.emptyArmMinConstraintForAlgaeManipulator < getArmAngle() && getArmAngle() < Constants.emptyArmMaxConstraintForAlgaeManipulator) {
-          elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armFullRotationElevatorHeight) ? Constants.armFullRotationElevatorHeight : elevatorHeightCurrentTarget);
-        } else {
-          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        }
-      } else if (state == ArmStates.ALGAE_IN) {
-        if (((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint)
-        || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint))) {
-          elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
-          ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
-        } else {
-          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        }
-      } else if (state == ArmStates.CORAL_IN) {
-        if (Constants.armWithCoralMinConstraint < getArmAngle() && getArmAngle() < Constants.armWithCoralMaxConstraint) {
-          elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armFullRotationElevatorHeight) ? Constants.armFullRotationElevatorHeight : elevatorHeightCurrentTarget);
-        } else {
-          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        }
-      } else if (state == ArmStates.BOTH_IN) {
-        if ((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint) 
-        || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint)) {
-          elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
-          ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
-        } else {
-          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        }
-      }
-    } else if (elevatorHeightCurrentTarget < Constants.armWithAlgaeFullRotationElevatorHeight) {
-      if (state == ArmStates.ALGAE_IN) {
-        if (((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint)
-        || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint))) {
-          elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
-          ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
-        } else {
-          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        }
-      } else if (state == ArmStates.BOTH_IN) {
-        if ((Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint) 
-        || (Constants.armWithAlgaeMinBottomConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxBottomConstraint)) {
-          elevatorHeightCurrentTarget = ((getElevatorPosition() > Constants.armWithAlgaeFullRotationElevatorHeight) 
-          ? Constants.armWithAlgaeFullRotationElevatorHeight : elevatorHeightCurrentTarget);
-        } else {
-          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        }
-      }
-    } else {
-      elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-    }
-  }
 
   @Override
   public void periodic() {
@@ -354,112 +263,54 @@ public class ArmSubsystem extends SubsystemBase {
 
     switch (state) {
       case EMPTY:
-        // Determine elevator/arm movement restraints : Cant Go 4PI/3-5PI/3
-        // Set PID targets, may need to use intermediate values,
-        // then move to the final goal
+
+      //Makes Rotation Safe
         if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight) {
-          if (Math.PI/3 < getArmAngle() && getArmAngle() < 2/3 * Math.PI) {
-            //If on the top go to the end position
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-          } else if((1.5*Math.PI < getArmAngle() || getArmAngle() < Math.PI/2) && (Math.PI/2 < rotaryArmEndGoal && rotaryArmEndGoal < 3*Math.PI/2)) {
-            //If on the right side of the robot and needs to go to the left, go to the top.
-            rotaryArmCurrentTarget = Math.PI/2;
-          } else if((0.5*Math.PI < getArmAngle() && getArmAngle() < 1.5*Math.PI) && (1.5 * Math.PI < rotaryArmEndGoal || rotaryArmEndGoal < 0.5*Math.PI)) {
-            //If on the left side of the robot and needs to go to the right, go to the top.
-            rotaryArmCurrentTarget = Math.PI/2;
-          } else if (((0.5*Math.PI < getArmAngle() && getArmAngle() < 1.5*Math.PI) && (0.5 * Math.PI < rotaryArmEndGoal && rotaryArmEndGoal < 1.5 *Math.PI))
-          || ((1.5 * Math.PI < getArmAngle() || getArmAngle() < 0.5 * Math.PI) && (1.5 * Math.PI < rotaryArmEndGoal || rotaryArmEndGoal < 0.5*Math.PI))) {
-            // If on the same side and needs to be on the same go the position
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-          }
+          rotaryArmCurrentTarget = (rotaryArmEndGoal >= Constants.emptyArmConstraintForAlgaeManipulatorAtE0) ? Constants.emptyArmConstraintForAlgaeManipulatorAtE0 : rotaryArmEndGoal;
         } else {
           rotaryArmCurrentTarget = rotaryArmEndGoal;
         }
+
+      //Makes Elevator Safe
+        if (elevatorHeightEndGoal < getElevatorPosition() && elevatorHeightEndGoal < Constants.armFullRotationElevatorHeight && getArmAngle() >= Constants.emptyArmConstraintForAlgaeManipulatorAtE0) {
+          elevatorHeightCurrentTarget = Constants.armFullRotationElevatorHeight;
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
+        }
+
         break;
 
       case ALGAE_IN:
+
+      //Makes Rotation Safe
         if (getElevatorPosition() <= Constants.armWithAlgaeFullRotationElevatorHeight) {
-          if (((Constants.armWithAlgaeMaxBottomConstraint < getArmAngle() || getArmAngle() < Constants.armWithAlgaeMinTopConstraint) && (Constants.armWithAlgaeMaxBottomConstraint < rotaryArmEndGoal || rotaryArmEndGoal < Constants.armWithAlgaeMinTopConstraint))
-           || (((Constants.armWithAlgaeMaxTopConstraint < getArmAngle() && getArmAngle() < Constants.emptyArmMinConstraintForAlgaeManipulator) && (Constants.armWithAlgaeMaxTopConstraint < rotaryArmEndGoal && rotaryArmEndGoal < Constants.emptyArmMinConstraintForAlgaeManipulator)))) {
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-            //If the arm is on the same side go to that position.
+          if (rotaryArmEndGoal <= Constants.armWithAlgaeMinConstraint) {
+            rotaryArmCurrentTarget = Constants.armWithAlgaeMinConstraint;
+          } else if (rotaryArmEndGoal >= Constants.armWithAlgaeMaxConstraint) {
+            rotaryArmCurrentTarget = Constants.armWithAlgaeMaxConstraint;
           } else {
-            elevatorHeightCurrentTarget = Constants.armWithAlgaeFullRotationElevatorHeight;
-            //Otherwise we need to lift the elevator.
+            rotaryArmCurrentTarget = rotaryArmEndGoal;
           }
         } else {
-          if (Math.PI / 3 < getArmAngle() && getArmAngle() < 2/3 * Math.PI) {
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-            // If it is on the top we can just go to our position.
-          } else if (((Constants.armWithAlgaeMaxBottomConstraint < getArmAngle() || getArmAngle() < Constants.armWithAlgaeMinTopConstraint) && (Constants.armWithAlgaeMaxBottomConstraint < rotaryArmEndGoal || rotaryArmEndGoal < Constants.armWithAlgaeMinTopConstraint))
-          || (((Constants.armWithAlgaeMaxTopConstraint < getArmAngle() && getArmAngle() < Constants.emptyArmMinConstraintForAlgaeManipulator) && (Constants.armWithAlgaeMaxTopConstraint < rotaryArmEndGoal && rotaryArmEndGoal < Constants.emptyArmMinConstraintForAlgaeManipulator)))) {
-           rotaryArmCurrentTarget = rotaryArmEndGoal;
-           //If the arm is on the same side go to that position.
-          } else {
-            rotaryArmCurrentTarget = Math.PI/2;
-            //Otherwise it will be on the opposite side so put it on the top.
-          }
+          rotaryArmCurrentTarget = (rotaryArmEndGoal >= Constants.armWithAlgaeMaxConstraint) ? Constants.armWithAlgaeMaxConstraint : rotaryArmEndGoal;
         }
-        // Determine elevator/arm movement restraints : Can't Go 5PI/4-7PI/4
-        // Set PID targets, may need to use intermediate values,
-        // then move to the final goal
+
+      //Makes Elevation Safe
+        if (elevatorHeightEndGoal < getElevatorPosition() && elevatorHeightCurrentTarget < Constants.armWithAlgaeFullRotationElevatorHeight 
+        && (Constants.armWithAlgaeMinConstraint <= getArmAngle() && getArmAngle() <= Constants.armWithAlgaeMaxConstraint)) {
+          elevatorHeightCurrentTarget = Constants.armWithAlgaeFullRotationElevatorHeight;
+        } else {
+          elevatorHeightCurrentTarget = elevatorHeightEndGoal;
+        }
+
         break;
 
-      case CORAL_IN:
-        // Determine elevator/arm movement restraints : Can't Go PI/4 - 3PI/4 and no 4PI/3-5PI/3
-        // Set PID targets, may need to use intermediate values,
-        // then move to the final goal
-        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight) {
-          if (((2/3 * Math.PI<= getArmAngle() && getArmAngle() <= Constants.emptyArmMinConstraintForAlgaeManipulator) && (2/3 * Math.PI<= rotaryArmEndGoal && rotaryArmEndGoal <= Constants.emptyArmMinConstraintForAlgaeManipulator)) 
-          || ((Constants.armWithCoralMaxConstraint <= getArmAngle() || getArmAngle() <= 2/3 * Math.PI) && (Constants.armWithCoralMaxConstraint <= rotaryArmEndGoal || getArmAngle() <= 2/3 * Math.PI))) {
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-            //If it is on the same side go the the position. 
-          } else {
-            elevatorHeightCurrentTarget = Constants.armFullRotationElevatorHeight;
-            // If it is on the opposite side we need to raise the elevator because the algae manipulator hits the drive base
-          }
-        } else {
-          rotaryArmCurrentTarget = rotaryArmEndGoal;
-          //If it is higher then this, then it will be safe.
-        }
-        break;
-
-      case BOTH_IN:
-        // Determine elevator/arm movement restraints : ONLY can go 7PI/4 - PI/4 OR 3PI/4 - 5PI/4
-        // Set PID targets, may need to use intermediate values,
-        // then move to the final goal
-        if (getElevatorPosition() <= Constants.armWithAlgaeFullRotationElevatorHeight) {
-          if (((Constants.armWithAlgaeMaxBottomConstraint < getArmAngle() || getArmAngle() < Constants.armWithAlgaeMinTopConstraint) && (Constants.armWithAlgaeMaxBottomConstraint < rotaryArmEndGoal || rotaryArmEndGoal < Constants.armWithAlgaeMinTopConstraint)) 
-          || ((Constants.armWithAlgaeMaxTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMinBottomConstraint) && (Constants.armWithAlgaeMaxTopConstraint < rotaryArmEndGoal && rotaryArmEndGoal < Constants.armWithAlgaeMinBottomConstraint))) {
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-            // If the final position is on the same side as the end goal then move there.
-          } else {
-            elevatorHeightCurrentTarget = Constants.armWithAlgaeFullRotationElevatorHeight; 
-          }
-        } else {
-          if (Constants.armWithAlgaeMinTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMaxTopConstraint) {
-            //if the current position is at the top, move to the final position.
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-          } else if (((Constants.armWithAlgaeMaxBottomConstraint < getArmAngle() || getArmAngle() < Constants.armWithAlgaeMinTopConstraint) && (Constants.armWithAlgaeMaxBottomConstraint < rotaryArmEndGoal || rotaryArmEndGoal < Constants.armWithAlgaeMinTopConstraint)) 
-          || ((Constants.armWithAlgaeMaxTopConstraint < getArmAngle() && getArmAngle() < Constants.armWithAlgaeMinBottomConstraint) && (Constants.armWithAlgaeMaxTopConstraint < rotaryArmEndGoal && rotaryArmEndGoal < Constants.armWithAlgaeMinBottomConstraint))) {
-            rotaryArmCurrentTarget = rotaryArmEndGoal;
-            // If the final position is on the same side as the end goal then move there.
-          } else {
-            //If the final position is opposite the current position, go to the top.
-            rotaryArmCurrentTarget = Math.PI/2;
-          }
-        }
-        break;
-    
       default:
         
         break;
     }
-    if (isArmTargetGood()) {
-      armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
-      // If the arm target is good move there.
-    }
-    makeElevatorTargetGood();
+
+    armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
     elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition);
 
   }  
