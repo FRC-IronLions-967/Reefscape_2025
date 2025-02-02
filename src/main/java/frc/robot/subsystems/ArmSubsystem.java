@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -77,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
-    state = ArmStates.EMPTY;
+    state = ArmStates.STARTUP;
 
     elevatorVortex = new SparkFlex(9, MotorType.kBrushless);
     elevatorVortexController = elevatorVortex.getClosedLoopController();
@@ -96,6 +97,7 @@ public class ArmSubsystem extends SubsystemBase {
     algaeManipulatorVortexConfig = new SparkFlexConfig();
 
     elevatorVortexConfig
+      .smartCurrentLimit(40)
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
       .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
@@ -108,13 +110,14 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     armVortexConfig
+      .smartCurrentLimit(40)
       .idleMode(IdleMode.kBrake);
     armVortexConfig.absoluteEncoder
       .velocityConversionFactor(2.0 * Math.PI / 60.0)
       .positionConversionFactor(Math.PI * 2);
     armVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-      .pid(1, 0, 0)
+      .pid(1.0, 0, 0.0)
       .positionWrappingInputRange(0, 2*Math.PI)
       .positionWrappingEnabled(false);
 
@@ -149,8 +152,8 @@ public class ArmSubsystem extends SubsystemBase {
       Constants.elevatorGearRatio,
       6.0, //guess and replace with constant 
       Units.inchesToMeters(Constants.elevatorSprocketRadius), //correct, replace with constant
-      0.0, 
-      1.3716, 
+      Units.inchesToMeters(Constants.defaultElevatorPosition-1), 
+      Units.inchesToMeters(Constants.bargeElevatorPosition+1), 
       true, 
       0.0, 
       0.001, 0.0);
@@ -163,12 +166,12 @@ public class ArmSubsystem extends SubsystemBase {
     armSim = new SingleJointedArmSim(
       DCMotor.getNeoVortex(1), 
       Constants.armGearRatio, 
-      0.4386668405, 
+      0.132, 
       0.67, 
-      0.0, 
-      6.2, 
+      -2*Math.PI, 
+      4*Math.PI, 
       true, 
-      0.5, 
+      Math.PI*1.5, 
       0.001, 0.0);
   }
 
@@ -193,9 +196,9 @@ public class ArmSubsystem extends SubsystemBase {
    * @param angle the value that the rotary arm goes to.
    */
   public void moveArm(double angle) {
-    if (Constants.armWiringMinConstraint <= angle) {
+    if (Constants.armWiringMinConstraint >= angle) {
       rotaryArmEndGoal = Constants.armWiringMinConstraint;
-    } else if (angle <= Constants.armWiringMaxConstraint) {
+    } else if (angle >= Constants.armWiringMaxConstraint) {
       rotaryArmEndGoal = Constants.armWiringMaxConstraint;
     } else {
       rotaryArmEndGoal = angle;
@@ -207,7 +210,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The rotary arm position.
    */
   public double getArmAngle() {
-    return armVortex.getEncoder().getPosition();
+    return armVortex.getAbsoluteEncoder().getPosition();
   }
 
   /**
@@ -245,11 +248,13 @@ public class ArmSubsystem extends SubsystemBase {
   /**
    * Sets the Arm State based on what game pieces are in the manipuators.
    */
-  private void setArmLoadingState() {
-    if (hasAlgae()) {
-      state = ArmStates.ALGAE_IN;
-    } else {
-      state = ArmStates.EMPTY;
+  private void setArmState() {
+    if (state != ArmStates.STARTUP || getElevatorPosition() >= Constants.armFullRotationElevatorHeight) {
+      if (hasAlgae()) {
+        state = ArmStates.ALGAE_IN;
+      } else {
+        state = ArmStates.EMPTY;
+      }
     }
   }
   
@@ -259,13 +264,18 @@ public class ArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run  
 
     // transitions are less important than just knowing the current state
-    setArmLoadingState();
+    setArmState();
 
     switch (state) {
+      case STARTUP:
+        elevatorHeightCurrentTarget = elevatorHeightEndGoal;
+        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight) {
+          rotaryArmCurrentTarget = getArmAngle();
+        }
       case EMPTY:
 
       //Makes Rotation Safe
-        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight) {
+        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight + 0.2) { // Fudge factor for imperfect positioning
           rotaryArmCurrentTarget = (rotaryArmEndGoal >= Constants.emptyArmConstraintForAlgaeManipulatorAtE0) ? Constants.emptyArmConstraintForAlgaeManipulatorAtE0 : rotaryArmEndGoal;
         } else {
           rotaryArmCurrentTarget = rotaryArmEndGoal;
@@ -321,9 +331,9 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexSim.iterate(Units.metersToInches(elevatorSim.getVelocityMetersPerSecond()), 12.0, Robot.kDefaultPeriod);
     elevatorMech2d.setLength(21.0 +  2.0 * Units.metersToInches(elevatorSim.getPositionMeters()));
     
-    armSim.setInput(armVortex.getAppliedOutput() * 12.0);
+    armSim.setInput(-armVortex.getAppliedOutput() * 12.0);
     armSim.update(Robot.kDefaultPeriod);
-    armVortexSim.iterate(armSim.getVelocityRadPerSec(), 12.0, Robot.kDefaultPeriod);
+    armVortexSim.iterate(-armSim.getVelocityRadPerSec(), 12.0, Robot.kDefaultPeriod);
     arm2dRoot.setPosition(20, 21.0 +  2.0 * Units.metersToInches(elevatorSim.getPositionMeters()));
     armMech2d.setAngle(Units.radiansToDegrees(armSim.getAngleRads()));
   }

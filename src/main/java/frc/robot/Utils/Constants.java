@@ -101,7 +101,7 @@ public final class Constants {
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
-    public static final double elevatorGearRatio =  23.478; // taken from CAD 1/28
+    public static final double elevatorGearRatio =  14.087; // taken from robot 2/1
     public static final double elevatorSprocketRadius = 0.8755; // inches
     public static final double armGearRatio = 103.448; //taken from CAD 1/28
     public static final double coralWheelRadius = 1.0; //needs tunig
@@ -119,24 +119,35 @@ public final class Constants {
     public static final double emptyArmConstraintForAlgaeManipulatorAtE0 = 2.679; // Shouldn't go past this without raising the elevator.
     public static final double armWithAlgaeMinConstraint = 1.288;
     public static final double armWithAlgaeMaxConstraint = 1.865;
-    //State coral has no additional constraints.
+    // State coral has no additional constraints.
 
-    public static final double L2L3ArmAngle = 5.4;
-    public static final double L4ArmAngle = 5.7;
-    public static final double defaultArmAngle = 0;
+
+    // Arm positions
+    public static final double L2L3ArmAngle = 3.75;
+    public static final double L4ArmAngle = 4.05;
+    public static final double coralArmAngle = 0.681;
+    public static final double reefAlgaeAngle = Math.PI / 2.0;
+    public static final double bargeAlgaeAngle = 0.29;
+    public static final double processorAlgaeAngle = 1.89;
+    public static final double defaultArmAngle = Math.PI;
+    // Elevator Positions
     public static final double L2ElevatorPosition = 4;
     public static final double L3ElevatorPosition = 9.25;
-    public static final double L4ElevatorPosition = 27;
+    public static final double L4ElevatorPosition = 26;
+    public static final double L2AlgaeElevatorPosition = 8;
+    public static final double L3AlgaeElevatorPosition = 15;
+    public static final double coralElevatorPosition = 11.596;
+    public static final double bargeElevatorPosition = 27;
     public static final double defaultElevatorPosition = 0;
 
     public static final double[] L4Position = {L4ElevatorPosition, L4ArmAngle};
     public static final double[] L3Position = {L3ElevatorPosition, L2L3ArmAngle};
     public static final double[] L2Position = {L2ElevatorPosition, L2L3ArmAngle};
-    public static final double[] coralStationPosition = {1, 1}; //needs tuning
-    public static final double[] L2AlgaePosition = {1, 1}; //needs tuning
-    public static final double[] L3AlgaePosition = {1, 1}; //needs tuning
-    public static final double[] processorPosition = {1, 1}; //needs tuning
-    public static final double[] bargePosition = {1, 1}; //needs tuning
+    public static final double[] coralStationPosition = {coralElevatorPosition, coralArmAngle}; //needs tuning
+    public static final double[] L2AlgaePosition = {L2AlgaeElevatorPosition, reefAlgaeAngle}; //needs tuning
+    public static final double[] L3AlgaePosition = {L3AlgaeElevatorPosition, reefAlgaeAngle}; //needs tuning
+    public static final double[] processorPosition = {defaultElevatorPosition, processorAlgaeAngle}; //needs tuning
+    public static final double[] bargePosition = {bargeElevatorPosition, bargeAlgaeAngle}; //needs tuning
     public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle};
 
     
