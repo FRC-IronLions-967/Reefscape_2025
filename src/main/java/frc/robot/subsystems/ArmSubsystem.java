@@ -102,8 +102,11 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexConfig.encoder
       .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
       .velocityConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
+    elevatorVortexConfig.analogSensor
+      .positionConversionFactor(5.0 / Units.inchesToMeters(2.0)) // native 0-5V, 2 meter travel
+      .velocityConversionFactor(5.0 / Units.inchesToMeters(2.0)); // 
     elevatorVortexConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .feedbackSensor(FeedbackSensor.kAnalogSensor)
       .pid(1.0, 0, 0);
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
@@ -188,7 +191,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The elevator position.
    */
   public double getElevatorPosition() {
-    return elevatorVortex.getEncoder().getPosition();
+    //return elevatorVortex.getEncoder().getPosition();
+    return elevatorVortex.getAnalog().getPosition() + Constants.kElevatorAnalogZeroOffset;
   }
 
   /**

@@ -35,6 +35,7 @@ public final class Constants {
     public static final double kSteerGearRatio = 150.0/7.0;
     //needs tunings
     public static final double kSecondsPerMinute = 60.0;
+    public static final double kElevatorAnalogZeroOffset = 0.0;
 
     public static final double objectDetectionCameraYawOffset = 0.0;
     public static final double kMaxNeoSpeed = 5676.0;
