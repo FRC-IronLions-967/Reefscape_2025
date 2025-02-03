@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,35 +34,39 @@ public class Vision extends SubsystemBase {
 
   // Cameras
   // Do not reference directly
-  private PhotonCamera aprilTagCamera;
-  //private PhotonCamera objectDetectionCamera;
+  private PhotonCamera aprilTagCameraFront;
+  private PhotonCamera aprilTagCameraRear;
 
   // Pipeline Results
   // These results are updated in the periodic
   // All methods should reference these results
-  private PhotonPipelineResult aprilTagResult;
+  private PhotonPipelineResult aprilTagResultFront;
+  private PhotonPipelineResult aprilTagResultRear;
   //private PhotonPipelineResult objectResult;
-  private boolean aprilTagDetected;
-  private boolean objectDetected;
+  private boolean aprilTagDetectedFront;
+  private boolean aprilTagDetectedRear;
 
   // Pose Estimation
-  private PhotonPoseEstimator visionEstimator;
+  private PhotonPoseEstimator visionEstimatorFront;
+  private PhotonPoseEstimator visionEstimatorRear;
   private Matrix<N3, N1> curStdDevs;
 
   // Simulation
-  private PhotonCameraSim aprilTagSim;
-  //private PhotonCameraSim objectDetectionSim;
+  private PhotonCameraSim aprilTagSimFront;
+  private PhotonCameraSim aprilTagSimRear;
   private VisionSystemSim visionSim;
 
 
   /** Creates a new Vision. */
   public Vision() {
-    aprilTagCamera = new PhotonCamera("April_Tag_Camera");
-    //objectDetectionCamera = new PhotonCamera("Object_Detection_Camera");
+    aprilTagCameraFront = new PhotonCamera("April_Tag_Camera_Front");
+    aprilTagCameraRear = new PhotonCamera("April_Tag_Camera_Rear");
 
     
-    visionEstimator = new PhotonPoseEstimator(Constants.kTagLayout , PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCam);
-    visionEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    visionEstimatorFront = new PhotonPoseEstimator(Constants.kTagLayout , PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCamFront);
+    visionEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    visionEstimatorRear = new PhotonPoseEstimator(Constants.kTagLayout , PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCamRear);
+    visionEstimatorRear.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -70,20 +75,29 @@ public class Vision extends SubsystemBase {
         // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
         visionSim.addAprilTags(Constants.kTagLayout);
         // Create simulated camera properties. These can be set to mimic your actual camera.
-        var cameraProp = new SimCameraProperties();
-        cameraProp.setCalibration(480, 320, Rotation2d.fromDegrees(90));
-        cameraProp.setCalibError(0.35, 0.10);
-        cameraProp.setFPS(15);
-        cameraProp.setAvgLatencyMs(50);
-        cameraProp.setLatencyStdDevMs(15);
+        var cameraPropFront = new SimCameraProperties();
+        cameraPropFront.setCalibration(480, 320, Rotation2d.fromDegrees(70));
+        cameraPropFront.setCalibError(0.35, 0.10);
+        cameraPropFront.setFPS(15);
+        cameraPropFront.setAvgLatencyMs(50);
+        cameraPropFront.setLatencyStdDevMs(15);
+
+        var cameraPropRear = new SimCameraProperties();
+        cameraPropRear.setCalibration(480, 320, Rotation2d.fromDegrees(70));
+        cameraPropRear.setCalibError(0.35, 0.10);
+        cameraPropRear.setFPS(15);
+        cameraPropRear.setAvgLatencyMs(50);
+        cameraPropRear.setLatencyStdDevMs(15);
         // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
         // targets.
-        aprilTagSim = new PhotonCameraSim(aprilTagCamera, cameraProp);
-        //objectDetectionSim = new PhotonCameraSim(objectDetectionCamera);
+        aprilTagSimFront = new PhotonCameraSim(aprilTagCameraFront, cameraPropFront);
+        aprilTagSimRear = new PhotonCameraSim(aprilTagCameraRear, cameraPropRear);
         // Add the simulated camera to view the targets on this simulated field.
-        visionSim.addCamera(aprilTagSim, Constants.kRobotToCam);
+        visionSim.addCamera(aprilTagSimFront, Constants.kRobotToCamFront);
+        visionSim.addCamera(aprilTagSimRear, Constants.kRobotToCamRear);
 
-        aprilTagSim.enableDrawWireframe(true);
+        aprilTagSimFront.enableDrawWireframe(true);
+        aprilTagSimRear.enableDrawWireframe(true);
     }
   }
 
@@ -98,26 +112,45 @@ public class Vision extends SubsystemBase {
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
      *     used for estimation.
      */
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-        Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        if (aprilTagDetected) {
-            visionEst = visionEstimator.update(aprilTagResult);
-            updateEstimationStdDevs(visionEst, aprilTagResult.getTargets());
+    public List<EstimatedRobotPose> getEstimatedGlobalPose() {
+        Optional<EstimatedRobotPose> visionEstFront = Optional.empty();
+        Optional<EstimatedRobotPose> visionEstRear = Optional.empty();
+        List<EstimatedRobotPose> poses = new ArrayList<EstimatedRobotPose>();
+        if (aprilTagDetectedFront) {
+            visionEstFront = visionEstimatorFront.update(aprilTagResultFront);
+            updateEstimationStdDevs(visionEstFront, aprilTagResultFront.getTargets());
+            visionEstFront.ifPresent( est -> poses.add(est));
 
             // ----- Simulation
-
             if (Robot.isSimulation()) {
-                visionEst.ifPresentOrElse(
+                visionEstFront.ifPresentOrElse(
                         est ->
                                 getSimDebugField()
-                                        .getObject("VisionEstimation")
+                                        .getObject("VisionEstimationFront")
                                         .setPose(est.estimatedPose.toPose2d()),
                         () -> {
-                            getSimDebugField().getObject("VisionEstimation").setPoses();
+                            getSimDebugField().getObject("VisionEstimationFront").setPoses();
                         });
             }
         }
-        return visionEst;
+        if (aprilTagDetectedRear) {
+            visionEstRear = visionEstimatorRear.update(aprilTagResultRear);
+            updateEstimationStdDevs(visionEstRear, aprilTagResultRear.getTargets());
+            visionEstRear.ifPresent( est -> poses.add(est));
+
+            // ----- Simulation
+            if (Robot.isSimulation()) {
+                visionEstRear.ifPresentOrElse(
+                        est ->
+                                getSimDebugField()
+                                        .getObject("VisionEstimationRear")
+                                        .setPose(est.estimatedPose.toPose2d()),
+                        () -> {
+                            getSimDebugField().getObject("VisionEstimationRear").setPoses();
+                        });
+            }
+        }
+        return poses;
     }
 
     /**
@@ -141,7 +174,7 @@ public class Vision extends SubsystemBase {
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = visionEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                var tagPose = visionEstimatorFront.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
                 avgDist +=
@@ -184,41 +217,43 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    //Update April Tag Results
-    aprilTagDetected = false;
-    var tempTagResults = aprilTagCamera.getAllUnreadResults();
+    //Update April Tag Front Results
+    aprilTagDetectedFront = false;
+    var tempTagResults = aprilTagCameraFront.getAllUnreadResults();
     if (!tempTagResults.isEmpty()) {
       // Camera processed a new frame since last
       // Get the last one in the list.
-      aprilTagResult = tempTagResults.get(tempTagResults.size() - 1);
-      if (aprilTagResult.hasTargets()) {
+      aprilTagResultFront = tempTagResults.get(tempTagResults.size() - 1);
+      if (aprilTagResultFront.hasTargets()) {
           // At least one AprilTag was seen by the camera
-          aprilTagDetected = true;
+          aprilTagDetectedFront = true;
       }
     }
     
-    // //Update Object Results
-    // objectDetected = false;
-    // var tempObjectResults = objectDetectionCamera.getAllUnreadResults();
-    // if (!tempObjectResults.isEmpty()) {
-    //   // Camera processed a new frame since last
-    //   // Get the last one in the list.
-    //   objectResult = tempObjectResults.get(tempObjectResults.size() - 1);
-    //   if (objectResult.hasTargets()) {
-    //       // At least one AprilTag was seen by the camera
-    //       objectDetected = true;
-    //   }
-    // }
+    //Update April Tag Rear Results
+    aprilTagDetectedRear = false;
+    tempTagResults = aprilTagCameraRear.getAllUnreadResults();
+    if (!tempTagResults.isEmpty()) {
+      // Camera processed a new frame since last
+      // Get the last one in the list.
+      aprilTagResultRear = tempTagResults.get(tempTagResults.size() - 1);
+      if (aprilTagResultFront.hasTargets()) {
+          // At least one AprilTag was seen by the camera
+          aprilTagDetectedRear = true;
+      }
+    }
 
-    var pose = getEstimatedGlobalPose();
-    pose.ifPresent(
-      est -> {
-        // Change our trust in the measurement based on the tags we can see
-        var estStdDevs = getEstimationStdDevs();
+    List<EstimatedRobotPose> pose = getEstimatedGlobalPose();
+    if( !pose.isEmpty() ) {
+        pose.forEach(
+        est -> {
+            // Change our trust in the measurement based on the tags we can see
+            var estStdDevs = getEstimationStdDevs();
 
-        SubsystemsInst.getInst().drivetrain.addVisionMeasurement(
-                est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-      });
+            SubsystemsInst.getInst().drivetrain.addVisionMeasurement(
+                    est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+        });
+    }
   }
 
 
