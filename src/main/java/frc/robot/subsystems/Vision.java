@@ -30,6 +30,10 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
 public class Vision extends SubsystemBase {
 
   // Cameras
@@ -56,6 +60,12 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim aprilTagSimRear;
   private VisionSystemSim visionSim;
 
+  private List<Waypoint> waypoints;
+  private PathConstraints pathConstraints;
+
+  private SubsystemsInst subsystemsInst;
+  private Drivetrain drivetrain;
+
 
   /** Creates a new Vision. */
   public Vision() {
@@ -67,6 +77,18 @@ public class Vision extends SubsystemBase {
     visionEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     visionEstimatorRear = new PhotonPoseEstimator(Constants.kTagLayout , PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCamRear);
     visionEstimatorRear.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
+    drivetrain = SubsystemsInst.getInst().drivetrain;
+
+    waypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getPose().getRotation()),
+        new Pose2d(5.9, 4, Rotation2d.fromRadians(0))
+    );
+
+    pathConstraints = new PathConstraints(3, 3, 540, 720, 12, false);
+
+    
+
 
     // ----- Simulation
     if (Robot.isSimulation()) {
