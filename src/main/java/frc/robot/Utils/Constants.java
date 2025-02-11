@@ -18,6 +18,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -151,9 +152,7 @@ public final class Constants {
     public static final double[] L3AlgaePosition = {L3AlgaeElevatorPosition, reefAlgaeAngle}; //needs tuning
     public static final double[] processorPosition = {defaultElevatorPosition, processorAlgaeAngle}; //needs tuning
     public static final double[] bargePosition = {bargeElevatorPosition, bargeAlgaeAngle}; //needs tuning
-    public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle};
-
-    
+    public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle}; 
 
 
 }

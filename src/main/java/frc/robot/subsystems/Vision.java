@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -60,12 +61,26 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim aprilTagSimRear;
   private VisionSystemSim visionSim;
 
-  private List<Waypoint> waypoints;
+  private List<Waypoint> rightWaypoints;
+  private List<Waypoint> leftWaypoints;
   private PathConstraints pathConstraints;
 
   private SubsystemsInst subsystemsInst;
   private Drivetrain drivetrain;
 
+  //Reef positions named after game manuel page 24
+  private Pose2d aPose2d;
+  private Pose2d bPose2d;
+  private Pose2d cPose2d;
+  private Pose2d dPose2d;
+  private Pose2d ePose2d;
+  private Pose2d fPose2d;
+  private Pose2d gPose2d;
+  private Pose2d hPose2d;
+  private Pose2d iPose2d;
+  private Pose2d jPose2d;
+  private Pose2d kPose2d;
+  private Pose2d lPose2d;
 
   /** Creates a new Vision. */
   public Vision() {
@@ -80,14 +95,35 @@ public class Vision extends SubsystemBase {
 
     drivetrain = SubsystemsInst.getInst().drivetrain;
 
-    waypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getPose().getRotation()),
-        new Pose2d(5.9, 4, Rotation2d.fromRadians(0))
-    );
 
     pathConstraints = new PathConstraints(3, 3, 540, 720, 12, false);
 
-    
+
+    aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
+    bPose2d = new Pose2d(3.108, 3.871, Rotation2d.fromDegrees(0));
+    cPose2d = new Pose2d(3.656, 2.9, Rotation2d.fromDegrees(60));
+    dPose2d = new Pose2d(3.925, 2.735, Rotation2d.fromDegrees(60));
+    ePose2d = new Pose2d(5.051, 2.735, Rotation2d.fromDegrees(120));
+    fPose2d = new Pose2d(5.35, 2.9, Rotation2d.fromDegrees(120));
+    gPose2d = new Pose2d(5.888, 3.871, Rotation2d.fromDegrees(180));
+    hPose2d = new Pose2d(5.888, 4.14, Rotation2d.fromDegrees(180));
+    iPose2d = new Pose2d(5.35, 5.189, Rotation2d.fromDegrees(-120));
+    jPose2d = new Pose2d(5.051, 5.34, Rotation2d.fromDegrees(-120));
+    kPose2d = new Pose2d(3.925, 5.34, Rotation2d.fromDegrees(-60));
+    lPose2d = new Pose2d(3.656, 5.189, Rotation2d.fromDegrees(-60));
+
+    final Pose2d[] leftPose2ds = {aPose2d, cPose2d, ePose2d, gPose2d, iPose2d, kPose2d};
+    final Pose2d[] rightPose2ds = {bPose2d, dPose2d, fPose2d, hPose2d, jPose2d, lPose2d};
+
+    rightWaypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getPose().getRotation()),
+        figureOutClosestBranch(drivetrain.getPose(), rightPose2ds)
+    );
+
+    leftWaypoints = PathPlannerPath.waypointsFromPoses(
+        new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getPose().getRotation()),
+        figureOutClosestBranch(drivetrain.getPose(), leftPose2ds)
+    );
 
 
     // ----- Simulation
@@ -232,6 +268,21 @@ public class Vision extends SubsystemBase {
      */
     public Matrix<N3, N1> getEstimationStdDevs() {
         return curStdDevs;
+    }
+
+    private double calculateDistanceToReef(Pose2d currentPose2d, Pose2d reefPose2d) {
+        return Math.sqrt((currentPose2d.getX() - reefPose2d.getX()) * (currentPose2d.getX() - reefPose2d.getX()) + (currentPose2d.getY() - reefPose2d.getY()) * (currentPose2d.getY() - reefPose2d.getY()));
+    }
+
+    private Pose2d figureOutClosestBranch(Pose2d currentPose2d, Pose2d[] reefPose2ds) {
+        double minDistance = 100.0; //random int
+        int minPoseNumber = 0; //Fix this
+        for (int i = 0; i < reefPose2ds.length; i ++) {
+            if (calculateDistanceToReef(currentPose2d, reefPose2ds[i]) < minDistance);
+                minDistance = calculateDistanceToReef(currentPose2d, reefPose2ds[i]);
+                minPoseNumber = i;
+        }
+        return reefPose2ds[minPoseNumber];
     }
 
 
