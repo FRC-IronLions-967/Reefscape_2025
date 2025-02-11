@@ -96,36 +96,6 @@ public class Vision extends SubsystemBase {
     drivetrain = SubsystemsInst.getInst().drivetrain;
 
 
-    pathConstraints = new PathConstraints(3, 3, 540, 720, 12, false);
-
-
-    aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
-    bPose2d = new Pose2d(3.108, 3.871, Rotation2d.fromDegrees(0));
-    cPose2d = new Pose2d(3.656, 2.9, Rotation2d.fromDegrees(60));
-    dPose2d = new Pose2d(3.925, 2.735, Rotation2d.fromDegrees(60));
-    ePose2d = new Pose2d(5.051, 2.735, Rotation2d.fromDegrees(120));
-    fPose2d = new Pose2d(5.35, 2.9, Rotation2d.fromDegrees(120));
-    gPose2d = new Pose2d(5.888, 3.871, Rotation2d.fromDegrees(180));
-    hPose2d = new Pose2d(5.888, 4.14, Rotation2d.fromDegrees(180));
-    iPose2d = new Pose2d(5.35, 5.189, Rotation2d.fromDegrees(-120));
-    jPose2d = new Pose2d(5.051, 5.34, Rotation2d.fromDegrees(-120));
-    kPose2d = new Pose2d(3.925, 5.34, Rotation2d.fromDegrees(-60));
-    lPose2d = new Pose2d(3.656, 5.189, Rotation2d.fromDegrees(-60));
-
-    final Pose2d[] leftPose2ds = {aPose2d, cPose2d, ePose2d, gPose2d, iPose2d, kPose2d};
-    final Pose2d[] rightPose2ds = {bPose2d, dPose2d, fPose2d, hPose2d, jPose2d, lPose2d};
-
-    rightWaypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getPose().getRotation()),
-        figureOutClosestBranch(drivetrain.getPose(), rightPose2ds)
-    );
-
-    leftWaypoints = PathPlannerPath.waypointsFromPoses(
-        new Pose2d(drivetrain.getPose().getX(), drivetrain.getPose().getY(), drivetrain.getPose().getRotation()),
-        figureOutClosestBranch(drivetrain.getPose(), leftPose2ds)
-    );
-
-
     // ----- Simulation
     if (Robot.isSimulation()) {
         // Create the vision system simulation which handles cameras and targets on the field.
@@ -274,7 +244,7 @@ public class Vision extends SubsystemBase {
         return Math.sqrt((currentPose2d.getX() - reefPose2d.getX()) * (currentPose2d.getX() - reefPose2d.getX()) + (currentPose2d.getY() - reefPose2d.getY()) * (currentPose2d.getY() - reefPose2d.getY()));
     }
 
-    private Pose2d figureOutClosestBranch(Pose2d currentPose2d, Pose2d[] reefPose2ds) {
+    public Pose2d figureOutClosestBranch(Pose2d currentPose2d, Pose2d[] reefPose2ds) {
         double minDistance = 100.0; //random int
         int minPoseNumber = 0; //Fix this
         for (int i = 0; i < reefPose2ds.length; i ++) {

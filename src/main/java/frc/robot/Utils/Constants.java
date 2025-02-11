@@ -2,13 +2,16 @@ package frc.robot.Utils;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -153,6 +156,24 @@ public final class Constants {
     public static final double[] processorPosition = {defaultElevatorPosition, processorAlgaeAngle}; //needs tuning
     public static final double[] bargePosition = {bargeElevatorPosition, bargeAlgaeAngle}; //needs tuning
     public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle}; 
+
+    public static final Pose2d aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
+    public static final Pose2d bPose2d = new Pose2d(3.108, 3.871, Rotation2d.fromDegrees(0));
+    public static final Pose2d cPose2d = new Pose2d(3.656, 2.9, Rotation2d.fromDegrees(60));
+    public static final Pose2d dPose2d = new Pose2d(3.925, 2.735, Rotation2d.fromDegrees(60));
+    public static final Pose2d ePose2d = new Pose2d(5.051, 2.735, Rotation2d.fromDegrees(120));
+    public static final Pose2d fPose2d = new Pose2d(5.35, 2.9, Rotation2d.fromDegrees(120));
+    public static final Pose2d gPose2d = new Pose2d(5.888, 3.871, Rotation2d.fromDegrees(180));
+    public static final Pose2d hPose2d = new Pose2d(5.888, 4.14, Rotation2d.fromDegrees(180));
+    public static final Pose2d iPose2d = new Pose2d(5.35, 5.189, Rotation2d.fromDegrees(-120));
+    public static final Pose2d jPose2d = new Pose2d(5.051, 5.34, Rotation2d.fromDegrees(-120));
+    public static final Pose2d kPose2d = new Pose2d(3.925, 5.34, Rotation2d.fromDegrees(-60));
+    public static final Pose2d lPose2d = new Pose2d(3.656, 5.189, Rotation2d.fromDegrees(-60));
+
+    public static final Pose2d[] leftPose2ds = {aPose2d, cPose2d, ePose2d, gPose2d, iPose2d, kPose2d};
+    public static final Pose2d[] rightPose2ds = {bPose2d, dPose2d, fPose2d, hPose2d, jPose2d, lPose2d};
+
+    public static final PathConstraints pathConstraints = new PathConstraints(3, 3, 540, 720, 12, false);
 
 
 }
