@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import java.util.List;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 
@@ -16,17 +18,17 @@ import frc.robot.subsystems.SubsystemsInst;
 import frc.robot.subsystems.Vision;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoAlignCommand extends Command {
-  /** Creates a new AutoAlignCommand. */
+public class AutoAlignToCoralStationCommand extends Command {
 
   private Drivetrain drivetrain;
   private Vision vision;
   private boolean leftSide;
-  private PathPlannerPath pathToReef;
+  private PathPlannerPath pathToCoralStation;
   private List<Waypoint> pathWaypoints;
 
-  public AutoAlignCommand(boolean leftSide) {
-
+  /** Creates a new AutoAlignToCoralStationCommand. */
+  public AutoAlignToCoralStationCommand(boolean leftSide) {
+    
     drivetrain = SubsystemsInst.getInst().drivetrain;
     vision = SubsystemsInst.getInst().vision;
 
@@ -40,12 +42,15 @@ public class AutoAlignCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    pathWaypoints = PathPlannerPath.waypointsFromPoses(drivetrain.getPose(), vision.figureOutClosestBranch(drivetrain.getPose(), leftSide ? Constants.leftPose2ds : Constants.rightPose2ds));
+    pathWaypoints = PathPlannerPath.waypointsFromPoses(drivetrain.getPose(), leftSide ? Constants.leftCoralStationPose2d : Constants.rightCoralStationPose2d);
+    pathToCoralStation = new PathPlannerPath(pathWaypoints, Constants.pathConstraints, null, new GoalEndState(0, null));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    AutoBuilder.followPath(pathToCoralStation);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -54,6 +59,6 @@ public class AutoAlignCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

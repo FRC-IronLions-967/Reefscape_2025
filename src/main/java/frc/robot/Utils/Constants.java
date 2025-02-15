@@ -21,7 +21,6 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -157,6 +156,7 @@ public final class Constants {
     public static final double[] bargePosition = {bargeElevatorPosition, bargeAlgaeAngle}; //needs tuning
     public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle}; 
 
+    //Reef names named on the game manual pg 24.
     public static final Pose2d aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
     public static final Pose2d bPose2d = new Pose2d(3.108, 3.871, Rotation2d.fromDegrees(0));
     public static final Pose2d cPose2d = new Pose2d(3.656, 2.9, Rotation2d.fromDegrees(60));
@@ -169,6 +169,8 @@ public final class Constants {
     public static final Pose2d jPose2d = new Pose2d(5.051, 5.34, Rotation2d.fromDegrees(-120));
     public static final Pose2d kPose2d = new Pose2d(3.925, 5.34, Rotation2d.fromDegrees(-60));
     public static final Pose2d lPose2d = new Pose2d(3.656, 5.189, Rotation2d.fromDegrees(-60));
+    public static final Pose2d leftCoralStationPose2d = new Pose2d(1.256, 7, Rotation2d.fromDegrees(127.5));
+    public static final Pose2d rightCoralStationPose2d = new Pose2d(1.256, 1, Rotation2d.fromDegrees(-127.5));
 
     public static final Pose2d[] leftPose2ds = {aPose2d, cPose2d, ePose2d, gPose2d, iPose2d, kPose2d};
     public static final Pose2d[] rightPose2ds = {bPose2d, dPose2d, fPose2d, hPose2d, jPose2d, lPose2d};

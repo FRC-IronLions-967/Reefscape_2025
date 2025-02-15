@@ -10,9 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Utils.Constants;
@@ -31,9 +29,6 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
 public class Vision extends SubsystemBase {
 
@@ -61,27 +56,6 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim aprilTagSimRear;
   private VisionSystemSim visionSim;
 
-  private List<Waypoint> rightWaypoints;
-  private List<Waypoint> leftWaypoints;
-  private PathConstraints pathConstraints;
-
-  private SubsystemsInst subsystemsInst;
-  private Drivetrain drivetrain;
-
-  //Reef positions named after game manuel page 24
-  private Pose2d aPose2d;
-  private Pose2d bPose2d;
-  private Pose2d cPose2d;
-  private Pose2d dPose2d;
-  private Pose2d ePose2d;
-  private Pose2d fPose2d;
-  private Pose2d gPose2d;
-  private Pose2d hPose2d;
-  private Pose2d iPose2d;
-  private Pose2d jPose2d;
-  private Pose2d kPose2d;
-  private Pose2d lPose2d;
-
   /** Creates a new Vision. */
   public Vision() {
     aprilTagCameraFront = new PhotonCamera("April_Tag_Camera_Front");
@@ -92,8 +66,6 @@ public class Vision extends SubsystemBase {
     visionEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     visionEstimatorRear = new PhotonPoseEstimator(Constants.kTagLayout , PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCamRear);
     visionEstimatorRear.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-
-    drivetrain = SubsystemsInst.getInst().drivetrain;
 
 
     // ----- Simulation
