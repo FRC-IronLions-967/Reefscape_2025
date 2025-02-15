@@ -103,9 +103,10 @@ public class ArmSubsystem extends SubsystemBase {
       .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
       .velocityConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
     elevatorVortexConfig.analogSensor
-      .positionConversionFactor(5.0 / Units.inchesToMeters(2.0)) // native 0-5V, 2 meter travel
-      .velocityConversionFactor(5.0 / Units.inchesToMeters(2.0)); // 
+      .positionConversionFactor(Units.metersToInches(2.0) / 5.0) // native 0-5V, 2 meter travel
+      .velocityConversionFactor(Units.metersToInches(2.0) / 5.0); // 
     elevatorVortexConfig.closedLoop
+      .outputRange(-0.1, 0.1)
       .feedbackSensor(FeedbackSensor.kAnalogSensor)
       .pid(1.0, 0, 0);
 
@@ -114,11 +115,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     armVortexConfig
       .smartCurrentLimit(40)
+      .inverted(true)
       .idleMode(IdleMode.kBrake);
     armVortexConfig.absoluteEncoder
       .velocityConversionFactor(2.0 * Math.PI / 60.0)
-      .positionConversionFactor(Math.PI * 2);
+      .positionConversionFactor(Math.PI * 2)
+      .zeroOffset(Constants.kArmZeroOffset / (Math.PI * 2));
     armVortexConfig.closedLoop
+      .outputRange(-0.1, 0.1)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .pid(1.0, 0, 0.0)
       .positionWrappingInputRange(0, 2*Math.PI)
@@ -192,7 +196,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public double getElevatorPosition() {
     //return elevatorVortex.getEncoder().getPosition();
-    return elevatorVortex.getAnalog().getPosition() + Constants.kElevatorAnalogZeroOffset;
+    return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
   }
 
   /**
@@ -269,13 +273,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     // transitions are less important than just knowing the current state
     setArmState();
-
     switch (state) {
       case STARTUP:
         elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight) {
-          rotaryArmCurrentTarget = getArmAngle();
-        }
       case EMPTY:
 
       //Makes Rotation Safe
@@ -323,9 +323,13 @@ public class ArmSubsystem extends SubsystemBase {
         
         break;
     }
+    if (state != ArmStates.STARTUP) {
+      armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
+    }
+    elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition);
 
-    armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
-    elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition);
+    SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    SmartDashboard.putNumber("Arm Position", getArmAngle());
 
   }  
   

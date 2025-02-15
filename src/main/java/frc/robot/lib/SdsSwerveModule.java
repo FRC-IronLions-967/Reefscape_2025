@@ -77,6 +77,7 @@ public class SdsSwerveModule {
 
     turningConfig = new SparkMaxConfig();
     turningConfig
+        .inverted(true)
       .idleMode(IdleMode.kBrake)
       .smartCurrentLimit(40);
     turningConfig.closedLoop

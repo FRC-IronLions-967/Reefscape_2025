@@ -35,7 +35,8 @@ public final class Constants {
     public static final double kSteerGearRatio = 150.0/7.0;
     //needs tunings
     public static final double kSecondsPerMinute = 60.0;
-    public static final double kElevatorAnalogZeroOffset = 0.0;
+    public static final double kElevatorAnalogZeroOffset = 4.23;
+    public static final double kArmZeroOffset = 1.961;
 
     public static final double objectDetectionCameraYawOffset = 0.0;
     public static final double kMaxNeoSpeed = 5676.0;
@@ -117,7 +118,7 @@ public final class Constants {
 
     public static final double armWiringMinConstraint = 0.262;
     public static final double armWiringMaxConstraint = 4.101;
-    public static final double armFullRotationElevatorHeight = 2.5;
+    public static final double armFullRotationElevatorHeight = 5.0;
     public static final double armWithAlgaeFullRotationElevatorHeight = 22;
     public static final double emptyArmConstraintForAlgaeManipulatorAtE0 = 2.679; // Shouldn't go past this without raising the elevator.
     public static final double armWithAlgaeMinConstraint = 1.288;
