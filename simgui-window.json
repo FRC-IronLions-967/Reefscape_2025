@@ -1,0 +1,90 @@
+{
+  "Docking": {
+    "Data": []
+  },
+  "MainWindow": {
+    "GLOBAL": {
+      "font": "Proggy Dotted",
+      "fps": "120",
+      "height": "2126",
+      "maximized": "1",
+      "style": "0",
+      "userScale": "2",
+      "width": "3840",
+      "xpos": "3840",
+      "ypos": "34"
+    }
+  },
+  "Window": {
+    "###/SmartDashboard/Elevator Sim": {
+      "Collapsed": "0",
+      "Pos": "700,61",
+      "Size": "522,1250"
+    },
+    "###/SmartDashboard/VisionSystemSim-main/Sim Field": {
+      "Collapsed": "0",
+      "Pos": "1242,552",
+      "Size": "2548,1527"
+    },
+    "###FMS": {
+      "Collapsed": "0",
+      "Pos": "10,757",
+      "Size": "235,244"
+    },
+    "###Joysticks": {
+      "Collapsed": "0",
+      "Pos": "2908,120",
+      "Size": "1156,316"
+    },
+    "###NetworkTables": {
+      "Collapsed": "0",
+      "Pos": "14,1585",
+      "Size": "1125,525"
+    },
+    "###NetworkTables Info": {
+      "Collapsed": "0",
+      "Pos": "16,1385",
+      "Size": "1125,222"
+    },
+    "###Other Devices": {
+      "Collapsed": "0",
+      "Pos": "297,37",
+      "Size": "375,1042"
+    },
+    "###Plot <0>": {
+      "Collapsed": "0",
+      "Pos": "1243,62",
+      "Size": "829,473"
+    },
+    "###Plot <1>": {
+      "Collapsed": "0",
+      "Pos": "2074,65",
+      "Size": "778,460"
+    },
+    "###RoboRIO": {
+      "Collapsed": "0",
+      "Pos": "20,1048",
+      "Size": "163,182"
+    },
+    "###System Joysticks": {
+      "Collapsed": "0",
+      "Pos": "8,458",
+      "Size": "273,290"
+    },
+    "###Timing": {
+      "Collapsed": "0",
+      "Pos": "7,207",
+      "Size": "188,244"
+    },
+    "Debug##Default": {
+      "Collapsed": "0",
+      "Pos": "60,60",
+      "Size": "400,400"
+    },
+    "Robot State": {
+      "Collapsed": "0",
+      "Pos": "5,44",
+      "Size": "137,152"
+    }
+  }
+}

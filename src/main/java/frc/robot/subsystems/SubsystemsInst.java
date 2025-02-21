@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 public class SubsystemsInst {
     public Drivetrain drivetrain;
     public Vision vision;
+    public ArmSubsystem armSubsystem;
    
    
     private static SubsystemsInst inst;
@@ -10,6 +11,7 @@ public class SubsystemsInst {
     private SubsystemsInst() {
         drivetrain = new Drivetrain();
         vision = new Vision();
+        armSubsystem = new ArmSubsystem();
 
     }
 

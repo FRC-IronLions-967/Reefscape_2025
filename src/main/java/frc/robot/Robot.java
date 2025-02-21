@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,14 +17,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SubsystemsInst;
+import frc.robot.Utils.Constants;
 import frc.robot.commands.*;
 import frc.robot.lib.LEDController;
+import frc.robot.lib.LimitSwitchManager;
 
 public class Robot extends TimedRobot {
   private SubsystemsInst subsystemsInst;
   private Command m_autonomousCommand;
   private SendableChooser<Command> autoChooser;
   private LEDController ledController;
+  private LimitSwitchManager switchBreakout;
   
 
   /**
@@ -36,10 +40,19 @@ public class Robot extends TimedRobot {
     subsystemsInst.drivetrain.setupPathPlanner();
     CommandScheduler.getInstance().setDefaultCommand(subsystemsInst.drivetrain, new DefaultMoveCommand());
 
+    NamedCommands.registerCommand("L4Position", new MoveWholeArmToPositionCommand(Constants.L4ElevatorPosition, Constants.L4ArmAngle));
+    NamedCommands.registerCommand("L3Position", new MoveWholeArmToPositionCommand(Constants.L3ElevatorPosition, Constants.L2L3ArmAngle));
+    NamedCommands.registerCommand("L2Position", new MoveWholeArmToPositionCommand(Constants.L2ElevatorPosition, Constants.L2L3ArmAngle));
+    NamedCommands.registerCommand("L3Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaeElevatorPosition, Constants.reefAlgaeAngle));
+    NamedCommands.registerCommand("L2Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaeElevatorPosition, Constants.reefAlgaeAngle));
+    NamedCommands.registerCommand("coralStationPosition", new MoveWholeArmToPositionCommand(Constants.coralElevatorPosition, Constants.coralArmAngle));
+    NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(Constants.coralIntakeSpeed));
+    NamedCommands.registerCommand("IntakeAlgae", new IntakeAlgaeCommand(Constants.algaeIntakeSpeed));
+    NamedCommands.registerCommand("PlaceCoral", new ScoreCoralCommand(Constants.coralScoringSpeed));
 
-    // autoChooser = AutoBuilder.buildAutoChooser("Center Simple_Auto");
-    // SmartDashboard.putData("Auto Chooser", autoChooser);
-
+    autoChooser = AutoBuilder.buildAutoChooser("Center Simple Auto");
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    switchBreakout = new LimitSwitchManager();
     ledController = new LEDController(0, 36);
   }
 
@@ -52,6 +65,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    switchBreakout.periodic();
     CommandScheduler.getInstance().run();
     ledController.heartbeat();
   }
@@ -62,7 +76,7 @@ public class Robot extends TimedRobot {
    * SmartDashboard. If you prefer the LabVIEW Dashboard, remove all of the chooser code and
    * uncomment the getString line to get the auto name from the text box below the Gyro
    *
-   * <p>You can add additional auto modes by adding additional comparisons to the switch structure
+   * You can add additional auto modes by adding additional comparisons to the switch structure
    * below with additional strings. If using the SendableChooser make sure to add them to the
    * chooser code above as well.
    */
@@ -118,6 +132,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationPeriodic() {
+      switchBreakout.simulationPeriodic();
       // Update drivetrain simulation
       SubsystemsInst.getInst().drivetrain.simulationPeriodic();
 

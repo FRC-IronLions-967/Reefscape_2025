@@ -5,11 +5,15 @@
 package frc.robot.subsystems;
 
 import com.studica.frc.AHRS;
+
+import java.util.function.BooleanSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -339,6 +343,14 @@ public class Drivetrain extends SubsystemBase {
   }
 
 
+  public BooleanSupplier nearRedCoral() {
+    
+    //Boolean oneMeterAway = 
+    //  m_odometry.getEstimatedPosition().minus(Constants.kLeftRedStation.toPose2d()) < 1.0;
+    return () -> true;
+  }
+
+
   /**
    * Standard Teleop driving
    */
@@ -350,14 +362,14 @@ public class Drivetrain extends SubsystemBase {
       // Get the x speed. We are inverting this because Xbox controllers return
       // negative values when we push forward.
       final var xSpeed = limiter * m_xspeedLimiter.calculate(
-      Utils.squarePreserveSign(-MathUtil.applyDeadband(-driveController.getLeftStickY(), 0.1))
+      Utils.squarePreserveSign(-MathUtil.applyDeadband(driveController.getLeftStickY(), 0.1))
           * Constants.kMaxSpeed);
 
       // Get the y speed or sideways/strafe speed. We are inverting this because
       // we want a positive value when we pull to the left. Xbox controllers
       // return positive values when you pull to the right by default.
       final var ySpeed = limiter * m_yspeedLimiter.calculate(
-          Utils.squarePreserveSign(MathUtil.applyDeadband(driveController.getLeftStickX(), 0.1))
+          Utils.squarePreserveSign(MathUtil.applyDeadband(-driveController.getLeftStickX(), 0.1))
               * Constants.kMaxSpeed);
 
       // Get the rate of angular rotation. We are inverting this because we want a
