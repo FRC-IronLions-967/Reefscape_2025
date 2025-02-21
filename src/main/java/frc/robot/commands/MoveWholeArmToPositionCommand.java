@@ -18,12 +18,12 @@ public class MoveWholeArmToPositionCommand extends Command {
   private double armPosition;
 
   /** Creates a new MoveElevatorToPositionCommand. */
-  public MoveWholeArmToPositionCommand(double[] position) {
+  public MoveWholeArmToPositionCommand(double elevatorPosition, double armPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     armSubsystem = SubsystemsInst.getInst().armSubsystem;
     addRequirements(armSubsystem);
-    elevatorPosition = position[0];
-    armPosition = position[1];
+    this.elevatorPosition = elevatorPosition;
+    this.armPosition = armPosition;
   }
 
   // Called when the command is initially scheduled.

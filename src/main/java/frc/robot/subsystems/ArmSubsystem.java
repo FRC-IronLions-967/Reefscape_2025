@@ -78,6 +78,9 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
+    elevatorHeightEndGoal = 5.0;
+    rotaryArmEndGoal = Math.PI;
+
     state = ArmStates.STARTUP;
 
     elevatorVortex = new SparkFlex(9, MotorType.kBrushless);
@@ -97,7 +100,8 @@ public class ArmSubsystem extends SubsystemBase {
     algaeManipulatorVortexConfig = new SparkFlexConfig();
 
     elevatorVortexConfig
-      .smartCurrentLimit(40)
+      .inverted(true)
+      .smartCurrentLimit(60)
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
       .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
@@ -106,23 +110,21 @@ public class ArmSubsystem extends SubsystemBase {
       .positionConversionFactor(Units.metersToInches(2.0) / 5.0) // native 0-5V, 2 meter travel
       .velocityConversionFactor(Units.metersToInches(2.0) / 5.0); // 
     elevatorVortexConfig.closedLoop
-      .outputRange(-0.1, 0.1)
+      .outputRange(-0.4, 1)
       .feedbackSensor(FeedbackSensor.kAnalogSensor)
-      .pid(1.0, 0, 0);
+      .pid(0.25, 0, 3);//FF: 0.000139
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-
     armVortexConfig
       .smartCurrentLimit(40)
-      .inverted(true)
       .idleMode(IdleMode.kBrake);
     armVortexConfig.absoluteEncoder
       .velocityConversionFactor(2.0 * Math.PI / 60.0)
       .positionConversionFactor(Math.PI * 2)
       .zeroOffset(Constants.kArmZeroOffset / (Math.PI * 2));
     armVortexConfig.closedLoop
-      .outputRange(-0.1, 0.1)
+      .outputRange(-0.5, 0.5)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .pid(1.0, 0, 0.0)
       .positionWrappingInputRange(0, 2*Math.PI)
@@ -135,7 +137,7 @@ public class ArmSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kCoast);
     coralManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0);
+      .pid(1e-3, 0, 0);
 
     coralManipulatorVortex.configure(coralManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -144,7 +146,7 @@ public class ArmSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kCoast);
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0);
+      .pid(5e-3, 0, 0);
 
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -190,6 +192,10 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorHeightEndGoal = position;
   }
 
+  public void testElevator(double position) {
+    elevatorVortex.set(position);
+  }
+
   /**
    * 
    * @return The elevator position.
@@ -197,6 +203,10 @@ public class ArmSubsystem extends SubsystemBase {
   public double getElevatorPosition() {
     //return elevatorVortex.getEncoder().getPosition();
     return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
+  }
+
+  public void testArm(double position) {
+    armVortexController.setReference(position, ControlType.kPosition);
   }
 
   /**
@@ -229,6 +239,10 @@ public class ArmSubsystem extends SubsystemBase {
     coralManipulatorVortexController.setReference(speed, ControlType.kVelocity);
   }
 
+  public void testCoral(double speed) {
+    coralManipulatorVortex.set(speed);
+  }
+
   /**
    * 
    * @return If the coral manipulator has Coral in it.
@@ -250,7 +264,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @return If the algae manipulator has Algae in it.
    */
   public boolean hasAlgae() {
-    return algaeLimitSwitch.getAsBoolean();
+    // return algaeLimitSwitch.getAsBoolean();
+    return false;
   }
 
   /**
@@ -323,13 +338,19 @@ public class ArmSubsystem extends SubsystemBase {
         
         break;
     }
-    if (state != ArmStates.STARTUP) {
-      armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
-    }
+
+    armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
     elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition);
 
     SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
     SmartDashboard.putNumber("Arm Position", getArmAngle());
+    SmartDashboard.putNumber("Elevator End Goal", elevatorHeightEndGoal);
+    SmartDashboard.putNumber("Elevator Current Goal", elevatorHeightCurrentTarget);
+    SmartDashboard.putNumber("Arm End Goal", rotaryArmEndGoal);
+    SmartDashboard.putNumber("Arm Current Target", rotaryArmCurrentTarget);
+    SmartDashboard.putBoolean("Coral_IN", hasCoral());
+    SmartDashboard.putBoolean("Algae In", hasAlgae());
+    SmartDashboard.putNumber("Motr Power", elevatorVortex.getAppliedOutput());
 
   }  
   

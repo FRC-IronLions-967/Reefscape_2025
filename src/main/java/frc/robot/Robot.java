@@ -40,12 +40,12 @@ public class Robot extends TimedRobot {
     subsystemsInst.drivetrain.setupPathPlanner();
     CommandScheduler.getInstance().setDefaultCommand(subsystemsInst.drivetrain, new DefaultMoveCommand());
 
-    NamedCommands.registerCommand("L4Position", new MoveWholeArmToPositionCommand(Constants.L4Position));
-    NamedCommands.registerCommand("L3Position", new MoveWholeArmToPositionCommand(Constants.L3Position));
-    NamedCommands.registerCommand("L2Position", new MoveWholeArmToPositionCommand(Constants.L2Position));
-    NamedCommands.registerCommand("L3Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaePosition));
-    NamedCommands.registerCommand("L2Algae", new MoveWholeArmToPositionCommand(Constants.L2AlgaePosition));
-    NamedCommands.registerCommand("coralStationPosition", new MoveWholeArmToPositionCommand(Constants.coralStationPosition));
+    NamedCommands.registerCommand("L4Position", new MoveWholeArmToPositionCommand(Constants.L4ElevatorPosition, Constants.L4ArmAngle));
+    NamedCommands.registerCommand("L3Position", new MoveWholeArmToPositionCommand(Constants.L3ElevatorPosition, Constants.L2L3ArmAngle));
+    NamedCommands.registerCommand("L2Position", new MoveWholeArmToPositionCommand(Constants.L2ElevatorPosition, Constants.L2L3ArmAngle));
+    NamedCommands.registerCommand("L3Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaeElevatorPosition, Constants.reefAlgaeAngle));
+    NamedCommands.registerCommand("L2Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaeElevatorPosition, Constants.reefAlgaeAngle));
+    NamedCommands.registerCommand("coralStationPosition", new MoveWholeArmToPositionCommand(Constants.coralElevatorPosition, Constants.coralArmAngle));
     NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(Constants.coralIntakeSpeed));
     NamedCommands.registerCommand("IntakeAlgae", new IntakeAlgaeCommand(Constants.algaeIntakeSpeed));
     NamedCommands.registerCommand("PlaceCoral", new ScoreCoralCommand(Constants.coralScoringSpeed));
