@@ -11,12 +11,12 @@ import frc.robot.subsystems.SubsystemsInst;
 //THis command will run the Algae manipulator
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreAlgaeCommand extends Command {
+public class RunAlgaeManipulatorCommand extends Command {
   /** Creates a new RunAlgaeManipulatorCommand. */
   private ArmSubsystem armSubsystem;
   private double speed;
 
-  public ScoreAlgaeCommand(double speed) {
+  public RunAlgaeManipulatorCommand(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     armSubsystem = SubsystemsInst.getInst().armSubsystem;
     addRequirements(armSubsystem);
@@ -35,13 +35,11 @@ public class ScoreAlgaeCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    armSubsystem.runAlgaeManipulator(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !armSubsystem.hasAlgae();
+    return armSubsystem.hasAlgae();
   }
 }

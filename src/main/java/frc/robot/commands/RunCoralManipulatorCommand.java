@@ -11,13 +11,13 @@ import frc.robot.subsystems.SubsystemsInst;
 //This command runs the coral manipulator
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreCoralCommand extends Command {
+public class RunCoralManipulatorCommand extends Command {
   /** Creates a new RunCoralManipulatorCommand. */
 
   private ArmSubsystem armSubsystem;
   private double speed;
 
-  public ScoreCoralCommand(double speed) {
+  public RunCoralManipulatorCommand(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     armSubsystem = SubsystemsInst.getInst().armSubsystem;
     addRequirements(armSubsystem);
@@ -36,11 +36,13 @@ public class ScoreCoralCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !armSubsystem.hasCoral();
+    return armSubsystem.hasCoral();
   }
 }

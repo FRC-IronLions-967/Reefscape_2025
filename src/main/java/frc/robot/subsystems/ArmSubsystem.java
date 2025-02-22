@@ -137,7 +137,7 @@ public class ArmSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kCoast);
     coralManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1e-3, 0, 0);
+      .pid(1e-4, 0, 0);
 
     coralManipulatorVortex.configure(coralManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -237,6 +237,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void runCoralManipulator(double speed) {
     coralManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    // coralManipulatorVortex.set(speed);
   }
 
   public void testCoral(double speed) {
@@ -248,7 +249,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @return If the coral manipulator has Coral in it.
    */
   public boolean hasCoral() {
-    return coralLimitSwitch.getAsBoolean();
+    // return coralLimitSwitch.getAsBoolean();
+    return false;
   }
 
   /**
@@ -290,7 +292,7 @@ public class ArmSubsystem extends SubsystemBase {
     setArmState();
     switch (state) {
       case STARTUP:
-        elevatorHeightCurrentTarget = elevatorHeightEndGoal;
+        elevatorHeightEndGoal = Constants.armFullRotationElevatorHeight + 2;
       case EMPTY:
 
       //Makes Rotation Safe
@@ -339,7 +341,10 @@ public class ArmSubsystem extends SubsystemBase {
         break;
     }
 
-    armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
+
+    if (state != ArmStates.STARTUP) {
+      armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
+    }
     elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition);
 
     SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
@@ -351,6 +356,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Coral_IN", hasCoral());
     SmartDashboard.putBoolean("Algae In", hasAlgae());
     SmartDashboard.putNumber("Motr Power", elevatorVortex.getAppliedOutput());
+    SmartDashboard.putString("State", state.toString());
 
   }  
   

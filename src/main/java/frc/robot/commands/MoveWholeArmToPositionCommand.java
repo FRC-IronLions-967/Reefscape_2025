@@ -44,6 +44,6 @@ public class MoveWholeArmToPositionCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (armPosition - 0.1 < armSubsystem.getArmAngle() && armSubsystem.getArmAngle() < armPosition + 0.1) && ((elevatorPosition - 0.1 < armSubsystem.getElevatorPosition() && armSubsystem.getElevatorPosition() < elevatorPosition + 0.1));
+    return true;
   }
 }
