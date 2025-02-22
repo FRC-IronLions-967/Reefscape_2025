@@ -111,10 +111,10 @@ public final class Constants {
     public static final double coralWheelRadius = 1.0; //needs tunig
     public static final double algaeWheelRadius = 1.0; //needs tuning\
 
-    public static final double coralIntakeSpeed = 5600; //needs tuning
-    public static final double coralScoringSpeed = 5600; //needs tuning
+    public static final double coralIntakeSpeed = -6500; //needs tuning
+    public static final double coralScoringSpeed = 6500; //needs tuning
     public static final double algaeIntakeSpeed = 5600; //needs tuning
-    public static final double algaeScoringSpeed = 5600; //needs tuning
+    public static final double algaeScoringSpeed = -5600; //needs tuning
 
     public static final double armWiringMinConstraint = 0.0;
     public static final double armWiringMaxConstraint = 4.732;
@@ -135,13 +135,13 @@ public final class Constants {
     public static final double processorAlgaeAngle = 1.89;
     public static final double defaultArmAngle = Math.PI;
     // Elevator Positions
-    public static final double L2ElevatorPosition = 12.27;
-    public static final double L3ElevatorPosition = 28.04;
+    public static final double L2ElevatorPosition = 13.27;
+    public static final double L3ElevatorPosition = 27.04;
     public static final double L4ElevatorPosition = 54.4;
     public static final double L2AlgaeElevatorPosition = 14.272;
     public static final double L3AlgaeElevatorPosition = 32.85;
-    public static final double coralElevatorPosition = 11.596;
-    public static final double bargeElevatorPosition = 27;
+    public static final double coralElevatorPosition = 26.11;
+    public static final double bargeElevatorPosition = 54;
     public static final double defaultElevatorPosition = Math.PI/2;   
     public static final double processorElevatorPosition = 1;
 

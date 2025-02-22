@@ -46,14 +46,16 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("L3Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaeElevatorPosition, Constants.reefAlgaeAngle));
     NamedCommands.registerCommand("L2Algae", new MoveWholeArmToPositionCommand(Constants.L3AlgaeElevatorPosition, Constants.reefAlgaeAngle));
     NamedCommands.registerCommand("coralStationPosition", new MoveWholeArmToPositionCommand(Constants.coralElevatorPosition, Constants.coralArmAngle));
-    NamedCommands.registerCommand("IntakeCoral", new IntakeCoralCommand(Constants.coralIntakeSpeed));
-    NamedCommands.registerCommand("IntakeAlgae", new IntakeAlgaeCommand(Constants.algaeIntakeSpeed));
-    NamedCommands.registerCommand("PlaceCoral", new ScoreCoralCommand(Constants.coralScoringSpeed));
+    NamedCommands.registerCommand("IntakeCoral", new RunCoralManipulatorCommand(Constants.coralIntakeSpeed));
+    NamedCommands.registerCommand("IntakeAlgae", new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed));
+    NamedCommands.registerCommand("PlaceCoral", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
 
     autoChooser = AutoBuilder.buildAutoChooser("Center Simple Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     switchBreakout = new LimitSwitchManager();
     ledController = new LEDController(0, 36);
+
+    new MoveWholeArmToPositionCommand(Constants.armFullRotationElevatorHeight, SubsystemsInst.getInst().armSubsystem.getArmAngle());
   }
 
   /**
