@@ -4,9 +4,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
+import frc.robot.commands.MoveClimberInCommand;
+import frc.robot.commands.MoveClimberOutCommand;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
+import frc.robot.commands.TapClimberCommand;
 import frc.robot.lib.controls.XBoxController;
 
 
@@ -56,6 +59,10 @@ public void teleopInit(){
     manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.defaultElevatorPosition, Constants.defaultArmAngle));
     manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
     manipulatorController.whenPOVButtonPressed("S", new RunAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
+
+    driverController.whenButtonPressed("A", new MoveClimberOutCommand());
+    driverController.whenButtonPressed("B", new MoveClimberInCommand());
+    driverController.whenButtonPressed("X", new TapClimberCommand());
 
     //TEST COMMANDS
     // manipulatorController.whenButtonPressed("A", new IntakeCoralCommand(3000));
