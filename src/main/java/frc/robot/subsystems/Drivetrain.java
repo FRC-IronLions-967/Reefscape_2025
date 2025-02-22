@@ -86,7 +86,7 @@ public class Drivetrain extends SubsystemBase {
       );
 
   public Drivetrain() {
-    fieldRelative = false;
+    fieldRelative = true;
     driveController = IO.getInstance().getDriverController();
 
     // ----- Simulation

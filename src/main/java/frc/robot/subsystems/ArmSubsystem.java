@@ -128,7 +128,7 @@ public class ArmSubsystem extends SubsystemBase {
       .outputRange(-0.5, 0.5)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .pid(1.0, 0, 0.0)
-      .positionWrappingInputRange(0, 2*Math.PI)
+      .positionWrappingInputRange(Constants.armWiringMinConstraint, Constants.armWiringMaxConstraint)
       .positionWrappingEnabled(false);
 
     armVortex.configure(armVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
