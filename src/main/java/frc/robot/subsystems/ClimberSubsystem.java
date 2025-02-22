@@ -4,6 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -21,26 +30,26 @@ public class ClimberSubsystem extends SubsystemBase {
       .smartCurrentLimit(40)
       .idleMode(IdleMode.kBrake);
     climberMotorConfig.closedLoop
-      .feedbackSensor.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1, 0, 0);
     climberMotorConfig.absoluteEncoder.positionConversionFactor(Math.PI * 2);
 
-    ratchetServo = new Servo();
+    ratchetServo = new Servo(0);
   }
 
-  private boolean isRatchetOn() {
-    return ratchetServo.getPosition();
+  public boolean isRatchetOn() {
+    return ratchetServo.get() < 0;
   }
 
-  private void moveRatchet(double position) {
+  public void moveRatchet(double position) {
     ratchetServo.set(position);
   }
 
-  private double getClimbPosition() {
+  public double getClimbPosition() {
     return climberMotor.getAnalog().getPosition();
   }
 
-  private void moveClimberArm(double position) {
+  public void moveClimberArm(double position) {
     climberMotorController.setReference(position, ControlType.kPosition);
   }
 

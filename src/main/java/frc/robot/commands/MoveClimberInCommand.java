@@ -5,13 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class MoveClimberOutCommand extends Command {
+public class MoveClimberInCommand extends Command {
 
   private ClimberSubsystem climberSubsystem;
   /** Creates a new MoveClimberOutCommand. */
-  public MoveClimberOutCommand() {
+  public MoveClimberInCommand() {
     climberSubsystem = SubsystemsInst.getInst().climberSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climberSubsystem);
@@ -30,7 +32,7 @@ public class MoveClimberOutCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climberSubsystem.moveRatchet(0);
+    climberSubsystem.moveRatchet(1);
   }
 
   // Returns true when the command should end.

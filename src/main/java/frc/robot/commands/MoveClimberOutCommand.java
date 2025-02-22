@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveClimberOutCommand extends Command {
@@ -20,13 +22,15 @@ public class MoveClimberOutCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climberSubsystem.moveRatchet(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveClimberArm(10);
+    climberSubsystem.moveRatchet(0);
+    if (!climberSubsystem.isRatchetOn()) {
+      climberSubsystem.moveClimberArm(10);
+    }
   }
 
   // Called once the command ends or is interrupted.
