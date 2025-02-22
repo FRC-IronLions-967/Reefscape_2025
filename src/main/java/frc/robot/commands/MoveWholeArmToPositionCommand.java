@@ -33,8 +33,22 @@ public class MoveWholeArmToPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.moveElevator(elevatorPosition);
-    armSubsystem.moveArm(armPosition);
+    if (armSubsystem.getElevatorPosition() > elevatorPosition) {
+      armSubsystem.moveArm(armPosition);
+      if ((armSubsystem.getArmAngle() - 0.1 < armPosition &&
+      armPosition < armSubsystem.getArmAngle() + 0.1)) {
+        armSubsystem.moveElevator(elevatorPosition);
+      }
+    } else if (armSubsystem.getElevatorPosition() < elevatorPosition) {
+      armSubsystem.moveElevator(elevatorPosition);
+      if (armSubsystem.getElevatorPosition() >= elevatorPosition - 6.0
+        && armSubsystem.getElevatorPosition() <= elevatorPosition + 6.0) {
+      armSubsystem.moveArm(armPosition);
+      }
+    } else {
+      armSubsystem.moveArm(armPosition);
+      armSubsystem.moveElevator(elevatorPosition);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +58,6 @@ public class MoveWholeArmToPositionCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return armSubsystem.isInPosition();
   }
 }

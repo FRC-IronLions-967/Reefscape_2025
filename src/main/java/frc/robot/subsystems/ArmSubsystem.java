@@ -49,7 +49,8 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController algaeManipulatorVortexController;
   private SparkFlexConfig algaeManipulatorVortexConfig;
 
-  private BooleanSupplier coralLimitSwitch;
+  private BooleanSupplier coralInnerLimitSwitch;
+  private BooleanSupplier coralOuterLimitSwitch;
   private BooleanSupplier algaeLimitSwitch;
 
   private double elevatorHeightEndGoal;
@@ -134,6 +135,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     coralManipulatorVortexConfig
+      .smartCurrentLimit(60)
       .idleMode(IdleMode.kCoast);
     coralManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -143,16 +145,19 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     algaeManipulatorVortexConfig
+      .smartCurrentLimit(60)
       .idleMode(IdleMode.kCoast);
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(5e-3, 0, 0);
+      .pid(1e-2, 0, 0);
 
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
-    coralLimitSwitch = LimitSwitchManager.getSwitch(0);
-    algaeLimitSwitch = LimitSwitchManager.getSwitch(1);
+    coralInnerLimitSwitch = LimitSwitchManager.getSwitch(2);
+    coralOuterLimitSwitch = LimitSwitchManager.getSwitch(1);
+    algaeLimitSwitch = LimitSwitchManager.getSwitch(0);
+
     
     // ----- Simulation -----
     elevatorVortexSim = new SparkFlexSim(elevatorVortex, DCMotor.getNeoVortex(1));
@@ -249,8 +254,11 @@ public class ArmSubsystem extends SubsystemBase {
    * @return If the coral manipulator has Coral in it.
    */
   public boolean hasCoral() {
-    // return coralLimitSwitch.getAsBoolean();
-    return false;
+    return coralInnerLimitSwitch.getAsBoolean();
+  }
+
+  public boolean doesntHaveCoral() {
+    return !coralOuterLimitSwitch.getAsBoolean();
   }
 
   /**
@@ -258,7 +266,14 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed The speed at which the wheels run.
    */
   public void runAlgaeManipulator(double speed) {
-    algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    //algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    if (speed > 0) {
+      algaeManipulatorVortex.set(1);
+    } else if (speed < 0) {
+      algaeManipulatorVortex.set(-1);
+    } else {
+      algaeManipulatorVortex.set(0);
+    }
   }
 
   /**
@@ -266,10 +281,15 @@ public class ArmSubsystem extends SubsystemBase {
    * @return If the algae manipulator has Algae in it.
    */
   public boolean hasAlgae() {
-    // return algaeLimitSwitch.getAsBoolean();
-    return false;
+    return algaeLimitSwitch.getAsBoolean();
   }
 
+  public boolean isInPosition() {
+    return (getElevatorPosition() - 1.0 < elevatorHeightEndGoal &&
+            elevatorHeightEndGoal < getElevatorPosition() + 1.0) &&
+            (getArmAngle() - 0.2 < rotaryArmEndGoal &&
+            rotaryArmEndGoal < getArmAngle() + 0.2); 
+  }
   /**
    * Sets the Arm State based on what game pieces are in the manipuators.
    */

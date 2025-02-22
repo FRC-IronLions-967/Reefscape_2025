@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.SPI.Port;
 public class LimitSwitchManager {
 
     private SPI port;
-    private byte[] latestBytes = {0x00, 0x00};;
+    private byte[] latestBytes = new byte[2];
     private static Boolean[] switchStates = new Boolean[16];
     private final int kBoardSize = 16;
 
