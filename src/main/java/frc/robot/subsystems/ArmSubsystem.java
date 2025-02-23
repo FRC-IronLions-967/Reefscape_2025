@@ -166,7 +166,7 @@ public class ArmSubsystem extends SubsystemBase {
       Constants.elevatorGearRatio,
       6.0, //guess and replace with constant 
       Units.inchesToMeters(Constants.elevatorSprocketRadius), //correct, replace with constant
-      Units.inchesToMeters(Constants.defaultElevatorPosition-1), 
+      Units.inchesToMeters(Constants.armFullRotationElevatorHeight-1), 
       Units.inchesToMeters(Constants.bargeElevatorPosition+1), 
       true, 
       0.0, 
@@ -284,11 +284,17 @@ public class ArmSubsystem extends SubsystemBase {
     return algaeLimitSwitch.getAsBoolean();
   }
 
+  public boolean isArmInPosition() {
+    return getArmAngle() - 0.2 < rotaryArmEndGoal && rotaryArmEndGoal < getArmAngle() + 0.2;
+  }
+
+  public boolean isElevatorInPosition() {
+    return getElevatorPosition() - 1.0 < elevatorHeightEndGoal &&
+    elevatorHeightEndGoal < getElevatorPosition() + 1.0;
+  }
+
   public boolean isInPosition() {
-    return (getElevatorPosition() - 1.0 < elevatorHeightEndGoal &&
-            elevatorHeightEndGoal < getElevatorPosition() + 1.0) &&
-            (getArmAngle() - 0.2 < rotaryArmEndGoal &&
-            rotaryArmEndGoal < getArmAngle() + 0.2); 
+    return isArmInPosition() && isElevatorInPosition();
   }
   /**
    * Sets the Arm State based on what game pieces are in the manipuators.

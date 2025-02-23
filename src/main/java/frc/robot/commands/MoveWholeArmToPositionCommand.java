@@ -33,17 +33,19 @@ public class MoveWholeArmToPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //We want to make sure that the arm doesn't rotate through reef branches.
+
+    // If the elevator is going down, the arm will move then the elevator.
     if (armSubsystem.getElevatorPosition() > elevatorPosition) {
       armSubsystem.moveArm(armPosition);
-      if ((armSubsystem.getArmAngle() - 0.1 < armPosition &&
-      armPosition < armSubsystem.getArmAngle() + 0.1)) {
+      if (armSubsystem.isArmInPosition()) {
         armSubsystem.moveElevator(elevatorPosition);
       }
+      //If the elevator is going up, the elevator will move then the arm.
     } else if (armSubsystem.getElevatorPosition() < elevatorPosition) {
       armSubsystem.moveElevator(elevatorPosition);
-      if (armSubsystem.getElevatorPosition() >= elevatorPosition - 6.0
-        && armSubsystem.getElevatorPosition() <= elevatorPosition + 6.0) {
-      armSubsystem.moveArm(armPosition);
+      if (armSubsystem.isElevatorInPosition()) {
+        armSubsystem.moveArm(armPosition);
       }
     } else {
       armSubsystem.moveArm(armPosition);

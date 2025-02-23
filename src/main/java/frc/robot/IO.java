@@ -56,7 +56,8 @@ public void teleopInit(){
     manipulatorController.whenPOVButtonPressed("E", intakeAlgaeL3);
     manipulatorController.whenPOVButtonPressed("N", new MoveWholeArmToPositionCommand(Constants.bargeElevatorPosition, Constants.bargeAlgaeAngle));
     manipulatorController.whenButtonPressed("LBUMP", new MoveWholeArmToPositionCommand(Constants.processorElevatorPosition, Constants.processorAlgaeAngle));
-    manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.defaultElevatorPosition, Constants.defaultArmAngle));
+    manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.armFullRotationElevatorHeight, Constants.defaultArmAngle));
+    manipulatorController.whenButtonPressed("RTRIG", new MoveWholeArmToPositionCommand(Constants.climbElevatorPosition, Constants.climbArmAngle));
     manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
     manipulatorController.whenPOVButtonPressed("S", new RunAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
 
@@ -64,11 +65,6 @@ public void teleopInit(){
     driverController.whenButtonPressed("B", new MoveClimberInCommand());
     driverController.whenButtonPressed("X", new TapClimberCommand());
 
-    //TEST COMMANDS
-    // manipulatorController.whenButtonPressed("A", new IntakeCoralCommand(3000));
-    // manipulatorController.whenButtonPressed("B", new IntakeAlgaeCommand(1000));
-    // manipulatorController.whenButtonPressed("X", new TestElevator());
-    // manipulatorController.whenButtonPressed("Y", new TestRotaryArm());
     
 }
 

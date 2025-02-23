@@ -133,7 +133,8 @@ public final class Constants {
     public static final double reefAlgaeAngle = 1.710;
     public static final double bargeAlgaeAngle = 0.29;
     public static final double processorAlgaeAngle = 1.89;
-    public static final double defaultArmAngle = Math.PI / 2;
+    public static final double climbArmAngle = Math.PI / 2;
+    public static final double defaultArmAngle = Math.PI;
     // Elevator Positions
     public static final double L2ElevatorPosition = 13.27;
     public static final double L3ElevatorPosition = 27.04;
@@ -141,9 +142,11 @@ public final class Constants {
     public static final double L2AlgaeElevatorPosition = 14.272;
     public static final double L3AlgaeElevatorPosition = 32.85;
     public static final double coralElevatorPosition = 26.11;
-    public static final double bargeElevatorPosition = 54;
-    public static final double defaultElevatorPosition = 0;   
-    public static final double processorElevatorPosition = 1;
+    public static final double bargeElevatorPosition = 54.0;
+    public static final double climbElevatorPosition = 0.0;   
+    public static final double processorElevatorPosition = 1.0;
 
+    public static final double climberTapValue = 10.0;
+    public static final double climberOutPosition = 140.0;
 
 }

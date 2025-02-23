@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Utils.Constants;
 
 public class ClimberSubsystem extends SubsystemBase {
 
@@ -59,7 +60,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void tapClimberFurther() {
-    climberMotorController.setReference(getClimbPosition() - 10.0, ControlType.kPosition);
+    climberMotorController.setReference(getClimbPosition() - Constants.climberTapValue, ControlType.kPosition);
   }
 
   @Override

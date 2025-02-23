@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Utils.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
@@ -29,7 +30,7 @@ public class MoveClimberOutCommand extends Command {
   public void execute() {
     climberSubsystem.moveRatchet(0);
     if (!climberSubsystem.isRatchetOn()) {
-      climberSubsystem.moveClimberArm(140);
+      climberSubsystem.moveClimberArm(Constants.climberOutPosition);
     }
   }
 
@@ -40,6 +41,6 @@ public class MoveClimberOutCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (9 < climberSubsystem.getClimbPosition() && climberSubsystem.getClimbPosition() < 11);
+    return (Constants.climberOutPosition - 1 < climberSubsystem.getClimbPosition() && climberSubsystem.getClimbPosition() < Constants.climberOutPosition + 1);
   }
 }
