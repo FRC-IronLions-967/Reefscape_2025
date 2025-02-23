@@ -4,8 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
-import frc.robot.commands.MoveClimberInCommand;
-import frc.robot.commands.MoveClimberOutCommand;
+import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
@@ -61,8 +60,8 @@ public void teleopInit(){
     manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
     manipulatorController.whenPOVButtonPressed("S", new RunAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
 
-    driverController.whenButtonPressed("A", new MoveClimberOutCommand());
-    driverController.whenButtonPressed("B", new MoveClimberInCommand());
+    driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
+    driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
     driverController.whenButtonPressed("X", new TapClimberCommand());
 
     

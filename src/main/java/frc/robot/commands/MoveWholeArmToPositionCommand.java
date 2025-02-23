@@ -47,9 +47,9 @@ public class MoveWholeArmToPositionCommand extends Command {
       if (armSubsystem.isElevatorInPosition()) {
         armSubsystem.moveArm(armPosition);
       }
+      //If the elevator is not moving, then the arm can move;
     } else {
       armSubsystem.moveArm(armPosition);
-      armSubsystem.moveElevator(elevatorPosition);
     }
   }
 

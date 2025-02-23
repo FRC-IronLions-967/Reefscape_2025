@@ -15,7 +15,6 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -197,10 +196,6 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorHeightEndGoal = position;
   }
 
-  public void testElevator(double position) {
-    elevatorVortex.set(position);
-  }
-
   /**
    * 
    * @return The elevator position.
@@ -208,10 +203,6 @@ public class ArmSubsystem extends SubsystemBase {
   public double getElevatorPosition() {
     //return elevatorVortex.getEncoder().getPosition();
     return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
-  }
-
-  public void testArm(double position) {
-    armVortexController.setReference(position, ControlType.kPosition);
   }
 
   /**
@@ -245,17 +236,18 @@ public class ArmSubsystem extends SubsystemBase {
     // coralManipulatorVortex.set(speed);
   }
 
-  public void testCoral(double speed) {
-    coralManipulatorVortex.set(speed);
-  }
-
   /**
-   * 
+   * Checks the inner limit switch
    * @return If the coral manipulator has Coral in it.
    */
   public boolean hasCoral() {
     return coralInnerLimitSwitch.getAsBoolean();
   }
+
+  /**
+   * Checks the outer limit switch.
+   * @return If the robot has coral in the oral manipulator
+   */
 
   public boolean doesntHaveCoral() {
     return !coralOuterLimitSwitch.getAsBoolean();
@@ -284,14 +276,29 @@ public class ArmSubsystem extends SubsystemBase {
     return algaeLimitSwitch.getAsBoolean();
   }
 
+  /**
+   * Checks if the robot arm is in the correct position
+   * @return if the arm is in position
+   */
+
   public boolean isArmInPosition() {
-    return getArmAngle() - 0.2 < rotaryArmEndGoal && rotaryArmEndGoal < getArmAngle() + 0.2;
+    return getArmAngle() - Constants.armTolerance < rotaryArmEndGoal && rotaryArmEndGoal < getArmAngle() + Constants.armTolerance;
   }
 
+  /**
+   * Checks if the robot elevator is in the correct position
+   * @return If the arm is in position
+   */
+
   public boolean isElevatorInPosition() {
-    return getElevatorPosition() - 1.0 < elevatorHeightEndGoal &&
-    elevatorHeightEndGoal < getElevatorPosition() + 1.0;
+    return getElevatorPosition() - Constants.elevatorTolerance < elevatorHeightEndGoal &&
+    elevatorHeightEndGoal < getElevatorPosition() + Constants.elevatorTolerance;
   }
+
+  /**
+   * Checks if the whole arm subsystem is in position
+   * @return If both the arm and elevator are in position.
+   */
 
   public boolean isInPosition() {
     return isArmInPosition() && isElevatorInPosition();
@@ -318,11 +325,11 @@ public class ArmSubsystem extends SubsystemBase {
     setArmState();
     switch (state) {
       case STARTUP:
-        elevatorHeightEndGoal = Constants.armFullRotationElevatorHeight + 2;
+        elevatorHeightEndGoal = Constants.armFullRotationElevatorHeight + Constants.elevatorTolerance;
       case EMPTY:
 
       //Makes Rotation Safe
-        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight + 0.2) { // Fudge factor for imperfect positioning
+        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight + Constants.armTolerance) { // Fudge factor for imperfect positioning
           rotaryArmCurrentTarget = (rotaryArmEndGoal >= Constants.emptyArmConstraintForAlgaeManipulatorAtE0) ? Constants.emptyArmConstraintForAlgaeManipulatorAtE0 : rotaryArmEndGoal;
         } else {
           rotaryArmCurrentTarget = rotaryArmEndGoal;
@@ -373,15 +380,14 @@ public class ArmSubsystem extends SubsystemBase {
     }
     elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition);
 
-    SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
-    SmartDashboard.putNumber("Arm Position", getArmAngle());
-    SmartDashboard.putNumber("Elevator End Goal", elevatorHeightEndGoal);
-    SmartDashboard.putNumber("Elevator Current Goal", elevatorHeightCurrentTarget);
-    SmartDashboard.putNumber("Arm End Goal", rotaryArmEndGoal);
-    SmartDashboard.putNumber("Arm Current Target", rotaryArmCurrentTarget);
+    // SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    // SmartDashboard.putNumber("Arm Position", getArmAngle());
+    // SmartDashboard.putNumber("Elevator End Goal", elevatorHeightEndGoal);
+    // SmartDashboard.putNumber("Elevator Current Goal", elevatorHeightCurrentTarget);
+    // SmartDashboard.putNumber("Arm End Goal", rotaryArmEndGoal);
+    // SmartDashboard.putNumber("Arm Current Target", rotaryArmCurrentTarget);
     SmartDashboard.putBoolean("Coral_IN", hasCoral());
     SmartDashboard.putBoolean("Algae In", hasAlgae());
-    SmartDashboard.putNumber("Motr Power", elevatorVortex.getAppliedOutput());
     SmartDashboard.putString("State", state.toString());
 
   }  

@@ -148,5 +148,12 @@ public final class Constants {
 
     public static final double climberTapValue = 10.0;
     public static final double climberOutPosition = 140.0;
+    public static final double climberInPosition = 0.0;
+    public static final double climberRatchetOnPosition = 1.0;
+    public static final double climberRatchetOffPosition = 0.0;
+
+    public static final double elevatorTolerance = 1.0;
+    public static final double armTolerance = 0.1;
+    public static final double climberTolerance = 5.0;
 
 }

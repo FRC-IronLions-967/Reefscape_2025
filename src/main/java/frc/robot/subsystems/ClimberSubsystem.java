@@ -14,7 +14,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.Constants;
 
@@ -42,30 +41,64 @@ public class ClimberSubsystem extends SubsystemBase {
     //ratchetServo = new Servo(0);
   }
 
+  /**
+   * Checks if ratchet is on.
+   * @return If rachet is on
+   */
+
   public boolean isRatchetOn() {
     // return ratchetServo.get() < 0;
     return false;
   }
 
+  /**
+   * Sets the ratchet servo to a position
+   * @param position position (from 0 - 1) to set the servo to
+   */
+
   public void moveRatchet(double position) {
     // ratchetServo.set(position);
   }
+
+  /**
+   * Gets the climber position
+   * @return the climb psoition
+   */
 
   public double getClimbPosition() {
     return climberMotor.getEncoder().getPosition();
   }
 
+  /**
+   * moves the climber arm
+   * @param position position to move the climber arm to
+   */
+
   public void moveClimberArm(double position) {
     climberMotorController.setReference(position, ControlType.kPosition);
   }
+  
+  /**
+   * moves the climber arm to account for the string tightening 
+   */
 
   public void tapClimberFurther() {
     climberMotorController.setReference(getClimbPosition() - Constants.climberTapValue, ControlType.kPosition);
   }
 
+  /**
+   * Checks if the climber is in position
+   * @param setPosition The position that the climber should be at
+   * @return if the climber is at the set position
+   */
+
+  public boolean isClimberInPosition(double setPosition) {
+    return setPosition - Constants.climberTolerance < getClimbPosition() && getClimbPosition() < setPosition + Constants.climberTolerance;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Climber Position", getClimbPosition());
+    // SmartDashboard.putNumber("Climber Position", getClimbPosition());
   }
 }
