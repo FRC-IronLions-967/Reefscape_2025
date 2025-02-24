@@ -433,7 +433,11 @@ public class Drivetrain extends SubsystemBase {
       m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
       m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
+      addVisionMeasurement(getPose(), Robot.kDefaultPeriod, null);
+
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
+      SmartDashboard.putNumber("Pose X", getPose().getX());
+      SmartDashboard.putNumber("Pose Y", getPose().getY());
       // SmartDashboard.putNumber("GyroHeading", m_gyro.getRotation2d().getDegrees());
     } 
 

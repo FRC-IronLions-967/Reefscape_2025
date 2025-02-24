@@ -49,6 +49,20 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("IntakeCoral", new RunCoralManipulatorCommand(Constants.coralIntakeSpeed));
     NamedCommands.registerCommand("IntakeAlgae", new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed));
     NamedCommands.registerCommand("PlaceCoral", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
+    NamedCommands.registerCommand("a", new AutoAlignToReefCommand(Constants.aPose2d));
+    NamedCommands.registerCommand("b", new AutoAlignToReefCommand(Constants.bPose2d));
+    NamedCommands.registerCommand("c", new AutoAlignToReefCommand(Constants.cPose2d));
+    NamedCommands.registerCommand("d", new AutoAlignToReefCommand(Constants.dPose2d));
+    NamedCommands.registerCommand("e", new AutoAlignToReefCommand(Constants.ePose2d));
+    NamedCommands.registerCommand("f", new AutoAlignToReefCommand(Constants.fPose2d));
+    NamedCommands.registerCommand("g", new AutoAlignToReefCommand(Constants.gPose2d));
+    NamedCommands.registerCommand("h", new AutoAlignToReefCommand(Constants.hPose2d));
+    NamedCommands.registerCommand("i", new AutoAlignToReefCommand(Constants.iPose2d));
+    NamedCommands.registerCommand("j", new AutoAlignToReefCommand(Constants.jPose2d));
+    NamedCommands.registerCommand("k", new AutoAlignToReefCommand(Constants.kPose2d));
+    NamedCommands.registerCommand("l", new AutoAlignToReefCommand(Constants.lPose2d));
+    NamedCommands.registerCommand("LeftCoralStation", new AutoAlignToCoralStationCommand(true));
+    NamedCommands.registerCommand("RightCoralStation", new AutoAlignToCoralStationCommand(false));
 
     autoChooser = AutoBuilder.buildAutoChooser("Center Simple Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);

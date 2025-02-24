@@ -212,9 +212,23 @@ public class Vision extends SubsystemBase {
         return curStdDevs;
     }
 
+    /**
+     * Figures out current distance to reef
+     * @param currentPose2d Current pose
+     * @param reefPose2d End pose
+     * @return Distance to reef
+     */
+
     private double calculateDistanceToReef(Pose2d currentPose2d, Pose2d reefPose2d) {
         return Math.sqrt((currentPose2d.getX() - reefPose2d.getX()) * (currentPose2d.getX() - reefPose2d.getX()) + (currentPose2d.getY() - reefPose2d.getY()) * (currentPose2d.getY() - reefPose2d.getY()));
     }
+
+    /**
+     * Figures out closest branch based on the current pose
+     * @param currentPose2d Current pose
+     * @param reefPose2ds List of all reef poses
+     * @return Pose of the closest reef
+     */
 
     public Pose2d figureOutClosestBranch(Pose2d currentPose2d, Pose2d[] reefPose2ds) {
         double minDistance = 100.0; //random int
@@ -225,6 +239,20 @@ public class Vision extends SubsystemBase {
                 minPoseNumber = i;
         }
         return reefPose2ds[minPoseNumber];
+    }
+
+    /**
+     * Checks to see if the robot is at a commanded pose
+     * @param currentPose2d Current Pose
+     * @param finalPose2d Final Pose
+     * @return If the current pose equals the end pose
+     */
+
+    public boolean isAtPose(Pose2d currentPose2d, Pose2d finalPose2d) {
+        return Constants.poseTolerance - currentPose2d.getX() < finalPose2d.getX() &&
+               Constants.poseTolerance + currentPose2d.getX() > finalPose2d.getX() &&
+               Constants.poseTolerance - currentPose2d.getY() < finalPose2d.getY() &&
+               Constants.poseTolerance + currentPose2d.getY() > finalPose2d.getY();
     }
 
 

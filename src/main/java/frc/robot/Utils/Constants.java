@@ -159,6 +159,7 @@ public final class Constants {
     public static final double elevatorTolerance = 1.0;
     public static final double armTolerance = 0.1;
     public static final double climberTolerance = 5.0;
+    public static final double poseTolerance = 0.25;
 
     //Reef names named on the game manual pg 24.
     public static final Pose2d aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
