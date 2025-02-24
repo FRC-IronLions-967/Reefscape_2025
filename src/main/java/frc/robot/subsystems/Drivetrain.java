@@ -49,10 +49,12 @@ public class Drivetrain extends SubsystemBase {
 
   private double limiter;
 
+  private ArmSubsystem armSubsystem = SubsystemsInst.getInst().armSubsystem;
+
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
-  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(10);
-  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(10);
-  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(10);
+  private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   private final SdsSwerveModule m_frontLeft = new SdsSwerveModule(5, 6, Constants.m_frontLeftLocation);
   private final SdsSwerveModule m_frontRight = new SdsSwerveModule(3, 4, Constants.m_frontRightLocation);
@@ -62,7 +64,8 @@ public class Drivetrain extends SubsystemBase {
   private final SdsSwerveModule[] swerveMods = {m_frontLeft, m_frontRight, m_backLeft, m_backRight};
 
   private XBoxController driveController;
-  // first two colums above are done
+
+
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
 
   // ----- Simulation
@@ -86,7 +89,7 @@ public class Drivetrain extends SubsystemBase {
       );
 
   public Drivetrain() {
-    fieldRelative = false;
+    fieldRelative = true;
     driveController = IO.getInstance().getDriverController();
 
     // ----- Simulation
@@ -423,6 +426,12 @@ public class Drivetrain extends SubsystemBase {
     public void periodic(){
       // Update the pose
       updateOdometry();
+
+      //Update the max acceleration of the moters.
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
       // SmartDashboard.putNumber("GyroHeading", m_gyro.getRotation2d().getDegrees());

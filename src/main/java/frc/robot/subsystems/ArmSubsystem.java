@@ -48,7 +48,8 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkClosedLoopController algaeManipulatorVortexController;
   private SparkFlexConfig algaeManipulatorVortexConfig;
 
-  private BooleanSupplier coralLimitSwitch;
+  private BooleanSupplier coralInnerLimitSwitch;
+  private BooleanSupplier coralOuterLimitSwitch;
   private BooleanSupplier algaeLimitSwitch;
 
   private double elevatorHeightEndGoal;
@@ -77,6 +78,9 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
+    elevatorHeightEndGoal = 5.0;
+    rotaryArmEndGoal = Math.PI;
+
     state = ArmStates.STARTUP;
 
     elevatorVortex = new SparkFlex(9, MotorType.kBrushless);
@@ -96,56 +100,63 @@ public class ArmSubsystem extends SubsystemBase {
     algaeManipulatorVortexConfig = new SparkFlexConfig();
 
     elevatorVortexConfig
-      .smartCurrentLimit(40)
+      .inverted(true)
+      .smartCurrentLimit(60)
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
       .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
       .velocityConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
     elevatorVortexConfig.analogSensor
-      .positionConversionFactor(5.0 / Units.inchesToMeters(2.0)) // native 0-5V, 2 meter travel
-      .velocityConversionFactor(5.0 / Units.inchesToMeters(2.0)); // 
+      .positionConversionFactor(Units.metersToInches(2.0) / 5.0) // native 0-5V, 2 meter travel
+      .velocityConversionFactor(Units.metersToInches(2.0) / 5.0); // 
     elevatorVortexConfig.closedLoop
+      .outputRange(-0.4, 1)
       .feedbackSensor(FeedbackSensor.kAnalogSensor)
-      .pid(1.0, 0, 0);
+      .pid(0.25, 0, 3);//FF: 0.000139
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-
 
     armVortexConfig
       .smartCurrentLimit(40)
       .idleMode(IdleMode.kBrake);
     armVortexConfig.absoluteEncoder
       .velocityConversionFactor(2.0 * Math.PI / 60.0)
-      .positionConversionFactor(Math.PI * 2);
+      .positionConversionFactor(Math.PI * 2)
+      .zeroOffset(Constants.kArmZeroOffset / (Math.PI * 2));
     armVortexConfig.closedLoop
+      .outputRange(-0.5, 0.5)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .pid(1.0, 0, 0.0)
-      .positionWrappingInputRange(0, 2*Math.PI)
+      .positionWrappingInputRange(Constants.armWiringMinConstraint, Constants.armWiringMaxConstraint)
       .positionWrappingEnabled(false);
 
     armVortex.configure(armVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
     coralManipulatorVortexConfig
+      .smartCurrentLimit(60)
       .idleMode(IdleMode.kCoast);
     coralManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0);
+      .pid(1e-4, 0, 0);
 
     coralManipulatorVortex.configure(coralManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
     algaeManipulatorVortexConfig
+      .smartCurrentLimit(60)
       .idleMode(IdleMode.kCoast);
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1, 0, 0);
+      .pid(1e-2, 0, 0);
 
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 
-    coralLimitSwitch = LimitSwitchManager.getSwitch(0);
-    algaeLimitSwitch = LimitSwitchManager.getSwitch(1);
+    coralInnerLimitSwitch = LimitSwitchManager.getSwitch(2);
+    coralOuterLimitSwitch = LimitSwitchManager.getSwitch(1);
+    algaeLimitSwitch = LimitSwitchManager.getSwitch(0);
+
     
     // ----- Simulation -----
     elevatorVortexSim = new SparkFlexSim(elevatorVortex, DCMotor.getNeoVortex(1));
@@ -154,7 +165,7 @@ public class ArmSubsystem extends SubsystemBase {
       Constants.elevatorGearRatio,
       6.0, //guess and replace with constant 
       Units.inchesToMeters(Constants.elevatorSprocketRadius), //correct, replace with constant
-      Units.inchesToMeters(Constants.defaultElevatorPosition-1), 
+      Units.inchesToMeters(Constants.armFullRotationElevatorHeight-1), 
       Units.inchesToMeters(Constants.bargeElevatorPosition+1), 
       true, 
       0.0, 
@@ -191,7 +202,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public double getElevatorPosition() {
     //return elevatorVortex.getEncoder().getPosition();
-    return elevatorVortex.getAnalog().getPosition() + Constants.kElevatorAnalogZeroOffset;
+    return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
   }
 
   /**
@@ -222,14 +233,24 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public void runCoralManipulator(double speed) {
     coralManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    // coralManipulatorVortex.set(speed);
   }
 
   /**
-   * 
+   * Checks the inner limit switch
    * @return If the coral manipulator has Coral in it.
    */
   public boolean hasCoral() {
-    return coralLimitSwitch.getAsBoolean();
+    return coralInnerLimitSwitch.getAsBoolean();
+  }
+
+  /**
+   * Checks the outer limit switch.
+   * @return If the robot has coral in the oral manipulator
+   */
+
+  public boolean doesntHaveCoral() {
+    return !coralOuterLimitSwitch.getAsBoolean();
   }
 
   /**
@@ -237,7 +258,14 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed The speed at which the wheels run.
    */
   public void runAlgaeManipulator(double speed) {
-    algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    //algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    if (speed > 0) {
+      algaeManipulatorVortex.set(1);
+    } else if (speed < 0) {
+      algaeManipulatorVortex.set(-1);
+    } else {
+      algaeManipulatorVortex.set(0);
+    }
   }
 
   /**
@@ -248,6 +276,33 @@ public class ArmSubsystem extends SubsystemBase {
     return algaeLimitSwitch.getAsBoolean();
   }
 
+  /**
+   * Checks if the robot arm is in the correct position
+   * @return if the arm is in position
+   */
+
+  public boolean isArmInPosition() {
+    return getArmAngle() - Constants.armTolerance < rotaryArmEndGoal && rotaryArmEndGoal < getArmAngle() + Constants.armTolerance;
+  }
+
+  /**
+   * Checks if the robot elevator is in the correct position
+   * @return If the arm is in position
+   */
+
+  public boolean isElevatorInPosition() {
+    return getElevatorPosition() - Constants.elevatorTolerance < elevatorHeightEndGoal &&
+    elevatorHeightEndGoal < getElevatorPosition() + Constants.elevatorTolerance;
+  }
+
+  /**
+   * Checks if the whole arm subsystem is in position
+   * @return If both the arm and elevator are in position.
+   */
+
+  public boolean isInPosition() {
+    return isArmInPosition() && isElevatorInPosition();
+  }
   /**
    * Sets the Arm State based on what game pieces are in the manipuators.
    */
@@ -268,17 +323,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     // transitions are less important than just knowing the current state
     setArmState();
-
     switch (state) {
       case STARTUP:
-        elevatorHeightCurrentTarget = elevatorHeightEndGoal;
-        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight) {
-          rotaryArmCurrentTarget = getArmAngle();
-        }
+        elevatorHeightEndGoal = Constants.armFullRotationElevatorHeight + Constants.elevatorTolerance;
       case EMPTY:
 
       //Makes Rotation Safe
-        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight + 0.2) { // Fudge factor for imperfect positioning
+        if (getElevatorPosition() <= Constants.armFullRotationElevatorHeight + Constants.armTolerance) { // Fudge factor for imperfect positioning
           rotaryArmCurrentTarget = (rotaryArmEndGoal >= Constants.emptyArmConstraintForAlgaeManipulatorAtE0) ? Constants.emptyArmConstraintForAlgaeManipulatorAtE0 : rotaryArmEndGoal;
         } else {
           rotaryArmCurrentTarget = rotaryArmEndGoal;
@@ -323,8 +374,21 @@ public class ArmSubsystem extends SubsystemBase {
         break;
     }
 
-    armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
-    elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition);
+
+    if (state != ArmStates.STARTUP) {
+      armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
+    }
+    elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition);
+
+    // SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    // SmartDashboard.putNumber("Arm Position", getArmAngle());
+    // SmartDashboard.putNumber("Elevator End Goal", elevatorHeightEndGoal);
+    // SmartDashboard.putNumber("Elevator Current Goal", elevatorHeightCurrentTarget);
+    // SmartDashboard.putNumber("Arm End Goal", rotaryArmEndGoal);
+    // SmartDashboard.putNumber("Arm Current Target", rotaryArmCurrentTarget);
+    SmartDashboard.putBoolean("Coral_IN", hasCoral());
+    SmartDashboard.putBoolean("Algae In", hasAlgae());
+    SmartDashboard.putString("State", state.toString());
 
   }  
   

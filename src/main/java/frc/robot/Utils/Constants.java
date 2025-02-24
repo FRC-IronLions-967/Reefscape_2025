@@ -38,7 +38,8 @@ public final class Constants {
     public static final double kSteerGearRatio = 150.0/7.0;
     //needs tunings
     public static final double kSecondsPerMinute = 60.0;
-    public static final double kElevatorAnalogZeroOffset = 0.0;
+    public static final double kElevatorAnalogZeroOffset = 4.23;
+    public static final double kArmZeroOffset = 1.961;
 
     public static final double objectDetectionCameraYawOffset = 0.0;
     public static final double kMaxNeoSpeed = 5676.0;
@@ -113,48 +114,51 @@ public final class Constants {
     public static final double coralWheelRadius = 1.0; //needs tunig
     public static final double algaeWheelRadius = 1.0; //needs tuning\
 
-    public static final double coralIntakeSpeed = 5600; //needs tuning
-    public static final double coralScoringSpeed = 5600; //needs tuning
+    public static final double coralIntakeSpeed = -6500; //needs tuning
+    public static final double coralScoringSpeed = 6500; //needs tuning
     public static final double algaeIntakeSpeed = 5600; //needs tuning
-    public static final double algaeScoringSpeed = 5600; //needs tuning
+    public static final double algaeScoringSpeed = -5600; //needs tuning
 
-    public static final double armWiringMinConstraint = 0.262;
-    public static final double armWiringMaxConstraint = 4.101;
-    public static final double armFullRotationElevatorHeight = 2.5;
-    public static final double armWithAlgaeFullRotationElevatorHeight = 22;
-    public static final double emptyArmConstraintForAlgaeManipulatorAtE0 = 2.679; // Shouldn't go past this without raising the elevator.
-    public static final double armWithAlgaeMinConstraint = 1.288;
-    public static final double armWithAlgaeMaxConstraint = 1.865;
+    public static final double armWiringMinConstraint = 0.0;
+    public static final double armWiringMaxConstraint = 4.732;
+    public static final double armFullRotationElevatorHeight = 5.0;
+    public static final double armWithAlgaeFullRotationElevatorHeight = 23;
+    public static final double emptyArmConstraintForAlgaeManipulatorAtE0 = 2.734; // Shouldn't go past this without raising the elevator.
+    public static final double armWithAlgaeMinConstraint = 1.551;
+    public static final double armWithAlgaeMaxConstraint = 2.103;
     // State coral has no additional constraints.
 
 
     // Arm positions
-    public static final double L2L3ArmAngle = 3.75;
-    public static final double L4ArmAngle = 4.05;
+    public static final double L2L3ArmAngle = 4.02;
+    public static final double L4ArmAngle = 4.187;
     public static final double coralArmAngle = 0.681;
-    public static final double reefAlgaeAngle = Math.PI / 2.0;
+    public static final double reefAlgaeAngle = 1.710;
     public static final double bargeAlgaeAngle = 0.29;
     public static final double processorAlgaeAngle = 1.89;
+    public static final double climbArmAngle = Math.PI / 2;
     public static final double defaultArmAngle = Math.PI;
+  
     // Elevator Positions
-    public static final double L2ElevatorPosition = 4;
-    public static final double L3ElevatorPosition = 9.25;
-    public static final double L4ElevatorPosition = 26;
-    public static final double L2AlgaeElevatorPosition = 8;
-    public static final double L3AlgaeElevatorPosition = 15;
-    public static final double coralElevatorPosition = 11.596;
-    public static final double bargeElevatorPosition = 27;
-    public static final double defaultElevatorPosition = 0;
+    public static final double L2ElevatorPosition = 13.27;
+    public static final double L3ElevatorPosition = 27.04;
+    public static final double L4ElevatorPosition = 54.4;
+    public static final double L2AlgaeElevatorPosition = 14.272;
+    public static final double L3AlgaeElevatorPosition = 32.85;
+    public static final double coralElevatorPosition = 26.11;
+    public static final double bargeElevatorPosition = 54.0;
+    public static final double climbElevatorPosition = 0.0;   
+    public static final double processorElevatorPosition = 1.0;
 
-    public static final double[] L4Position = {L4ElevatorPosition, L4ArmAngle};
-    public static final double[] L3Position = {L3ElevatorPosition, L2L3ArmAngle};
-    public static final double[] L2Position = {L2ElevatorPosition, L2L3ArmAngle};
-    public static final double[] coralStationPosition = {coralElevatorPosition, coralArmAngle}; //needs tuning
-    public static final double[] L2AlgaePosition = {L2AlgaeElevatorPosition, reefAlgaeAngle}; //needs tuning
-    public static final double[] L3AlgaePosition = {L3AlgaeElevatorPosition, reefAlgaeAngle}; //needs tuning
-    public static final double[] processorPosition = {defaultElevatorPosition, processorAlgaeAngle}; //needs tuning
-    public static final double[] bargePosition = {bargeElevatorPosition, bargeAlgaeAngle}; //needs tuning
-    public static final double[] defaultPosition = {defaultElevatorPosition, defaultArmAngle}; 
+    public static final double climberTapValue = 10.0;
+    public static final double climberOutPosition = 140.0;
+    public static final double climberInPosition = 0.0;
+    public static final double climberRatchetOnPosition = 1.0;
+    public static final double climberRatchetOffPosition = 0.0;
+
+    public static final double elevatorTolerance = 1.0;
+    public static final double armTolerance = 0.1;
+    public static final double climberTolerance = 5.0;
 
     //Reef names named on the game manual pg 24.
     public static final Pose2d aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
@@ -176,6 +180,4 @@ public final class Constants {
     public static final Pose2d[] rightPose2ds = {bPose2d, dPose2d, fPose2d, hPose2d, jPose2d, lPose2d};
 
     public static final PathConstraints pathConstraints = new PathConstraints(3, 3, 540, 720, 12, false);
-
-
 }

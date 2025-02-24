@@ -77,6 +77,7 @@ public class SdsSwerveModule {
 
     turningConfig = new SparkMaxConfig();
     turningConfig
+        .inverted(true)
       .idleMode(IdleMode.kBrake)
       .smartCurrentLimit(40);
     turningConfig.closedLoop
@@ -192,5 +193,15 @@ public class SdsSwerveModule {
     turningMotorSim.setPosition(MathUtil.angleModulus(steerPos) + Math.PI);
     turningMotorSim.getAbsoluteEncoderSim().setPosition(MathUtil.angleModulus(steerPos) + Math.PI);
       
+  }
+
+  /**
+   * Limits the acceleration so the robot doesn't tip over.
+   * @param elevatorHeight Elevator Height
+   */
+
+  public void teleopUpdate(double elevatorHeight) {
+    driveConfig.closedLoopRampRate(0.208 * elevatorHeight);
+    driveMotor.configure(driveConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
   }
 }
