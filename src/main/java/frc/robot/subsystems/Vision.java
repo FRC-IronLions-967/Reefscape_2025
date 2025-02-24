@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Utils.Constants;
@@ -29,6 +28,7 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
 
 public class Vision extends SubsystemBase {
 
@@ -56,7 +56,6 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim aprilTagSimRear;
   private VisionSystemSim visionSim;
 
-
   /** Creates a new Vision. */
   public Vision() {
     aprilTagCameraFront = new PhotonCamera("April_Tag_Camera_Front");
@@ -67,6 +66,7 @@ public class Vision extends SubsystemBase {
     visionEstimatorFront.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     visionEstimatorRear = new PhotonPoseEstimator(Constants.kTagLayout , PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, Constants.kRobotToCamRear);
     visionEstimatorRear.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+
 
     // ----- Simulation
     if (Robot.isSimulation()) {
@@ -210,6 +210,21 @@ public class Vision extends SubsystemBase {
      */
     public Matrix<N3, N1> getEstimationStdDevs() {
         return curStdDevs;
+    }
+
+    private double calculateDistanceToReef(Pose2d currentPose2d, Pose2d reefPose2d) {
+        return Math.sqrt((currentPose2d.getX() - reefPose2d.getX()) * (currentPose2d.getX() - reefPose2d.getX()) + (currentPose2d.getY() - reefPose2d.getY()) * (currentPose2d.getY() - reefPose2d.getY()));
+    }
+
+    public Pose2d figureOutClosestBranch(Pose2d currentPose2d, Pose2d[] reefPose2ds) {
+        double minDistance = 100.0; //random int
+        int minPoseNumber = 0; //Fix this
+        for (int i = 0; i < reefPose2ds.length; i ++) {
+            if (calculateDistanceToReef(currentPose2d, reefPose2ds[i]) < minDistance);
+                minDistance = calculateDistanceToReef(currentPose2d, reefPose2ds[i]);
+                minPoseNumber = i;
+        }
+        return reefPose2ds[minPoseNumber];
     }
 
 

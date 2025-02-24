@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
@@ -9,6 +10,8 @@ import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
 import frc.robot.commands.TapClimberCommand;
+import frc.robot.commands.AutoAlignToCoralStationCommand;
+import frc.robot.commands.AutoAlignToReefCommand;
 import frc.robot.lib.controls.XBoxController;
 
 
@@ -46,6 +49,16 @@ public void teleopInit(){
         new MoveWholeArmToPositionCommand(Constants.L2AlgaeElevatorPosition, Constants.reefAlgaeAngle),
         new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
     );
+  
+   Command leftAutoAlignIntakeCoral = new ParallelCommandGroup(
+        new AutoAlignToCoralStationCommand(true),
+        intakeCoral
+    );
+
+    Command rightAutoAlignIntakeCoral = new ParallelCommandGroup(
+        new AutoAlignToCoralStationCommand(false),
+        intakeCoral
+    );
 
     manipulatorController.whenButtonPressed("Y", new MoveWholeArmToPositionCommand(Constants.L4ElevatorPosition, Constants.L4ArmAngle));
     manipulatorController.whenButtonPressed("X", new MoveWholeArmToPositionCommand(Constants.L3ElevatorPosition, Constants.L2L3ArmAngle));
@@ -63,8 +76,11 @@ public void teleopInit(){
     driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
     driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
     driverController.whenButtonPressed("X", new TapClimberCommand());
+    driverController.whenButtonPressed("LBUMP", new AutoAlignToReefCommand(true));
+    driverController.whenButtonPressed("RBUMP", new AutoAlignToReefCommand(false));
+    driverController.whenButtonPressed("LTRIG", leftAutoAlignIntakeCoral);
+    driverController.whenButtonPressed("RTRIG", rightAutoAlignIntakeCoral);
 
-    
 }
 
 public XBoxController getDriverController(){
