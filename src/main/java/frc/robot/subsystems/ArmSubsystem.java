@@ -148,7 +148,7 @@ public class ArmSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kCoast);
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1e-2, 0, 0);
+      .pid(1e-4, 0, 0);
 
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -258,14 +258,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed The speed at which the wheels run.
    */
   public void runAlgaeManipulator(double speed) {
-    //algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
-    if (speed > 0) {
-      algaeManipulatorVortex.set(1);
-    } else if (speed < 0) {
-      algaeManipulatorVortex.set(-1);
-    } else {
-      algaeManipulatorVortex.set(0);
-    }
+    algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
   }
 
   /**

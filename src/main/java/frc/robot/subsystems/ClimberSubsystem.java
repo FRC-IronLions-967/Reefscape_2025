@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.Constants;
 
@@ -38,7 +39,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.configure(climberMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
     climberMotorController = climberMotor.getClosedLoopController();
 
-    //ratchetServo = new Servo(0);
+    ratchetServo = new Servo(1);
   }
 
   /**
@@ -47,8 +48,7 @@ public class ClimberSubsystem extends SubsystemBase {
    */
 
   public boolean isRatchetOn() {
-    // return ratchetServo.get() < 0;
-    return false;
+    return ratchetServo.get() < 0.6;
   }
 
   /**
@@ -57,7 +57,11 @@ public class ClimberSubsystem extends SubsystemBase {
    */
 
   public void moveRatchet(double position) {
-    // ratchetServo.set(position);
+    ratchetServo.set(position);
+  }
+
+  public double getRatchetPosition() {
+    return ratchetServo.get();
   }
 
   /**
@@ -99,6 +103,8 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Ratchet Position", getRatchetPosition());
+    SmartDashboard.putBoolean("Is Ratchet On", isRatchetOn());
     // SmartDashboard.putNumber("Climber Position", getClimbPosition());
   }
 }

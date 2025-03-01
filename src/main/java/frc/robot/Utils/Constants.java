@@ -41,6 +41,8 @@ public final class Constants {
     public static final double objectDetectionCameraYawOffset = 0.0;
     public static final double kMaxNeoSpeed = 5676.0;
 
+    public static final double swerveWheelOffset = 0.675;
+
     public static final double swerveTurningP = 1.5;
     public static final double swerveTurningI = 0.0;
     public static final double swerveTurningD = 0.5;
@@ -113,8 +115,8 @@ public final class Constants {
 
     public static final double coralIntakeSpeed = -6500; //needs tuning
     public static final double coralScoringSpeed = 6500; //needs tuning
-    public static final double algaeIntakeSpeed = 5600; //needs tuning
-    public static final double algaeScoringSpeed = -5600; //needs tuning
+    public static final double algaeIntakeSpeed = -6500; //needs tuning
+    public static final double algaeScoringSpeed = 6500; //needs tuning
 
     public static final double armWiringMinConstraint = 0.0;
     public static final double armWiringMaxConstraint = 4.732;
@@ -149,8 +151,8 @@ public final class Constants {
     public static final double climberTapValue = 10.0;
     public static final double climberOutPosition = 140.0;
     public static final double climberInPosition = 0.0;
-    public static final double climberRatchetOnPosition = 1.0;
-    public static final double climberRatchetOffPosition = 0.0;
+    public static final double climberRatchetOnPosition = 0.75;
+    public static final double climberRatchetOffPosition = 0.5;
 
     public static final double elevatorTolerance = 1.0;
     public static final double armTolerance = 0.1;

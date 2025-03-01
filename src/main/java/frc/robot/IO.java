@@ -9,6 +9,7 @@ import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
 import frc.robot.commands.TapClimberCommand;
+import frc.robot.commands.ToggleRatchetCommand;
 import frc.robot.lib.controls.XBoxController;
 
 
@@ -63,6 +64,7 @@ public void teleopInit(){
     driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
     driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
     driverController.whenButtonPressed("X", new TapClimberCommand());
+    driverController.whenButtonPressed("Y", new ToggleRatchetCommand());
 
     
 }

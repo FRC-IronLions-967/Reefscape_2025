@@ -49,7 +49,7 @@ public class Drivetrain extends SubsystemBase {
 
   private double limiter;
 
-  private ArmSubsystem armSubsystem = SubsystemsInst.getInst().armSubsystem;
+  // private ArmSubsystem armSubsystem = SubsystemsInst.getInst().armSubsystem;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -428,13 +428,14 @@ public class Drivetrain extends SubsystemBase {
       updateOdometry();
 
       //Update the max acceleration of the moters.
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
+      SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
-      // SmartDashboard.putNumber("GyroHeading", m_gyro.getRotation2d().getDegrees());
+      SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
     } 
 
 
