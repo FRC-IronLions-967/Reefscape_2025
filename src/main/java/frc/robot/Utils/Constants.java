@@ -33,7 +33,7 @@ public final class Constants {
     public static final double kCoefficientFriction = 1.1;
     public static final double kDriveGearRatio = 6.75;
     public static final double kSteerGearRatio = 150.0/7.0;
-    //needs tunings
+    
     public static final double kSecondsPerMinute = 60.0;
     public static final double kElevatorAnalogZeroOffset = 4.23;
     public static final double kArmZeroOffset = 1.961;
@@ -110,13 +110,13 @@ public final class Constants {
     public static final double elevatorGearRatio =  14.087; // taken from robot 2/1
     public static final double elevatorSprocketRadius = 0.8755; // inches
     public static final double armGearRatio = 103.448; //taken from CAD 1/28
-    public static final double coralWheelRadius = 1.0; //needs tunig
-    public static final double algaeWheelRadius = 1.0; //needs tuning\
+    public static final double coralWheelRadius = 1.0; 
+    public static final double algaeWheelRadius = 1.0; 
 
-    public static final double coralIntakeSpeed = -6500; //needs tuning
-    public static final double coralScoringSpeed = 6500; //needs tuning
-    public static final double algaeIntakeSpeed = -6500; //needs tuning
-    public static final double algaeScoringSpeed = 6500; //needs tuning
+    public static final double coralIntakeSpeed = -6500; 
+    public static final double coralScoringSpeed = 6500; 
+    public static final double algaeIntakeSpeed = -1; 
+    public static final double algaeScoringSpeed = 1; 
 
     public static final double armWiringMinConstraint = 0.0;
     public static final double armWiringMaxConstraint = 4.732;

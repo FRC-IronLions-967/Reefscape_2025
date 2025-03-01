@@ -258,7 +258,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed The speed at which the wheels run.
    */
   public void runAlgaeManipulator(double speed) {
-    algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
+    algaeManipulatorVortex.set(speed);
   }
 
   /**
