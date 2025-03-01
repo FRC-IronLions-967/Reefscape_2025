@@ -152,12 +152,15 @@ public class SdsSwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    desiredState.optimize(new Rotation2d(ConvertedTurningPosition()));
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(ConvertedTurningPosition()));
+    // desiredState.optimize(new Rotation2d(ConvertedTurningPosition()));
 
     double convertedPosition = MathUtil.angleModulus(desiredState.angle.getRadians()) + Math.PI;
 
-    turningMotorController.setReference(convertedPosition + Constants.swerveWheelOffset, ControlType.kPosition);
-    driveMotorController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
+  //   turningMotorController.setReference(convertedPosition + Constants.swerveWheelOffset, ControlType.kPosition);
+  //   driveMotorController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    driveMotorController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+    turningMotorController.setReference(convertedPosition, ControlType.kPosition);
   }
   
   /** Module heading reported by steering encoder. */

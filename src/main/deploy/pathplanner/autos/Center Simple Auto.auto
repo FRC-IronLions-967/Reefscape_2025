@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center Simple Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4Position"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Simple Path"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Position"
+                }
+              }
+            ]
           }
         },
         {
