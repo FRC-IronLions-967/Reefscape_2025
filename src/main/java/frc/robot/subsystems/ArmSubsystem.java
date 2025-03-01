@@ -126,7 +126,7 @@ public class ArmSubsystem extends SubsystemBase {
     armVortexConfig.closedLoop
       .outputRange(-0.5, 0.5)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-      .pid(1.0, 0, 0.0)
+      .pid(1.0, 0, 0.1)
       .positionWrappingInputRange(Constants.armWiringMinConstraint, Constants.armWiringMaxConstraint)
       .positionWrappingEnabled(false);
 
