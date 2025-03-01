@@ -165,7 +165,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     ChassisSpeeds chassisSpeeds = fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
     //Time slice discretization code taken from 254/YAGSL
     //Compensates for second order kinematic drift
@@ -365,14 +365,14 @@ public class Drivetrain extends SubsystemBase {
       // Get the x speed. We are inverting this because Xbox controllers return
       // negative values when we push forward.
       final var xSpeed = limiter * m_xspeedLimiter.calculate(
-      Utils.squarePreserveSign(-MathUtil.applyDeadband(driveController.getLeftStickY(), 0.1))
+      Utils.squarePreserveSign(MathUtil.applyDeadband(driveController.getLeftStickY(), 0.1))
           * Constants.kMaxSpeed);
 
       // Get the y speed or sideways/strafe speed. We are inverting this because
       // we want a positive value when we pull to the left. Xbox controllers
       // return positive values when you pull to the right by default.
       final var ySpeed = limiter * m_yspeedLimiter.calculate(
-          Utils.squarePreserveSign(MathUtil.applyDeadband(-driveController.getLeftStickX(), 0.1))
+          Utils.squarePreserveSign(-MathUtil.applyDeadband(-driveController.getLeftStickX(), 0.1))
               * Constants.kMaxSpeed);
 
       // Get the rate of angular rotation. We are inverting this because we want a
@@ -380,7 +380,7 @@ public class Drivetrain extends SubsystemBase {
       // mathematics). Xbox controllers return positive values when you pull to
       // the right by default.
       final var rot = limiter * limiter * m_rotLimiter.calculate(
-          Utils.cubePreserveSign(MathUtil.applyDeadband(-driveController.getRightStickX(), 0.1)
+          Utils.cubePreserveSign(-MathUtil.applyDeadband(-driveController.getRightStickX(), 0.1)
               * Constants.kMaxAngularSpeed));
     
 
