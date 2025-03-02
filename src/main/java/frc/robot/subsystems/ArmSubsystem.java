@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkFlexConfig coralManipulatorVortexConfig;
 
   private SparkFlex algaeManipulatorVortex;
-  private SparkClosedLoopController algaeManipulatorVortexController;
+  // private SparkClosedLoopController algaeManipulatorVortexController;
   private SparkFlexConfig algaeManipulatorVortexConfig;
 
   private BooleanSupplier coralInnerLimitSwitch;
@@ -96,7 +96,7 @@ public class ArmSubsystem extends SubsystemBase {
     coralManipulatorVortexConfig = new SparkFlexConfig();
 
     algaeManipulatorVortex = new SparkFlex(12, MotorType.kBrushless);
-    algaeManipulatorVortexController = algaeManipulatorVortex.getClosedLoopController();
+    // algaeManipulatorVortexController = algaeManipulatorVortex.getClosedLoopController();
     algaeManipulatorVortexConfig = new SparkFlexConfig();
 
     elevatorVortexConfig
