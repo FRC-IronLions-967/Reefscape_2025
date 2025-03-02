@@ -10,38 +10,40 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class MoveClimberCommand extends Command {
-  /** Creates a new MoveClimberCommand. */
+public class ToggleClimberCommand extends Command {
+  /** Creates a new ToggleClimberCommand. */
 
   private ClimberSubsystem climberSubsystem;
+  private double climberEndGoal;
 
-  private double position;
-
-  public MoveClimberCommand(double position) {
+  public ToggleClimberCommand() {
     climberSubsystem = SubsystemsInst.getInst().climberSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climberSubsystem);
-
-    this.position = position;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    climberEndGoal = climberSubsystem.getClimbPosition() < Constants.climberOutPosition / 2 ? Constants.climberOutPosition : Constants.climberInPosition;
+    climberSubsystem.moveRatchet(Constants.climberRatchetOffPosition);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveClimberArm(position);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climberSubsystem.moveRatchet(Constants.climberRatchetOnPosition);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return climberSubsystem.isClimberInPosition(position);
+    return climberSubsystem.isClimberInPosition(climberEndGoal);
   }
 }

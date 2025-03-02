@@ -66,7 +66,7 @@ public class SdsSwerveModule {
     driveConfig
       .smartCurrentLimit(80)
       .idleMode(IdleMode.kCoast)
-      .inverted(true);
+      .inverted(false);
     driveConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pidf(Constants.swerveDriveMotorP, Constants.swerveDriveMotorI, Constants.swerveDriveMotorD, Constants.swerveDriveMotorFF);
@@ -77,7 +77,7 @@ public class SdsSwerveModule {
 
     turningConfig = new SparkMaxConfig();
     turningConfig
-        .inverted(true)
+      .inverted(true)
       .idleMode(IdleMode.kBrake)
       .smartCurrentLimit(40);
     turningConfig.closedLoop
@@ -152,12 +152,15 @@ public class SdsSwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    desiredState.optimize(new Rotation2d(ConvertedTurningPosition()));
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(ConvertedTurningPosition()));
+    // desiredState.optimize(new Rotation2d(ConvertedTurningPosition()));
 
     double convertedPosition = MathUtil.angleModulus(desiredState.angle.getRadians()) + Math.PI;
 
+  //   turningMotorController.setReference(convertedPosition + Constants.swerveWheelOffset, ControlType.kPosition);
+  //   driveMotorController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
+    driveMotorController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     turningMotorController.setReference(convertedPosition, ControlType.kPosition);
-    driveMotorController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
   }
   
   /** Module heading reported by steering encoder. */
@@ -177,6 +180,10 @@ public class SdsSwerveModule {
   
   public double getSteerVoltage(){
     return turningMotor.getAppliedOutput() * 12.0;
+  }
+
+  public double getWheelAngle() {
+    return turningMotor.getAbsoluteEncoder().getPosition();
   }
 
   public void simulationUpdate(

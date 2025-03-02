@@ -45,7 +45,7 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkFlexConfig coralManipulatorVortexConfig;
 
   private SparkFlex algaeManipulatorVortex;
-  private SparkClosedLoopController algaeManipulatorVortexController;
+  // private SparkClosedLoopController algaeManipulatorVortexController;
   private SparkFlexConfig algaeManipulatorVortexConfig;
 
   private BooleanSupplier coralInnerLimitSwitch;
@@ -96,7 +96,7 @@ public class ArmSubsystem extends SubsystemBase {
     coralManipulatorVortexConfig = new SparkFlexConfig();
 
     algaeManipulatorVortex = new SparkFlex(12, MotorType.kBrushless);
-    algaeManipulatorVortexController = algaeManipulatorVortex.getClosedLoopController();
+    // algaeManipulatorVortexController = algaeManipulatorVortex.getClosedLoopController();
     algaeManipulatorVortexConfig = new SparkFlexConfig();
 
     elevatorVortexConfig
@@ -126,7 +126,7 @@ public class ArmSubsystem extends SubsystemBase {
     armVortexConfig.closedLoop
       .outputRange(-0.5, 0.5)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-      .pid(1.0, 0, 0.0)
+      .pid(1.0, 0, 0.1)
       .positionWrappingInputRange(Constants.armWiringMinConstraint, Constants.armWiringMaxConstraint)
       .positionWrappingEnabled(false);
 
@@ -148,7 +148,7 @@ public class ArmSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kCoast);
     algaeManipulatorVortexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(1e-2, 0, 0);
+      .pid(1e-4, 0, 0);
 
     algaeManipulatorVortex.configure(algaeManipulatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -258,14 +258,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @param speed The speed at which the wheels run.
    */
   public void runAlgaeManipulator(double speed) {
-    //algaeManipulatorVortexController.setReference(speed, ControlType.kVelocity);
-    if (speed > 0) {
-      algaeManipulatorVortex.set(1);
-    } else if (speed < 0) {
-      algaeManipulatorVortex.set(-1);
-    } else {
-      algaeManipulatorVortex.set(0);
-    }
+    algaeManipulatorVortex.set(speed);
   }
 
   /**

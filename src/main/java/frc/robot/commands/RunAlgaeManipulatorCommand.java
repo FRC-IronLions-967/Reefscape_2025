@@ -42,10 +42,6 @@ public class RunAlgaeManipulatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (speed < 0) {
-      return !armSubsystem.hasAlgae();
-    } else {
-      return armSubsystem.hasAlgae();
-    }
+    return (speed >= 0) ? !armSubsystem.hasAlgae() : armSubsystem.hasAlgae();
   }
 }

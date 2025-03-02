@@ -49,7 +49,7 @@ public class Drivetrain extends SubsystemBase {
 
   private double limiter;
 
-  private ArmSubsystem armSubsystem = SubsystemsInst.getInst().armSubsystem;
+  // private ArmSubsystem armSubsystem = SubsystemsInst.getInst().armSubsystem;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   private final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
@@ -165,7 +165,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     ChassisSpeeds chassisSpeeds = fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getPose().getRotation())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
     //Time slice discretization code taken from 254/YAGSL
     //Compensates for second order kinematic drift
@@ -365,14 +365,14 @@ public class Drivetrain extends SubsystemBase {
       // Get the x speed. We are inverting this because Xbox controllers return
       // negative values when we push forward.
       final var xSpeed = limiter * m_xspeedLimiter.calculate(
-      Utils.squarePreserveSign(-MathUtil.applyDeadband(driveController.getLeftStickY(), 0.1))
+      Utils.squarePreserveSign(MathUtil.applyDeadband(driveController.getLeftStickY(), 0.1))
           * Constants.kMaxSpeed);
 
       // Get the y speed or sideways/strafe speed. We are inverting this because
       // we want a positive value when we pull to the left. Xbox controllers
       // return positive values when you pull to the right by default.
       final var ySpeed = limiter * m_yspeedLimiter.calculate(
-          Utils.squarePreserveSign(MathUtil.applyDeadband(-driveController.getLeftStickX(), 0.1))
+          Utils.squarePreserveSign(-MathUtil.applyDeadband(-driveController.getLeftStickX(), 0.1))
               * Constants.kMaxSpeed);
 
       // Get the rate of angular rotation. We are inverting this because we want a
@@ -380,7 +380,7 @@ public class Drivetrain extends SubsystemBase {
       // mathematics). Xbox controllers return positive values when you pull to
       // the right by default.
       final var rot = limiter * limiter * m_rotLimiter.calculate(
-          Utils.cubePreserveSign(MathUtil.applyDeadband(-driveController.getRightStickX(), 0.1)
+          Utils.cubePreserveSign(-MathUtil.applyDeadband(-driveController.getRightStickX(), 0.1)
               * Constants.kMaxAngularSpeed));
     
 
@@ -428,17 +428,14 @@ public class Drivetrain extends SubsystemBase {
       updateOdometry();
 
       //Update the max acceleration of the moters.
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
-      addVisionMeasurement(getPose(), Robot.kDefaultPeriod, null);
-
+      SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
-      SmartDashboard.putNumber("Pose X", getPose().getX());
-      SmartDashboard.putNumber("Pose Y", getPose().getY());
-      // SmartDashboard.putNumber("GyroHeading", m_gyro.getRotation2d().getDegrees());
+      SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
     } 
 
 

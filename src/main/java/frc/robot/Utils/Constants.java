@@ -36,13 +36,15 @@ public final class Constants {
     public static final double kCoefficientFriction = 1.1;
     public static final double kDriveGearRatio = 6.75;
     public static final double kSteerGearRatio = 150.0/7.0;
-    //needs tunings
+    
     public static final double kSecondsPerMinute = 60.0;
     public static final double kElevatorAnalogZeroOffset = 4.23;
     public static final double kArmZeroOffset = 1.961;
 
     public static final double objectDetectionCameraYawOffset = 0.0;
     public static final double kMaxNeoSpeed = 5676.0;
+
+    public static final double swerveWheelOffset = 0.675;
 
     public static final double swerveTurningP = 1.5;
     public static final double swerveTurningI = 0.0;
@@ -111,13 +113,13 @@ public final class Constants {
     public static final double elevatorGearRatio =  14.087; // taken from robot 2/1
     public static final double elevatorSprocketRadius = 0.8755; // inches
     public static final double armGearRatio = 103.448; //taken from CAD 1/28
-    public static final double coralWheelRadius = 1.0; //needs tunig
-    public static final double algaeWheelRadius = 1.0; //needs tuning\
+    public static final double coralWheelRadius = 1.0; 
+    public static final double algaeWheelRadius = 1.0; 
 
-    public static final double coralIntakeSpeed = -6500; //needs tuning
-    public static final double coralScoringSpeed = 6500; //needs tuning
-    public static final double algaeIntakeSpeed = 5600; //needs tuning
-    public static final double algaeScoringSpeed = -5600; //needs tuning
+    public static final double coralIntakeSpeed = -6500; 
+    public static final double coralScoringSpeed = 6500; 
+    public static final double algaeIntakeSpeed = -1; 
+    public static final double algaeScoringSpeed = 1; 
 
     public static final double armWiringMinConstraint = 0.0;
     public static final double armWiringMaxConstraint = 4.732;
@@ -143,8 +145,8 @@ public final class Constants {
     public static final double L2ElevatorPosition = 13.27;
     public static final double L3ElevatorPosition = 27.04;
     public static final double L4ElevatorPosition = 54.4;
-    public static final double L2AlgaeElevatorPosition = 14.272;
-    public static final double L3AlgaeElevatorPosition = 32.85;
+    public static final double L2AlgaeElevatorPosition = 13;
+    public static final double L3AlgaeElevatorPosition = 30;
     public static final double coralElevatorPosition = 26.11;
     public static final double bargeElevatorPosition = 54.0;
     public static final double climbElevatorPosition = 0.0;   
@@ -153,8 +155,8 @@ public final class Constants {
     public static final double climberTapValue = 10.0;
     public static final double climberOutPosition = 140.0;
     public static final double climberInPosition = 0.0;
-    public static final double climberRatchetOnPosition = 1.0;
-    public static final double climberRatchetOffPosition = 0.0;
+    public static final double climberRatchetOnPosition = 0.75;
+    public static final double climberRatchetOffPosition = 0.5;
 
     public static final double elevatorTolerance = 1.0;
     public static final double armTolerance = 0.1;

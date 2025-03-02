@@ -10,19 +10,13 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class MoveClimberCommand extends Command {
-  /** Creates a new MoveClimberCommand. */
-
+public class ToggleRatchetCommand extends Command {
+  /** Creates a new ToggleRatchetCommand. */
   private ClimberSubsystem climberSubsystem;
-
-  private double position;
-
-  public MoveClimberCommand(double position) {
+  public ToggleRatchetCommand() {
     climberSubsystem = SubsystemsInst.getInst().climberSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climberSubsystem);
-
-    this.position = position;
   }
 
   // Called when the command is initially scheduled.
@@ -32,7 +26,11 @@ public class MoveClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveClimberArm(position);
+    if (climberSubsystem.isRatchetOn()) {
+      climberSubsystem.moveRatchet(Constants.climberRatchetOnPosition);
+    } else {
+      climberSubsystem.moveRatchet(Constants.climberRatchetOffPosition);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +40,6 @@ public class MoveClimberCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return climberSubsystem.isClimberInPosition(position);
+    return true;
   }
 }
