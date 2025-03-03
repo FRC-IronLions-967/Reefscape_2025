@@ -176,8 +176,8 @@ public final class Constants {
     public static final Pose2d jPose2d = new Pose2d(5.051, 5.34, Rotation2d.fromDegrees(-120));
     public static final Pose2d kPose2d = new Pose2d(3.925, 5.34, Rotation2d.fromDegrees(-60));
     public static final Pose2d lPose2d = new Pose2d(3.656, 5.189, Rotation2d.fromDegrees(-60));
-    public static final Pose2d leftCoralStationPose2d = new Pose2d(1.347, 6.95, Rotation2d.fromDegrees(127.5));
-    public static final Pose2d rightCoralStationPose2d = new Pose2d(1.256, 1, Rotation2d.fromDegrees(-127.5));
+    public static final Pose2d leftCoralStationPose2d = new Pose2d(1.347, 6.95, Rotation2d.fromDegrees(52.5));
+    public static final Pose2d rightCoralStationPose2d = new Pose2d(1.347, 1.05, Rotation2d.fromDegrees(-52.5));
 
     public static final Pose2d[] leftPose2ds = {aPose2d, cPose2d, ePose2d, gPose2d, iPose2d, kPose2d};
     public static final Pose2d[] rightPose2ds = {bPose2d, dPose2d, fPose2d, hPose2d, jPose2d, lPose2d};

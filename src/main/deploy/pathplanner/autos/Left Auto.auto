@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LStart to i"
+                  "pathName": "LStart to J"
                 }
               },
               {
@@ -48,7 +48,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "i to LCoral"
+                  "pathName": "J to LCoral"
                 }
               }
             ]
