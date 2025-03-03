@@ -164,15 +164,15 @@ public final class Constants {
     public static final double poseTolerance = 0.25;
 
     //Reef names named on the game manual pg 24.
-    public static final Pose2d aPose2d = new Pose2d(3.108, 4.14, Rotation2d.fromDegrees(0));
-    public static final Pose2d bPose2d = new Pose2d(3.108, 3.871, Rotation2d.fromDegrees(0));
+    public static final Pose2d aPose2d = new Pose2d(3.108, 4.2, Rotation2d.fromDegrees(0));
+    public static final Pose2d bPose2d = new Pose2d(3.108, 3.87, Rotation2d.fromDegrees(0));
     public static final Pose2d cPose2d = new Pose2d(3.656, 2.9, Rotation2d.fromDegrees(60));
     public static final Pose2d dPose2d = new Pose2d(3.925, 2.735, Rotation2d.fromDegrees(60));
     public static final Pose2d ePose2d = new Pose2d(5.051, 2.735, Rotation2d.fromDegrees(120));
     public static final Pose2d fPose2d = new Pose2d(5.35, 2.9, Rotation2d.fromDegrees(120));
     public static final Pose2d gPose2d = new Pose2d(5.888, 3.871, Rotation2d.fromDegrees(180));
     public static final Pose2d hPose2d = new Pose2d(5.888, 4.14, Rotation2d.fromDegrees(180));
-    public static final Pose2d iPose2d = new Pose2d(5.35, 5.189, Rotation2d.fromDegrees(-120));
+    public static final Pose2d iPose2d = new Pose2d(5.33, 5.16, Rotation2d.fromDegrees(-120));
     public static final Pose2d jPose2d = new Pose2d(5.051, 5.34, Rotation2d.fromDegrees(-120));
     public static final Pose2d kPose2d = new Pose2d(3.925, 5.34, Rotation2d.fromDegrees(-60));
     public static final Pose2d lPose2d = new Pose2d(3.656, 5.189, Rotation2d.fromDegrees(-60));
