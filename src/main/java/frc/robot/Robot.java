@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     IO.getInstance().teleopInit();
     SubsystemsInst.getInst().drivetrain.setDriveToCoast();
+    SubsystemsInst.getInst().armSubsystem.changeStateToStartup();
   }
 
   /** This function is called periodically during operator control. */

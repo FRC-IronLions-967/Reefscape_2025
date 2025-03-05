@@ -187,6 +187,10 @@ public class ArmSubsystem extends SubsystemBase {
       Math.PI*1.5, 
       0.001, 0.0);
   }
+  
+  public void changeStateToStartup() {
+    state = ArmStates.STARTUP;
+  }
 
   /**
    * Moves the elevator end goal.
