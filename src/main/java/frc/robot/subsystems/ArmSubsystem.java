@@ -110,7 +110,7 @@ public class ArmSubsystem extends SubsystemBase {
       .positionConversionFactor(Units.metersToInches(2.0) / 5.0) // native 0-5V, 2 meter travel
       .velocityConversionFactor(Units.metersToInches(2.0) / 5.0); // 
     elevatorVortexConfig.closedLoop
-      .outputRange(-0.4, 1)
+      .outputRange(-0.75, 1)
       .feedbackSensor(FeedbackSensor.kAnalogSensor)
       .pid(0.25, 0, 3);//FF: 0.000139
 

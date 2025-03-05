@@ -4,46 +4,46 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Utils.Constants;
-import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ToggleClimberCommand extends Command {
-  /** Creates a new ToggleClimberCommand. */
+public class ScoreAlgaeCommand extends Command {
+  /** Creates a new ScoreAlgaeCommand. */
+  private ArmSubsystem armSubsystem;
+  private Timer timer;
 
-  private ClimberSubsystem climberSubsystem;
-  private double climberEndGoal;
-
-  public ToggleClimberCommand() {
-    climberSubsystem = SubsystemsInst.getInst().climberSubsystem;
+  public ScoreAlgaeCommand() {
+    timer = new Timer();
+    armSubsystem = SubsystemsInst.getInst().armSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climberSubsystem);
+    addRequirements(armSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    climberEndGoal = climberSubsystem.getClimbPosition() < Constants.climberOutPosition / 2 ? Constants.climberOutPosition : Constants.climberInPosition;
-    climberSubsystem.moveRatchet(Constants.climberRatchetOffPosition);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    armSubsystem.runAlgaeManipulator(Constants.algaeScoringSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climberSubsystem.moveRatchet(Constants.climberRatchetOnPosition);
+    timer.restart();
+    while (timer.get() < 0.5) {}
+    armSubsystem.runAlgaeManipulator(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return climberSubsystem.isClimberInPosition(climberEndGoal);
+    return !armSubsystem.hasAlgae();
   }
 }

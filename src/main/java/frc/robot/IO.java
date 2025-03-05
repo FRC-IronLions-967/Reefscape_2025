@@ -8,8 +8,8 @@ import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
+import frc.robot.commands.ScoreAlgaeCommand;
 import frc.robot.commands.TapClimberCommand;
-import frc.robot.commands.ToggleClimberCommand;
 import frc.robot.commands.ToggleRatchetCommand;
 import frc.robot.lib.controls.XBoxController;
 
@@ -60,14 +60,14 @@ public void teleopInit(){
     manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.armFullRotationElevatorHeight, Constants.defaultArmAngle));
     manipulatorController.whenButtonPressed("RTRIG", new MoveWholeArmToPositionCommand(Constants.climbElevatorPosition, Constants.climbArmAngle));
     manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
-    manipulatorController.whenPOVButtonPressed("S", new RunAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
+    manipulatorController.whenPOVButtonPressed("S", new ScoreAlgaeCommand());
 
-    // driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
-    // driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
-    // driverController.whenButtonPressed("X", new TapClimberCommand());
-    // driverController.whenButtonPressed("Y", new ToggleRatchetCommand());
-    driverController.whenButtonPressed("A", new ToggleClimberCommand());
-    driverController.whenButtonPressed("B", new TapClimberCommand());
+    driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
+    driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
+    driverController.whenButtonPressed("X", new TapClimberCommand());
+    driverController.whenButtonPressed("Y", new ToggleRatchetCommand());
+    // driverController.whenButtonPressed("A", new ToggleClimberCommand());
+    // driverController.whenButtonPressed("B", new TapClimberCommand());
 
     
 }
