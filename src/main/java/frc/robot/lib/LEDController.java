@@ -163,16 +163,16 @@ public class LEDController {
      * @param color1 
      * @param color2
      */
-    private void setAllFlash(Color color1, Color color2){
-        //Set to alternatingly flash Green
-        for (int i = 0; i < stripBuffer.getLength(); i++){
-            if (alternatingColorFlip) {
-                stripBuffer.setLED(i, color1);
-            } else {
-                stripBuffer.setLED(i, color2);
-            }
-        }
-    }
+    // private void setAllFlash(Color color1, Color color2){
+    //     //Set to alternatingly flash Green
+    //     for (int i = 0; i < stripBuffer.getLength(); i++){
+    //         if (alternatingColorFlip) {
+    //             stripBuffer.setLED(i, color1);
+    //         } else {
+    //             stripBuffer.setLED(i, color2);
+    //         }
+    //     }
+    // }
 
     /**
      * Method to gently pulse the brightness of all LEDs

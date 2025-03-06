@@ -29,7 +29,6 @@ public final class Constants {
     public static final double kMaxAngularSpeed = kMaxSpeed / kDriveRadius; // Maximum angular velocity 
     public static final double kMaxAngularAcceleration = kMaxAcceleration / kDriveRadius; // Maximum angular acceleration
     public static final double kWheelRadius = 0.04;
-    //the number above is acurate
     public static final double kCoefficientFriction = 1.1;
     public static final double kDriveGearRatio = 6.75;
     public static final double kSteerGearRatio = 150.0/7.0;
@@ -42,7 +41,7 @@ public final class Constants {
     public static final double kMaxNeoSpeed = 5676.0;
 
     public static final double swerveWheelOffset = 0.675;
-
+    //Drive PID
     public static final double swerveTurningP = 1.5;
     public static final double swerveTurningI = 0.0;
     public static final double swerveTurningD = 0.5;
@@ -69,12 +68,12 @@ public final class Constants {
   
     // private static final double kModuleMaxAngularVelocity = kMaxAngularSpeed;
     // private static final double kModuleMaxAngularAcceleration =
-    //     2 * Math.PI; // radians per second squared
+    // 2 * Math.PI; // radians per second squared
     public static final Translation2d m_frontLeftLocation = new Translation2d(0.308, 0.308);
     public static final Translation2d m_frontRightLocation = new Translation2d(0.308, -0.308);
     public static final Translation2d m_backLeftLocation = new Translation2d(-0.308, 0.308);
     public static final Translation2d m_backRightLocation = new Translation2d(-0.308, -0.308);
-      //real numbers xare put in above
+    //real numbers are put in above
     public static final SwerveDriveKinematics m_kinematics =
     new SwerveDriveKinematics(
        m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
@@ -106,18 +105,18 @@ public final class Constants {
     // (Fake values. Experiment and determine estimation noise on an actual robot.)
     public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
-
+    //Physical Constants
     public static final double elevatorGearRatio =  14.087; // taken from robot 2/1
     public static final double elevatorSprocketRadius = 0.8755; // inches
     public static final double armGearRatio = 103.448; //taken from CAD 1/28
     public static final double coralWheelRadius = 1.0; 
     public static final double algaeWheelRadius = 1.0; 
-
+    //Speeds
     public static final double coralIntakeSpeed = -6500; 
     public static final double coralScoringSpeed = 6500; 
     public static final double algaeIntakeSpeed = -1; 
     public static final double algaeScoringSpeed = 1; 
-
+    //Constraints
     public static final double armWiringMinConstraint = 0.0;
     public static final double armWiringMaxConstraint = 4.732;
     public static final double armFullRotationElevatorHeight = 5.0;
@@ -147,13 +146,13 @@ public final class Constants {
     public static final double bargeElevatorPosition = 54.0;
     public static final double climbElevatorPosition = 0.0;   
     public static final double processorElevatorPosition = 1.0;
-
+    //Climb Positions
     public static final double climberTapValue = 10.0;
     public static final double climberOutPosition = 140.0;
     public static final double climberInPosition = 0.0;
     public static final double climberRatchetOnPosition = 0.75;
     public static final double climberRatchetOffPosition = 0.5;
-
+    //Tolerances
     public static final double elevatorTolerance = 1.0;
     public static final double armTolerance = 0.1;
     public static final double climberTolerance = 5.0;

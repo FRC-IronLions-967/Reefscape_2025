@@ -13,7 +13,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -65,6 +64,7 @@ public class Drivetrain extends SubsystemBase {
 
   private XBoxController driveController;
 
+  private ArmSubsystem armSubsystem;
 
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
 
@@ -91,6 +91,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     fieldRelative = true;
     driveController = IO.getInstance().getDriverController();
+    armSubsystem = SubsystemsInst.getInst().armSubsystem;
 
     // ----- Simulation
 
@@ -254,9 +255,7 @@ public class Drivetrain extends SubsystemBase {
    * Updates the field relative position of the robot.
    */
   public void updateOdometry() {
-    m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getYaw()),
-        getPosition());
+    m_odometry.update(Rotation2d.fromDegrees(m_gyro.getYaw()), getPosition());
   }
 
 
@@ -428,10 +427,10 @@ public class Drivetrain extends SubsystemBase {
       updateOdometry();
 
       //Update the max acceleration of the moters.
-      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
       SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);

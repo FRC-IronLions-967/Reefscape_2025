@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
@@ -18,7 +17,6 @@ public class IO {
     private static IO instance; 
     private XBoxController driverController;
     private XBoxController manipulatorController;
-    private Trigger coralStationProximity;
     
     private IO() {
         driverController = new XBoxController(0);
@@ -66,10 +64,7 @@ public void teleopInit(){
     driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
     driverController.whenButtonPressed("X", new TapClimberCommand());
     driverController.whenButtonPressed("Y", new ToggleRatchetCommand());
-    // driverController.whenButtonPressed("A", new ToggleClimberCommand());
-    // driverController.whenButtonPressed("B", new TapClimberCommand());
-
-    
+        
 }
 
 public XBoxController getDriverController(){

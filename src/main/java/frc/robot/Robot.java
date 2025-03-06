@@ -17,14 +17,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.SubsystemsInst;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.*;
-import frc.robot.lib.LEDController;
 import frc.robot.lib.LimitSwitchManager;
 
 public class Robot extends TimedRobot {
   private SubsystemsInst subsystemsInst;
   private Command m_autonomousCommand;
   private SendableChooser<Command> autoChooser;
-  private LEDController ledController;
   private LimitSwitchManager switchBreakout;
   
 
@@ -51,7 +49,6 @@ public class Robot extends TimedRobot {
     autoChooser = AutoBuilder.buildAutoChooser("Center Simple Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     switchBreakout = new LimitSwitchManager();
-    ledController = new LEDController(0, 36);
 
     new MoveWholeArmToPositionCommand(Constants.armFullRotationElevatorHeight, SubsystemsInst.getInst().armSubsystem.getArmAngle());
   }
@@ -67,7 +64,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     switchBreakout.periodic();
     CommandScheduler.getInstance().run();
-    ledController.heartbeat();
+    // ledController.heartbeat();
   }
 
   /**
@@ -93,9 +90,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-    //ledController.enabledPeriodic();
-  }
+  public void autonomousPeriodic() {}
 
   /** This function is called once when teleop is enabled. */
   @Override
@@ -107,9 +102,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    //ledController.enabledPeriodic();
-  }
+  public void teleopPeriodic() {}
 
   /** This function is called once when the robot is disabled. */
   @Override
@@ -117,9 +110,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {
-    //ledController.disabledPeriodic();
-  }
+  public void disabledPeriodic() {}
 
   @Override
   public void simulationInit() {
