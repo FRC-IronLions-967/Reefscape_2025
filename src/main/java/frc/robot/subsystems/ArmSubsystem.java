@@ -10,8 +10,10 @@ import com.revrobotics.spark.SparkFlex;
 import java.util.function.BooleanSupplier;
 
 import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -112,7 +114,7 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorVortexConfig.closedLoop
       .outputRange(-0.75, 1)
       .feedbackSensor(FeedbackSensor.kAnalogSensor)
-      .pid(0.25, 0, 3);//FF: 0.000139
+      .pid(1e-1, 0, 0);//FF: 0.000139
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
@@ -375,7 +377,7 @@ public class ArmSubsystem extends SubsystemBase {
     if (state != ArmStates.STARTUP) {
       armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
     }
-    elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition);
+    elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
 
     // SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
     // SmartDashboard.putNumber("Arm Position", getArmAngle());

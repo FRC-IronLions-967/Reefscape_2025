@@ -91,7 +91,6 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     fieldRelative = true;
     driveController = IO.getInstance().getDriverController();
-    armSubsystem = SubsystemsInst.getInst().armSubsystem;
 
     // ----- Simulation
 
@@ -427,10 +426,10 @@ public class Drivetrain extends SubsystemBase {
       updateOdometry();
 
       //Update the max acceleration of the moters.
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
-      m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
+      // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
       SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
