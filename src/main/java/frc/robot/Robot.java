@@ -96,7 +96,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     IO.getInstance().teleopInit();
-    SubsystemsInst.getInst().drivetrain.setDriveToCoast();
+    SubsystemsInst.getInst().drivetrain.setDriveToBrake();
     SubsystemsInst.getInst().armSubsystem.changeStateToStartup();
   }
 

@@ -7,7 +7,7 @@ import frc.robot.commands.MoveClimberCommand;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
-import frc.robot.commands.ScoreAlgaeCommand;
+import frc.robot.commands.ScoreAlgaeManipulatorCommand;
 import frc.robot.commands.TapClimberCommand;
 import frc.robot.commands.ToggleRatchetCommand;
 import frc.robot.lib.controls.XBoxController;
@@ -47,6 +47,11 @@ public void teleopInit(){
         new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
     );
 
+    Command intakeAlgaeLolipop = new SequentialCommandGroup(
+        new MoveWholeArmToPositionCommand(Constants.processorElevatorPosition, Constants.processorAlgaeAngle),
+        new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed)
+    );
+
     manipulatorController.whenButtonPressed("Y", new MoveWholeArmToPositionCommand(Constants.L4ElevatorPosition, Constants.L4ArmAngle));
     manipulatorController.whenButtonPressed("X", new MoveWholeArmToPositionCommand(Constants.L3ElevatorPosition, Constants.L2L3ArmAngle));
     manipulatorController.whenButtonPressed("RBUMP", new MoveWholeArmToPositionCommand(Constants.L2ElevatorPosition, Constants.L2L3ArmAngle));
@@ -54,11 +59,12 @@ public void teleopInit(){
     manipulatorController.whenPOVButtonPressed("W", intakeAlgaeL2);
     manipulatorController.whenPOVButtonPressed("E", intakeAlgaeL3);
     manipulatorController.whenPOVButtonPressed("N", new MoveWholeArmToPositionCommand(Constants.bargeElevatorPosition, Constants.bargeAlgaeAngle));
-    manipulatorController.whenButtonPressed("LBUMP", new MoveWholeArmToPositionCommand(Constants.processorElevatorPosition, Constants.processorAlgaeAngle));
+    manipulatorController.whenButtonPressed("LBUMP", intakeAlgaeLolipop);
     manipulatorController.whenButtonPressed("LTRIG", new MoveWholeArmToPositionCommand(Constants.armFullRotationElevatorHeight, Constants.defaultArmAngle));
     manipulatorController.whenButtonPressed("RTRIG", new MoveWholeArmToPositionCommand(Constants.climbElevatorPosition, Constants.climbArmAngle));
     manipulatorController.whenButtonPressed("A", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
-    manipulatorController.whenPOVButtonPressed("S", new ScoreAlgaeCommand());
+    manipulatorController.whenPOVButtonPressed("S", new ScoreAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
+    manipulatorController.whenPOVButtonReleased("S", new RunAlgaeManipulatorCommand(0));
 
     driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
     driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));

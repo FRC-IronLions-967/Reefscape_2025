@@ -38,7 +38,10 @@ public class SdsSwerveModule {
   private SparkMaxSim turningMotorSim;
 
   private Translation2d location;
+  
+  private double commandedWheelAngle;
 
+  private double turningOffset;
   // Gains are for example purposes only - must be determined for your own robot!
 
 
@@ -57,6 +60,8 @@ public class SdsSwerveModule {
       int driveMotorCANId,
       int turningMotorCANId,
       Translation2d moduleLocation) {
+
+    turningOffset = /*turningMotorCANId == 8 ? Math.PI / 2 :*/ 0.3;
 
     driveMotor = new SparkMax(driveMotorCANId, MotorType.kBrushless);
     turningMotor = new SparkMax(turningMotorCANId, MotorType.kBrushless);
@@ -138,7 +143,7 @@ public class SdsSwerveModule {
    * @return converted angle
    */
   private double ConvertedTurningPosition() {
-    return turningMotor.getAbsoluteEncoder().getPosition() - Math.PI;
+    return turningMotor.getAbsoluteEncoder().getPosition() - turningOffset;
   }
 
   /**
@@ -148,15 +153,16 @@ public class SdsSwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    //SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(ConvertedTurningPosition()));//deprecated
+    // SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(ConvertedTurningPosition()));//deprecated
     desiredState.optimize(new Rotation2d(ConvertedTurningPosition()));
 
     double convertedPosition = MathUtil.angleModulus(desiredState.angle.getRadians()) + Math.PI;
 
+    commandedWheelAngle = desiredState.angle.getRadians();
   //   turningMotorController.setReference(convertedPosition + Constants.swerveWheelOffset, ControlType.kPosition);
   //   driveMotorController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
     driveMotorController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
-    turningMotorController.setReference(convertedPosition, ControlType.kPosition);
+    turningMotorController.setReference(desiredState.angle.getRadians() - turningOffset, ControlType.kPosition);
   }
   
   /** Module heading reported by steering encoder. */
@@ -180,6 +186,10 @@ public class SdsSwerveModule {
 
   public double getWheelAngle() {
     return turningMotor.getAbsoluteEncoder().getPosition();
+  }
+
+  public double getCommandedWheelAngle() {
+    return commandedWheelAngle;
   }
 
   public void simulationUpdate(

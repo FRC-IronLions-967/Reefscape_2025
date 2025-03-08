@@ -4,23 +4,23 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Utils.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreAlgaeCommand extends Command {
-  /** Creates a new ScoreAlgaeCommand. */
-  private ArmSubsystem armSubsystem;
-  private Timer timer;
+//THis command will run the Algae manipulator
 
-  public ScoreAlgaeCommand() {
-    timer = new Timer();
-    armSubsystem = SubsystemsInst.getInst().armSubsystem;
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class ScoreAlgaeManipulatorCommand extends Command {
+  /** Creates a new RunAlgaeManipulatorCommand. */
+  private ArmSubsystem armSubsystem;
+  private double speed;
+
+  public ScoreAlgaeManipulatorCommand(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
+    armSubsystem = SubsystemsInst.getInst().armSubsystem;
     addRequirements(armSubsystem);
+    this.speed = speed;
   }
 
   // Called when the command is initially scheduled.
@@ -30,20 +30,16 @@ public class ScoreAlgaeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.runAlgaeManipulator(Constants.algaeScoringSpeed);
+    armSubsystem.runAlgaeManipulator(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    timer.restart();
-    while (timer.get() < 0.5) {}
-    armSubsystem.runAlgaeManipulator(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !armSubsystem.hasAlgae();
+    return true;
   }
 }

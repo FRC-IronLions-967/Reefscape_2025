@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.ControlType;
+
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -13,10 +14,12 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Utils.Constants;
+import frc.robot.lib.LimitSwitchManager;
 
 public class ClimberSubsystem extends SubsystemBase {
 
@@ -24,6 +27,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private SparkMaxConfig climberMotorConfig;
   private SparkClosedLoopController climberMotorController;
   private Servo ratchetServo;
+  private DigitalInput climberLimitSwitch;
 
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
@@ -40,6 +44,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotorController = climberMotor.getClosedLoopController();
 
     ratchetServo = new Servo(1);
+
+    climberLimitSwitch = new DigitalInput(0);
   }
 
   /**
@@ -81,6 +87,10 @@ public class ClimberSubsystem extends SubsystemBase {
   public void moveClimberArm(double position) {
     climberMotorController.setReference(position, ControlType.kPosition);
   }
+
+  public boolean isClimberIn() {
+    return climberLimitSwitch.get();
+  }
   
   /**
    * moves the climber arm to account for the string tightening 
@@ -105,6 +115,7 @@ public class ClimberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Ratchet Position", getRatchetPosition());
     SmartDashboard.putBoolean("Is Ratchet On", isRatchetOn());
+    SmartDashboard.putBoolean("Climber In", isClimberIn());
     // SmartDashboard.putNumber("Climber Position", getClimbPosition());
   }
 }

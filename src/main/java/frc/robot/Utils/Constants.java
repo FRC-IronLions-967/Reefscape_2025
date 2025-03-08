@@ -44,7 +44,7 @@ public final class Constants {
     //Drive PID
     public static final double swerveTurningP = 1.5;
     public static final double swerveTurningI = 0.0;
-    public static final double swerveTurningD = 0.5;
+    public static final double swerveTurningD = 0.0;
     public static final double swerveDriveMotorP = 0.08;
     public static final double swerveDriveMotorI = 0.0;
     public static final double swerveDriveMotorD = 0.025;
@@ -130,15 +130,15 @@ public final class Constants {
     // Arm positions
     public static final double L2L3ArmAngle = 4.02;
     public static final double L4ArmAngle = 4.187;
-    public static final double coralArmAngle = 0.681;
+    public static final double coralArmAngle = 0.6;
     public static final double reefAlgaeAngle = 1.710;
     public static final double bargeAlgaeAngle = 0.29;
     public static final double processorAlgaeAngle = 1.89;
     public static final double climbArmAngle = Math.PI / 2;
     public static final double defaultArmAngle = Math.PI;
     // Elevator Positions
-    public static final double L2ElevatorPosition = 13.27;
-    public static final double L3ElevatorPosition = 27.04;
+    public static final double L2ElevatorPosition = 11.0;
+    public static final double L3ElevatorPosition = 26.0;
     public static final double L4ElevatorPosition = 54.4;
     public static final double L2AlgaeElevatorPosition = 13;
     public static final double L3AlgaeElevatorPosition = 30;

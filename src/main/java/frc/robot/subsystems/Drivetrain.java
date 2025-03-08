@@ -370,7 +370,7 @@ public class Drivetrain extends SubsystemBase {
       // we want a positive value when we pull to the left. Xbox controllers
       // return positive values when you pull to the right by default.
       final var ySpeed = limiter * m_yspeedLimiter.calculate(
-          Utils.squarePreserveSign(MathUtil.applyDeadband(-driveController.getLeftStickX(), 0.1))
+          Utils.squarePreserveSign(-MathUtil.applyDeadband(driveController.getLeftStickX(), 0.1))
               * Constants.kMaxSpeed);
 
       // Get the rate of angular rotation. We are inverting this because we want a
@@ -432,6 +432,7 @@ public class Drivetrain extends SubsystemBase {
       // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
       SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
+      SmartDashboard.putNumber("Commanded Wheel Angle", m_backLeft.getCommandedWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
       SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
     } 
