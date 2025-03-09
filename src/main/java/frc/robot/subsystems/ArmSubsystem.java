@@ -175,7 +175,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
-    SmartDashboard.putData("Elevator Sim", mech2d);
+    // SmartDashboard.putData("Elevator Sim", mech2d);
 
     armVortexSim = new SparkFlexSim(armVortex, DCMotor.getNeoVortex(1));
     armSim = new SingleJointedArmSim(
@@ -387,7 +387,7 @@ public class ArmSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Arm Current Target", rotaryArmCurrentTarget);
     SmartDashboard.putBoolean("Coral_IN", hasCoral());
     SmartDashboard.putBoolean("Algae In", hasAlgae());
-    SmartDashboard.putString("State", state.toString());
+    // SmartDashboard.putString("State", state.toString());
 
   }  
   

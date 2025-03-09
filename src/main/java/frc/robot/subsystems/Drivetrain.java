@@ -431,10 +431,10 @@ public class Drivetrain extends SubsystemBase {
       // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
       // m_backLeft.teleopUpdate(armSubsystem.getElevatorPosition());
 
-      SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
-      SmartDashboard.putNumber("Commanded Wheel Angle", m_backLeft.getCommandedWheelAngle());
+      // SmartDashboard.putNumber("Wheel Angle", m_backLeft.getWheelAngle());
+      // SmartDashboard.putNumber("Commanded Wheel Angle", m_backLeft.getCommandedWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
-      SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
+      // SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
     } 
 
 
