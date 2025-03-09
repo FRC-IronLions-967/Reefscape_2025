@@ -81,6 +81,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   /**
    * moves the climber arm
+   * IMPORTANT: This method is defferent than runClimberArm!
+   * This runs the climber based off position.
    * @param position position to move the climber arm to
    */
 
@@ -88,17 +90,21 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotorController.setReference(position, ControlType.kPosition);
   }
 
+  /**
+   * moves the climber arm 
+   * IMPORTANT: This method is different than moveClimberArm!
+   * This runs the climber based off speed.
+   * @param speed
+   */
+
+  public void runClimberArm(double speed) {
+    climberMotorController.setReference(speed, ControlType.kVelocity);
+  }
+
   public boolean isClimberIn() {
     return climberLimitSwitch.get();
   }
   
-  /**
-   * moves the climber arm to account for the string tightening 
-   */
-
-  public void tapClimberFurther() {
-    climberMotorController.setReference(getClimbPosition() - Constants.climberTapValue, ControlType.kPosition);
-  }
 
   /**
    * Checks if the climber is in position
