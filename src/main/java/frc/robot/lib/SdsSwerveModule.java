@@ -68,7 +68,7 @@ public class SdsSwerveModule {
     driveConfig = new SparkMaxConfig();
     driveConfig
       .smartCurrentLimit(80)
-      .idleMode(IdleMode.kCoast)
+      .idleMode(IdleMode.kBrake)
       .inverted(false);
     driveConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
