@@ -3,12 +3,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Utils.Constants;
-import frc.robot.commands.MoveClimberCommand;
+import frc.robot.commands.MoveClimberInCommand;
+import frc.robot.commands.MoveClimberOutCommand;
 import frc.robot.commands.MoveWholeArmToPositionCommand;
 import frc.robot.commands.RunAlgaeManipulatorCommand;
 import frc.robot.commands.RunCoralManipulatorCommand;
 import frc.robot.commands.ScoreAlgaeManipulatorCommand;
-import frc.robot.commands.TapClimberCommand;
 import frc.robot.commands.ToggleRatchetCommand;
 import frc.robot.lib.controls.XBoxController;
 
@@ -66,11 +66,9 @@ public void teleopInit(){
     manipulatorController.whenPOVButtonPressed("S", new ScoreAlgaeManipulatorCommand(Constants.algaeScoringSpeed));
     manipulatorController.whenPOVButtonReleased("S", new RunAlgaeManipulatorCommand(0));
 
-    driverController.whenButtonPressed("A", new MoveClimberCommand(Constants.climberOutPosition));
-    driverController.whenButtonPressed("B", new MoveClimberCommand(Constants.climberInPosition));
-    driverController.whenButtonPressed("X", new TapClimberCommand());
+    driverController.whenButtonPressed("A", new MoveClimberOutCommand());
+    driverController.whenButtonPressed("B", new MoveClimberInCommand());
     driverController.whenButtonPressed("Y", new ToggleRatchetCommand());
-        
 }
 
 public XBoxController getDriverController(){

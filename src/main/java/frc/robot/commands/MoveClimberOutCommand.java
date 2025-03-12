@@ -5,15 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Utils.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TapClimberCommand extends Command {
+public class MoveClimberOutCommand extends Command {
 
   private ClimberSubsystem climberSubsystem;
-  /** Creates a new TapClimberCommand. */
-  public TapClimberCommand() {
+  /** Creates a new MoveClimberOutCommand. */
+  public MoveClimberOutCommand() {
     climberSubsystem = SubsystemsInst.getInst().climberSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climberSubsystem);
@@ -26,19 +27,16 @@ public class TapClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.tapClimberFurther();
+    climberSubsystem.moveClimberArm(Constants.climberOutPosition);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    // climberSubsystem.moveClimberArm(climberSubsystem.getClimbPosition());
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return climberSubsystem.isClimberIn();
-    return true;
+    return climberSubsystem.isClimberInPosition(Constants.climberOutPosition);
   }
 }

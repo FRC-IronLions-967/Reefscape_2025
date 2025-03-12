@@ -5,23 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Utils.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.SubsystemsInst;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class MoveClimberCommand extends Command {
-  /** Creates a new MoveClimberCommand. */
-
+public class MoveClimberInCommand extends Command {
+  /** Creates a new MoveClimberInCommand. */
   private ClimberSubsystem climberSubsystem;
-
-  private double position;
-
-  public MoveClimberCommand(double position) {
+  public MoveClimberInCommand() {
     climberSubsystem = SubsystemsInst.getInst().climberSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climberSubsystem);
-
-    this.position = position;
   }
 
   // Called when the command is initially scheduled.
@@ -31,18 +26,18 @@ public class MoveClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveClimberArm(position);
+    climberSubsystem.runClimberArm(Constants.climberInSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climberSubsystem.moveClimberArm(climberSubsystem.getClimbPosition());
+    climberSubsystem.runClimberArm(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return /*position < climberSubsystem.getClimbPosition() ? climberSubsystem.isClimberInPosition(position) || climberSubsystem.isClimberIn() :*/ climberSubsystem.isClimberInPosition(position);
+    return climberSubsystem.isClimberIn();
   }
 }
