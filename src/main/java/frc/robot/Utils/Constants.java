@@ -148,7 +148,7 @@ public final class Constants {
     public static final double processorElevatorPosition = 1.0;
     //Climb Positions
     public static final double climberOutPosition = 140.0;
-    public static final double climberInSpeed = 5600;
+    public static final double climberInSpeed = -1;
     public static final double climberRatchetOnPosition = 0.75;
     public static final double climberRatchetOffPosition = 0.5;
     //Tolerances

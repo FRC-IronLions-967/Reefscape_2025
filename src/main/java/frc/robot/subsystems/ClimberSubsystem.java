@@ -98,7 +98,7 @@ public class ClimberSubsystem extends SubsystemBase {
    */
 
   public void runClimberArm(double speed) {
-    climberMotorController.setReference(speed, ControlType.kVelocity);
+    climberMotor.set(speed);
   }
 
   public boolean isClimberIn() {
