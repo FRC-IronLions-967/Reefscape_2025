@@ -165,7 +165,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     ChassisSpeeds chassisSpeeds = fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_gyro.getFusedHeading()))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
     //Time slice discretization code taken from 254/YAGSL
     //Compensates for second order kinematic drift
@@ -254,7 +254,7 @@ public class Drivetrain extends SubsystemBase {
    * Updates the field relative position of the robot.
    */
   public void updateOdometry() {
-    m_odometry.update(Rotation2d.fromDegrees(m_gyro.getYaw()), getPosition());
+    m_odometry.update(Rotation2d.fromDegrees(-m_gyro.getFusedHeading()), getPosition());
   }
 
 

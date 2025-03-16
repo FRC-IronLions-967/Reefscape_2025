@@ -112,7 +112,6 @@ public class ArmSubsystem extends SubsystemBase {
       .positionConversionFactor(Units.metersToInches(2.0) / 5.0) // native 0-5V, 2 meter travel
       .velocityConversionFactor(Units.metersToInches(2.0) / 5.0); // 
     elevatorVortexConfig.closedLoop
-      .outputRange(-0.75, 1)
       .feedbackSensor(FeedbackSensor.kAnalogSensor)
       .pid(1e-1, 0, 0);//FF: 0.000139
 
@@ -126,7 +125,6 @@ public class ArmSubsystem extends SubsystemBase {
       .positionConversionFactor(Math.PI * 2)
       .zeroOffset(Constants.kArmZeroOffset / (Math.PI * 2));
     armVortexConfig.closedLoop
-      .outputRange(-0.5, 0.5)
       .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
       .pid(1.0, 0, 0.1)
       .positionWrappingInputRange(Constants.armWiringMinConstraint, Constants.armWiringMaxConstraint)
