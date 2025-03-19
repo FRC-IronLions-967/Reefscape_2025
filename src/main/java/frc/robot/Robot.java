@@ -82,6 +82,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     SubsystemsInst.getInst().drivetrain.setDriveToBrake();
     m_autonomousCommand = autoChooser.getSelected();
+    m_autonomousCommand.addRequirements(SubsystemsInst.getInst().drivetrain);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

@@ -18,6 +18,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -90,7 +91,7 @@ public final class Constants {
     // Vision Constants
     //Cam mounted on the right front swerve module facing the reef when scoring.
     public static final Transform3d kRobotToCamFront = 
-        new Transform3d(new Translation3d (0.216, -0.305, 0.154), new Rotation3d(0.0,-0.349, 0.785));
+        new Transform3d(new Translation3d (Units.inchesToMeters(7.25), -Units.inchesToMeters(14.75-5.25), Units.inchesToMeters(9.1)), new Rotation3d(0.0,0.174, Math.PI/4));
     public static final Transform3d kRobotToCamRear =
         new Transform3d(new Translation3d(-0.235, 0.210, 0.176), new Rotation3d(0.0, -1.04, Math.PI)); 
 

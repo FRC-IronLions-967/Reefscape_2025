@@ -130,10 +130,10 @@ public class Drivetrain extends SubsystemBase {
       this::getPose, // Robot pose supplier
       this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+      (speeds) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-          new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-          new PIDConstants(4.0, 0.0, 0.0) // Rotation PID constants
+          new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
           // 4.0, // Max module speed, in m/s
           // Constants.kDriveRadius, // Drive base radius in meters. Distance from robot center to furthest module.
           // new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -185,7 +185,7 @@ public class Drivetrain extends SubsystemBase {
    * @param chassisSpeeds the commanded chassisSpeeds to drive at
    */
   public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-    chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
+    //chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
 
     //Time slice discretization code taken from 254/YAGSL
     //Compensates for second order kinematic drift
