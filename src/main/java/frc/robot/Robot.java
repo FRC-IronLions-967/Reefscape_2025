@@ -81,15 +81,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     SubsystemsInst.getInst().drivetrain.setDriveToBrake();
-    // m_autonomousCommand = autoChooser.getSelected();
+    m_autonomousCommand = autoChooser.getSelected();
 
-    // // schedule the autonomous command (example)
-    // if (m_autonomousCommand != null) {
-    //  m_autonomousCommand.schedule();
-    // }
-    CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
-      new AutoDriveForwardCommand()
-    ));
+    // schedule the autonomous command (example)
+    if (m_autonomousCommand != null) {
+     m_autonomousCommand.schedule();
+    }
+    // CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
+    //   new AutoDriveForwardCommand()
+    // ));
   }
 
   /** This function is called periodically during autonomous. */

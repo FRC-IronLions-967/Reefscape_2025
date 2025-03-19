@@ -435,6 +435,8 @@ public class Drivetrain extends SubsystemBase {
       // SmartDashboard.putNumber("Commanded Wheel Angle", m_backLeft.getCommandedWheelAngle());
       SmartDashboard.putBoolean("FieldRelative", fieldRelative);
       // SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
+      SmartDashboard.putNumber("PoseX", getPose().getX());
+      SmartDashboard.putNumber("PoseY", getPose().getY());
     } 
 
 

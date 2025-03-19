@@ -61,7 +61,7 @@ public class SdsSwerveModule {
       int turningMotorCANId,
       Translation2d moduleLocation) {
 
-    turningOffset = /*turningMotorCANId == 8 ? Math.PI / 2 :*/ 0.3;
+    turningOffset = /*turningMotorCANId == 8 ? Math.PI / 2 :*/ 0.0;
 
     driveMotor = new SparkMax(driveMotorCANId, MotorType.kBrushless);
     turningMotor = new SparkMax(turningMotorCANId, MotorType.kBrushless);
