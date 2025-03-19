@@ -121,7 +121,6 @@ public class ClimberSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("Ratchet Position", getRatchetPosition());
     SmartDashboard.putBoolean("Is Ratchet On", isRatchetOn());
-    SmartDashboard.putBoolean("Climber In", isClimberIn());
     // SmartDashboard.putNumber("Climber Position", getClimbPosition());
   }
 }

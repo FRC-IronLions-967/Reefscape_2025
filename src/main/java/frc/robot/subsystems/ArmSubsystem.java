@@ -387,6 +387,7 @@ public class ArmSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Arm Current Target", rotaryArmCurrentTarget);
     SmartDashboard.putBoolean("Coral_IN", hasCoral());
     SmartDashboard.putBoolean("Algae In", hasAlgae());
+    SmartDashboard.putNumber("Arm Angle", getArmAngle());
     // SmartDashboard.putString("State", state.toString());
 
   }  

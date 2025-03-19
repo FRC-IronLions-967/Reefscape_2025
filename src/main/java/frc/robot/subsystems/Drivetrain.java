@@ -377,7 +377,7 @@ public class Drivetrain extends SubsystemBase {
       // positive value when we pull to the left (remember, CCW is positive in
       // mathematics). Xbox controllers return positive values when you pull to
       // the right by default.
-      final var rot = limiter * limiter * m_rotLimiter.calculate(
+      final var rot = m_rotLimiter.calculate(
           Utils.cubePreserveSign(MathUtil.applyDeadband(-driveController.getRightStickX(), 0.1)
               * Constants.kMaxAngularSpeed));
     

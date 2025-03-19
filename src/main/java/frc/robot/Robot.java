@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.SubsystemsInst;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.*;
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("IntakeAlgae", new RunAlgaeManipulatorCommand(Constants.algaeIntakeSpeed));
     NamedCommands.registerCommand("PlaceCoral", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
 
-    autoChooser = AutoBuilder.buildAutoChooser("Center Simple Auto");
+    autoChooser = AutoBuilder.buildAutoChooser("Leave Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     switchBreakout = new LimitSwitchManager();
 
@@ -79,13 +80,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = autoChooser.getSelected();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-     m_autonomousCommand.schedule();
-    }
     SubsystemsInst.getInst().drivetrain.setDriveToBrake();
+    // m_autonomousCommand = autoChooser.getSelected();
+
+    // // schedule the autonomous command (example)
+    // if (m_autonomousCommand != null) {
+    //  m_autonomousCommand.schedule();
+    // }
+    CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
+      new AutoDriveForwardCommand()
+    ));
   }
 
   /** This function is called periodically during autonomous. */

@@ -142,7 +142,7 @@ public final class Constants {
     public static final double L4ElevatorPosition = 54.4;
     public static final double L2AlgaeElevatorPosition = 13;
     public static final double L3AlgaeElevatorPosition = 30;
-    public static final double coralElevatorPosition = 26.11;
+    public static final double coralElevatorPosition = 24;
     public static final double bargeElevatorPosition = 54.0;
     public static final double climbElevatorPosition = 0.0;   
     public static final double processorElevatorPosition = 1.0;
