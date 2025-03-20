@@ -47,6 +47,7 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("PlaceCoral", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
 
     autoChooser = AutoBuilder.buildAutoChooser("Leave Auto");
+    autoChooser.addOption("St. Louis Auto", new AutoDriveForwardCommand());
     SmartDashboard.putData("Auto Chooser", autoChooser);
     switchBreakout = new LimitSwitchManager();
 
