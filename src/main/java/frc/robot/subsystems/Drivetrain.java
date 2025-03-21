@@ -64,8 +64,6 @@ public class Drivetrain extends SubsystemBase {
 
   private XBoxController driveController;
 
-  private ArmSubsystem armSubsystem;
-
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
 
   // ----- Simulation
@@ -299,7 +297,7 @@ public class Drivetrain extends SubsystemBase {
       angle.set(pose.getRotation().getDegrees());
       angularAcceleration.set(0);
     }
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()+180), getPosition(), pose);
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), getPosition(), pose);
   }
 
   
