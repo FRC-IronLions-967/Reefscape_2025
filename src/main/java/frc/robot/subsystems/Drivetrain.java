@@ -132,8 +132,8 @@ public class Drivetrain extends SubsystemBase {
       this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       (speeds) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-          new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-          new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
+          new PIDConstants(0.25, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(0.1, 0.0, 0.0) // Rotation PID constants
           // 4.0, // Max module speed, in m/s
           // Constants.kDriveRadius, // Drive base radius in meters. Distance from robot center to furthest module.
           // new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -299,7 +299,7 @@ public class Drivetrain extends SubsystemBase {
       angle.set(pose.getRotation().getDegrees());
       angularAcceleration.set(0);
     }
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()), getPosition(), pose);
+    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getYaw()+180), getPosition(), pose);
   }
 
   
@@ -437,6 +437,7 @@ public class Drivetrain extends SubsystemBase {
       // SmartDashboard.putNumber("GyroHeading", m_gyro.getYaw());
       SmartDashboard.putNumber("PoseX", getPose().getX());
       SmartDashboard.putNumber("PoseY", getPose().getY());
+      SmartDashboard.putNumber("PoseHeading", getPose().getRotation().getDegrees());
     } 
 
 
