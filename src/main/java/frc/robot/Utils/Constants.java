@@ -29,7 +29,7 @@ public final class Constants {
     public static final double kMaxAcceleration = 10.0; // 6.0 meters per second per second
     public static final double kMaxAngularSpeed = kMaxSpeed / kDriveRadius; // Maximum angular velocity 
     public static final double kMaxAngularAcceleration = kMaxAcceleration / kDriveRadius; // Maximum angular acceleration
-    public static final double kWheelRadius = 0.0508;
+    public static final double kWheelRadius = 0.0505;
     public static final double kCoefficientFriction = 1.1;
     public static final double kDriveGearRatio = 5.9;
     public static final double kSteerGearRatio = 150.0/7.0;
@@ -91,7 +91,7 @@ public final class Constants {
     // Vision Constants
     //Cam mounted on the right front swerve module facing the reef when scoring.
     public static final Transform3d kRobotToCamFront = 
-        new Transform3d(new Translation3d (Units.inchesToMeters(7.25), -Units.inchesToMeters(14.75-5.25), Units.inchesToMeters(9.1)), new Rotation3d(0.0,0.174, Math.PI/4));
+        new Transform3d(new Translation3d (Units.inchesToMeters(7.25), -Units.inchesToMeters(14.75), Units.inchesToMeters(9.1)), new Rotation3d(0.0,-0.349, 0.785));
     public static final Transform3d kRobotToCamRear =
         new Transform3d(new Translation3d(-0.235, 0.210, 0.176), new Rotation3d(0.0, -1.04, Math.PI)); 
 
@@ -143,7 +143,7 @@ public final class Constants {
     public static final double L4ElevatorPosition = 54.4;
     public static final double L2AlgaeElevatorPosition = 13;
     public static final double L3AlgaeElevatorPosition = 30;
-    public static final double coralElevatorPosition = 24;
+    public static final double coralElevatorPosition = 25;
     public static final double bargeElevatorPosition = 54.0;
     public static final double climbElevatorPosition = 0.0;   
     public static final double processorElevatorPosition = 1.0;

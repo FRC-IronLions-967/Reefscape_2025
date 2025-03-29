@@ -249,8 +249,8 @@ public class Vision extends SubsystemBase {
             // Change our trust in the measurement based on the tags we can see
             var estStdDevs = getEstimationStdDevs();
 
-            SubsystemsInst.getInst().drivetrain.addVisionMeasurement(
-                    est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+            //SubsystemsInst.getInst().drivetrain.addVisionMeasurement(
+                    //est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
         });
     }
   }

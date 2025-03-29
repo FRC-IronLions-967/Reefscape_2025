@@ -130,8 +130,8 @@ public class Drivetrain extends SubsystemBase {
       this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       (speeds) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
       new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-          new PIDConstants(0.25, 0.0, 0.0), // Translation PID constants
-          new PIDConstants(0.1, 0.0, 0.0) // Rotation PID constants
+          new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(4.0, 0.0, 0.0) // Rotation PID constants
           // 4.0, // Max module speed, in m/s
           // Constants.kDriveRadius, // Drive base radius in meters. Distance from robot center to furthest module.
           // new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -163,7 +163,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     ChassisSpeeds chassisSpeeds = fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_gyro.getFusedHeading()))
+                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(-m_gyro.getFusedHeading() - 180))
                 : new ChassisSpeeds(xSpeed, ySpeed, rot);
     //Time slice discretization code taken from 254/YAGSL
     //Compensates for second order kinematic drift

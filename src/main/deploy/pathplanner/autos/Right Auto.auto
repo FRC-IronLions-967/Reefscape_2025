@@ -24,6 +24,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "PlaceCoral"
@@ -44,31 +50,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CS to D"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "PlaceCoral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "D to CS"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeCoral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "CS to C"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {

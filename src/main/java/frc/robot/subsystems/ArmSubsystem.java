@@ -386,7 +386,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Coral_IN", hasCoral());
     SmartDashboard.putBoolean("Algae In", hasAlgae());
     SmartDashboard.putNumber("Arm Angle", getArmAngle());
-    // SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putBoolean("CORAL_NOT_IN", doesntHaveCoral());
 
   }  
   
