@@ -214,45 +214,45 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // // This method will be called once per scheduler run
 
-    //Update April Tag Front Results
-    aprilTagDetectedFront = false;
-    var tempTagResults = aprilTagCameraFront.getAllUnreadResults();
-    if (!tempTagResults.isEmpty()) {
-      // Camera processed a new frame since last
-      // Get the last one in the list.
-      aprilTagResultFront = tempTagResults.get(tempTagResults.size() - 1);
-      if (aprilTagResultFront.hasTargets()) {
-          // At least one AprilTag was seen by the camera
-          aprilTagDetectedFront = true;
-      }
-    }
+    // //Update April Tag Front Results
+    // aprilTagDetectedFront = false;
+    // var tempTagResults = aprilTagCameraFront.getAllUnreadResults();
+    // if (!tempTagResults.isEmpty()) {
+    //   // Camera processed a new frame since last
+    //   // Get the last one in the list.
+    //   aprilTagResultFront = tempTagResults.get(tempTagResults.size() - 1);
+    //   if (aprilTagResultFront.hasTargets()) {
+    //       // At least one AprilTag was seen by the camera
+    //       aprilTagDetectedFront = true;
+    //   }
+    // }
     
-    //Update April Tag Rear Results
-    aprilTagDetectedRear = false;
-    tempTagResults = aprilTagCameraRear.getAllUnreadResults();
-    if (!tempTagResults.isEmpty()) {
-      // Camera processed a new frame since last
-      // Get the last one in the list.
-      aprilTagResultRear = tempTagResults.get(tempTagResults.size() - 1);
-      if (aprilTagResultFront.hasTargets()) {
-          // At least one AprilTag was seen by the camera
-          aprilTagDetectedRear = true;
-      }
-    }
+    // //Update April Tag Rear Results
+    // aprilTagDetectedRear = false;
+    // tempTagResults = aprilTagCameraRear.getAllUnreadResults();
+    // if (!tempTagResults.isEmpty()) {
+    //   // Camera processed a new frame since last
+    //   // Get the last one in the list.
+    //   aprilTagResultRear = tempTagResults.get(tempTagResults.size() - 1);
+    //   if (aprilTagResultFront.hasTargets()) {
+    //       // At least one AprilTag was seen by the camera
+    //       aprilTagDetectedRear = true;
+    //   }
+    // }
 
-    List<EstimatedRobotPose> pose = getEstimatedGlobalPose();
-    if( !pose.isEmpty() ) {
-        pose.forEach(
-        est -> {
-            // Change our trust in the measurement based on the tags we can see
-            var estStdDevs = getEstimationStdDevs();
+    // List<EstimatedRobotPose> pose = getEstimatedGlobalPose();
+    // if( !pose.isEmpty() ) {
+    //     pose.forEach(
+    //     est -> {
+    //         // Change our trust in the measurement based on the tags we can see
+    //         var estStdDevs = getEstimationStdDevs();
 
-            SubsystemsInst.getInst().drivetrain.addVisionMeasurement(
-                    est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-        });
-    }
+    //         //SubsystemsInst.getInst().drivetrain.addVisionMeasurement(
+    //                 //est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+    //     });
+    //}
   }
 
 

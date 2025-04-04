@@ -60,6 +60,7 @@ public class ArmSubsystem extends SubsystemBase {
   private double rotaryArmCurrentTarget;
 
   private ArmStates state;
+  private boolean elevatorHomed;
 
   // ----- Simulation -----
   private ElevatorSim elevatorSim;
@@ -83,7 +84,8 @@ public class ArmSubsystem extends SubsystemBase {
     elevatorHeightEndGoal = 5.0;
     rotaryArmEndGoal = Math.PI;
 
-    state = ArmStates.STARTUP;
+    state = ArmStates.HOMING;
+    elevatorHomed = false;
 
     elevatorVortex = new SparkFlex(9, MotorType.kBrushless);
     elevatorVortexController = elevatorVortex.getClosedLoopController();
@@ -106,13 +108,13 @@ public class ArmSubsystem extends SubsystemBase {
       .smartCurrentLimit(60)
       .idleMode(IdleMode.kBrake);
     elevatorVortexConfig.encoder
-      .positionConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters
-      .velocityConversionFactor((2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
+      .positionConversionFactor((2.0 * 2.0 * Constants.elevatorSprocketRadius * Math.PI) / Constants.elevatorGearRatio) // to meters (doubled to account for cascade rigging)
+      .velocityConversionFactor((2.0 * 2.0 * Constants.elevatorSprocketRadius * Math.PI) / (60.0 * Constants.elevatorGearRatio)); //to meters/sec
     elevatorVortexConfig.analogSensor
       .positionConversionFactor(Units.metersToInches(2.0) / 5.0) // native 0-5V, 2 meter travel
       .velocityConversionFactor(Units.metersToInches(2.0) / 5.0); // 
     elevatorVortexConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kAnalogSensor)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1e-1, 0, 0);//FF: 0.000139
 
     elevatorVortex.configure(elevatorVortexConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
@@ -205,8 +207,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The elevator position.
    */
   public double getElevatorPosition() {
-    //return elevatorVortex.getEncoder().getPosition();
-    return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
+    return elevatorVortex.getEncoder().getPosition();
+    //return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
   }
 
   /**
@@ -304,7 +306,10 @@ public class ArmSubsystem extends SubsystemBase {
    * Sets the Arm State based on what game pieces are in the manipuators.
    */
   private void setArmState() {
-    if (state != ArmStates.STARTUP || getElevatorPosition() >= Constants.armFullRotationElevatorHeight) {
+    if (state == ArmStates.HOMING && elevatorHomed) {
+      state = ArmStates.STARTUP;
+    }
+    if (elevatorHomed && (state != ArmStates.STARTUP || getElevatorPosition() >= Constants.armFullRotationElevatorHeight)) {
       if (hasAlgae()) {
         state = ArmStates.ALGAE_IN;
       } else {
@@ -321,6 +326,13 @@ public class ArmSubsystem extends SubsystemBase {
     // transitions are less important than just knowing the current state
     setArmState();
     switch (state) {
+      case HOMING:
+        elevatorVortex.set(-1);
+        if (elevatorVortex.getOutputCurrent() > 40) {
+          elevatorVortex.set(0);
+          elevatorVortex.getEncoder().setPosition(0);
+          elevatorHomed = true;
+        }
       case STARTUP:
         elevatorHeightEndGoal = Constants.armFullRotationElevatorHeight + Constants.elevatorTolerance;
       case EMPTY:
@@ -372,12 +384,14 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
-    if (state != ArmStates.STARTUP) {
+    if (state != ArmStates.STARTUP && state != ArmStates.HOMING) {
       armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
     }
-    elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
+    //elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
+    elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
 
-    // SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    SmartDashboard.putBoolean("Elevator Homed", elevatorHomed);
     // SmartDashboard.putNumber("Arm Position", getArmAngle());
     // SmartDashboard.putNumber("Elevator End Goal", elevatorHeightEndGoal);
     // SmartDashboard.putNumber("Elevator Current Goal", elevatorHeightCurrentTarget);
@@ -386,7 +400,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Coral_IN", hasCoral());
     SmartDashboard.putBoolean("Algae In", hasAlgae());
     SmartDashboard.putNumber("Arm Angle", getArmAngle());
-    // SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putString("State", state.toString());
+    SmartDashboard.putBoolean("CORAL_NOT_IN", doesntHaveCoral());
 
   }  
   

@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.SubsystemsInst;
 import frc.robot.Utils.Constants;
 import frc.robot.commands.*;
@@ -48,6 +47,7 @@ public class Robot extends TimedRobot {
     NamedCommands.registerCommand("PlaceCoral", new RunCoralManipulatorCommand(Constants.coralScoringSpeed));
 
     autoChooser = AutoBuilder.buildAutoChooser("Leave Auto");
+    autoChooser.addOption("St. Louis Auto", new AutoDriveForwardCommand());
     SmartDashboard.putData("Auto Chooser", autoChooser);
     switchBreakout = new LimitSwitchManager();
 
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-     m_autonomousCommand.schedule();
+      m_autonomousCommand.schedule();
     }
     // CommandScheduler.getInstance().schedule(new SequentialCommandGroup(
     //   new AutoDriveForwardCommand()
@@ -102,7 +102,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     IO.getInstance().teleopInit();
     SubsystemsInst.getInst().drivetrain.setDriveToBrake();
-    SubsystemsInst.getInst().armSubsystem.changeStateToStartup();
+    //SubsystemsInst.getInst().armSubsystem.changeStateToStartup();
   }
 
   /** This function is called periodically during operator control. */
