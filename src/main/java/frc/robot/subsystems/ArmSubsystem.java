@@ -207,8 +207,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The elevator position.
    */
   public double getElevatorPosition() {
-    //return elevatorVortex.getEncoder().getPosition();
-    return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
+    return elevatorVortex.getEncoder().getPosition();
+    //return elevatorVortex.getAnalog().getPosition() - Constants.kElevatorAnalogZeroOffset;
   }
 
   /**
@@ -309,7 +309,7 @@ public class ArmSubsystem extends SubsystemBase {
     if (state == ArmStates.HOMING && elevatorHomed) {
       state = ArmStates.STARTUP;
     }
-    if (state != ArmStates.STARTUP || getElevatorPosition() >= Constants.armFullRotationElevatorHeight) {
+    if (elevatorHomed && (state != ArmStates.STARTUP || getElevatorPosition() >= Constants.armFullRotationElevatorHeight)) {
       if (hasAlgae()) {
         state = ArmStates.ALGAE_IN;
       } else {
@@ -384,12 +384,14 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
-    if (state != ArmStates.STARTUP) {
+    if (state != ArmStates.STARTUP && state != ArmStates.HOMING) {
       armVortexController.setReference(rotaryArmCurrentTarget, ControlType.kPosition);
     }
-    elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
+    //elevatorVortexController.setReference(elevatorHeightCurrentTarget + Constants.kElevatorAnalogZeroOffset, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
+    elevatorVortexController.setReference(elevatorHeightCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0.09, ArbFFUnits.kPercentOut);
 
-    // SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    SmartDashboard.putNumber("Elevator Height", getElevatorPosition());
+    SmartDashboard.putBoolean("Elevator Homed", elevatorHomed);
     // SmartDashboard.putNumber("Arm Position", getArmAngle());
     // SmartDashboard.putNumber("Elevator End Goal", elevatorHeightEndGoal);
     // SmartDashboard.putNumber("Elevator Current Goal", elevatorHeightCurrentTarget);

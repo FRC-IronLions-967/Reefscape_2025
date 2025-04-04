@@ -138,13 +138,13 @@ public final class Constants {
     public static final double climbArmAngle = Math.PI / 2;
     public static final double defaultArmAngle = Math.PI;
     // Elevator Positions
-    public static final double L2ElevatorPosition = 11.0;
-    public static final double L3ElevatorPosition = 26.0;
-    public static final double L4ElevatorPosition = 54.4;
-    public static final double L2AlgaeElevatorPosition = 13;
-    public static final double L3AlgaeElevatorPosition = 30;
-    public static final double coralElevatorPosition = 25;
-    public static final double bargeElevatorPosition = 54.0;
+    public static final double L2ElevatorPosition = 10.0;
+    public static final double L3ElevatorPosition = 25.0;
+    public static final double L4ElevatorPosition = 53.4;
+    public static final double L2AlgaeElevatorPosition = 12;
+    public static final double L3AlgaeElevatorPosition = 29;
+    public static final double coralElevatorPosition = 22.5;
+    public static final double bargeElevatorPosition = 53.0;
     public static final double climbElevatorPosition = 0.0;   
     public static final double processorElevatorPosition = 1.0;
     //Climb Positions
@@ -153,7 +153,7 @@ public final class Constants {
     public static final double climberRatchetOnPosition = 0.75;
     public static final double climberRatchetOffPosition = 0.5;
     //Tolerances
-    public static final double elevatorTolerance = 1.0;
+    public static final double elevatorTolerance = 2.0;
     public static final double armTolerance = 0.1;
     public static final double climberTolerance = 5.0;
 
